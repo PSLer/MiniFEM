@@ -1,5 +1,4 @@
-%% This package provides a diminutive Finite Element Method (FEM) implementation for both 2D and 3D solid structure,	
-%% 		where the deformation computation, stress analysis, frequency sweep, modal analysis are covered.  
+%% ----MiniFEM----
 %% Author: Junpeng Wang  
 %% Copyright (c) All rights reserved.
 %% Create date:	24.07.2019
@@ -21,7 +20,7 @@ addpath('../IO');
 GlobalVariables;
 crtFEModelStart = cputime; 
 %% 1. initialization, 
-domainType_ = '3D'; 
+domainType_ = '2D'; 
 if strcmp(domainType_, '2D'), eleType_ = Plane144(); 
 elseif strcmp(domainType_, '3D'), eleType_ = Solid188(); 
 else, error('Critical ERROR! Wrong element type!!!'); end
@@ -52,29 +51,28 @@ switch modelSource_
 		switch domainType_
 			case '2D'
 				vtxLowerBound_ = [0 0];
-				nelx_ = 200; nely_ = 100; featureSize = 1;
+				nelx_ = 500; nely_ = 250; featureSize = 1;
 				%nelx_ = 140; nely_ = 182; featureSize = 1; %femur 2D 
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
-                vtxUpperBound_ = [1.5 0.8 0.003];
-% 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
-				nelx_ = 100; nely_ = 50; nelz_ = 3;  featureSize = 1.5;  %%femur 3D				
-				%vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
+ 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
+				%nelx_ = 140; nely_ = 93; nelz_ = 182;  featureSize = 1.5;  %%femur 3D				
+				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			fileName = '../../../MyDataSets/ClippingMdls/femur3D_140_93_182.txt';
+			fileName = '../IO/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = '../../../MyDataSets/TopOptiMdls4FEA/roof3D.topopti';	
+		srcName = '../IO/demo-DataSet-TopoOpti3D.topopti';	
 		extractThreshold = 0.5;
 		featureSize = 1;
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
-		srcName = '../../../MyDataSets/ExternalMdls4FEA/dragonStand1_hexa_FEA.vtk';
+		srcName = '../IO/demo-DataSet-ExternalInputMeshVTK.vtk';
 		CreateModelExtMeshSrc(srcName);
 	otherwise
 		error('VitaL ERROR! Failed to create geometrical model!!!')
@@ -87,22 +85,12 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-%boundaryCond_ = 'X';
-boundaryCond_ = find(vtxUpperBound_(1)/2==nodeCoords_(:,1));
+boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %%3.3 Loading
-%%----------------------------scaled, featureSize = 2
-force = [0.0 0.0 1];
-loadingNodeIndex_1 = find(vtxUpperBound_(1)==nodeCoords_(:,1));
-loadingNodeIndex_2 = find(vtxLowerBound_(1)==nodeCoords_(:,1));
-loadingNodeIndex = [loadingNodeIndex_1; loadingNodeIndex_2];
-% force = force/length(loadingNodeIndex)*300;
-% loadingNodeIndex = [vtxLowerBound_(1) vtxLowerBound_(2) vtxUpperBound_(3); vtxLowerBound_(1) vtxUpperBound_(2) vtxUpperBound_(3); ...
-%     vtxUpperBound_(1) vtxLowerBound_(2) vtxUpperBound_(3); vtxUpperBound_(1) vtxUpperBound_(2) vtxUpperBound_(3);];
-%force = force/length(loadingNodeIndex)*300;
-LoadingVec = repmat(force, size(loadingNodeIndex,1), 1);     
-loadingCond_ = [loadingNodeIndex LoadingVec];
+%%----------------------------scaled, featureSize = 2   
+loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
 ApplyLoads('NormalizedLoads'); %%NormalizedLoads
 
 %%4. visualize FEM model
