@@ -63,16 +63,16 @@ switch modelSource_
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			fileName = '../IO/demo-DataSet-CroppingModel.txt';
+			fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = '../IO/demo-DataSet-TopoOpti3D.topopti';	
+		srcName = '../data/demo-DataSet-TopoOpti3D.topopti';	
 		extractThreshold = 0.5;
 		featureSize = 1;
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
-		srcName = '../IO/demo-DataSet-ExternalInputMeshVTK.vtk';
+		srcName = '../data/demo-DataSet-ExternalInputMeshVTK.vtk';
 		CreateModelExtMeshSrc(srcName);
 	otherwise
 		error('VitaL ERROR! Failed to create geometrical model!!!')
