@@ -2,7 +2,6 @@ function Dataset4LLGP(opt)
 	%0==opt: single stress field under current loading condition
 	%1==opt: multiple stress fields under varying loading direction
 	global domainType_;
-    global outPath_;
 	global structureState_;
 	global U_;
 	global numNodes_;
@@ -14,8 +13,7 @@ function Dataset4LLGP(opt)
 	global nodeLoadVec_;
 	%%1. write mesh info in .vtk 3.0
 	%%1.1 file header (ignore 'volume mesh' for 2D)
-	%fileName = '../../../MyDataSets/StressFields4LLGP/stressField.vtk';
-    fileName = strcat(outPath_, '/stressField.vtk');
+	fileName = '../../../MyDataSets/StressFields4LLGP/stressField.vtk';
 	fid = fopen(fileName, 'w');				
 	fprintf(fid, '%s %s %s %s', '# vtk DataFile Version');
 	fprintf(fid, '%.1f\n', 3.0);

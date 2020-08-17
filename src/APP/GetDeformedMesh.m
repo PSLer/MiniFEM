@@ -4,7 +4,6 @@ function GetDeformedMesh(varargin)
 	
 	if 0==nargin, error('Wrong input for getting deformed mesh!'); end
 	global domainType_;
-    global outPath_;
 	global nodeCoords_;
 	global U_;
 	global eleType_;
@@ -43,7 +42,7 @@ function GetDeformedMesh(varargin)
 		if strcmp(varargin{2}, 'output_vtk')
 			global nodesOutline_;
 			%%1. output file header		
-			fileName = strcat(outPath_, '/deformedMesh.vtk');
+			fileName = 'deformedMesh.vtk';
 			fid = fopen(fileName, 'w');				
 			fprintf(fid, '%s %s %s %s', '# vtk DataFile Version');
 			fprintf(fid, '%.1f\n', 3.0);

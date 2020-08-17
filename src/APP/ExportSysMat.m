@@ -1,13 +1,12 @@
 function ExportSysMat(opt)
-    global outPath_;	
-    switch opt
+	switch opt
 		case 'K'
 			global K_;
 			semiK = tril(K_);
 			[row col val] = find(semiK);
 			dim = length(semiK);
 			nNonVals = length(row);
-			fid = fopen(strcat(outPath_, '/K.dat'), 'w');
+			fid = fopen('../IO/K.dat', 'w');
 			fprintf(fid, '%d %d %d\n', [dim dim nNonVals]);
 			fprintf(fid, '%d %d %e\n', [row col val]');
 			fclose(fid);
@@ -17,7 +16,7 @@ function ExportSysMat(opt)
 			[row col val] = find(semiM);
 			dim = length(semiM);
 			nNonVals = length(row);
-			fid = fopen(strcat(outPath_, '/M.dat'), 'w');
+			fid = fopen('../IO/M.dat', 'w');
 			fprintf(fid, '%d %d %d\n', [dim dim nNonVals]);
 			fprintf(fid, '%d %d %e\n', [row col val]');
 			fclose(fid);		
