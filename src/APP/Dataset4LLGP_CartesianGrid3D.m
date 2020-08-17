@@ -1,5 +1,6 @@
 function Dataset4LLGP_CartesianGrid3D()
 	global domainType_;
+	global outPath_;
 	global modelSource_;
 	global nelx_; global nely_; global nelz_;
 	global vtxLowerBound_; global vtxUpperBound_;
@@ -18,7 +19,8 @@ function Dataset4LLGP_CartesianGrid3D()
 	end
 	%%1. write mesh info in .vtk 3.0
 	%%1.1 file header (ignore 'volume mesh' for 2D)
-	fileName = '../../../MyDataSets/StressFields4LLGP/stressField.vtk';
+	%fileName = '../../../MyDataSets/StressFields4LLGP/stressField.vtk';
+	fileName = strcat(outPath_, '/stressField.vtk');
 	fid = fopen(fileName, 'w');				
 	fprintf(fid, '%s %s %s %s', '# vtk DataFile Version');
 	fprintf(fid, '%.1f\n', 3.0);
