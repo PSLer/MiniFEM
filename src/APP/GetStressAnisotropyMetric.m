@@ -1,5 +1,6 @@
 function GetStressAnisotropyMetric()
 	global domainType_;
+    global outPath_;
 	global numNodes_;	
 	global nodeCoords_;
 	global numEles_;
@@ -11,7 +12,7 @@ function GetStressAnisotropyMetric()
  	PrincipalStress();
 
 	%%1. output file header		
-	fileName = 'StressAnisotropyMetric3D.vtk';
+	fileName = strcat(outPath_, '/StressAnisotropyMetric3D.vtk');
 	fid = fopen(fileName, 'w');				
 	fprintf(fid, '%s %s %s %s', '# vtk DataFile Version');
 	fprintf(fid, '%.1f\n', 3.0);

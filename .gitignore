@@ -5,3 +5,6 @@
 *.fig
 *.mat
 *.png
+out/K.dat
+out/StressAnisotropyMetric3D.vtk
+out/stressField.vtk

@@ -1,4 +1,5 @@
 %% This script declares some global variables
+global outPath_;
 global domainType_; 			%% '2D' or '3D'
 global eleType_;				%% 'Plane144', 'Solid188'
 global GPU_;					%% 'ON', 'OFF', for Modal Analysis
