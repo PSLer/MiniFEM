@@ -8,3 +8,4 @@
 out/K.dat
 out/StressAnisotropyMetric3D.vtk
 out/stressField.vtk
+result/StressAnisotropyMetric3D.vtk

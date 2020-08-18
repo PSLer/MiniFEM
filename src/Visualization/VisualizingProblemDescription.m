@@ -115,9 +115,9 @@ function VisualizingProblemDescription3D(visType)
 			
 			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 0.15, 'EdgeColor', 'None');      
 			lighting gouraud
-% 			camlight('headlight','infinite');
-			%camlight('right','infinite');
-			%camlight('left','infinite');			
+			camlight('headlight','infinite');
+			camlight('right','infinite');
+			camlight('left','infinite');			
 	end
 	
 	%%2. draw fixed nodes
