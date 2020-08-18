@@ -18,7 +18,7 @@ addpath('./Visualization');
 addpath('../data');
 
 GlobalVariables;
-outPath_ = 'D:/MyProjects/MiniFEM/out';  %recommend to use absolute path direction
+outPath_ = 'D:/MyProjects/MiniFEM/result';  %recommend to use absolute path direction
 crtFEModelStart = cputime; 
 %% 1. initialization, 
 domainType_ = '2D'; 
