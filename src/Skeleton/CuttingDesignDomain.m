@@ -5,18 +5,19 @@ function CuttingDesignDomain(validElements)
 	global originalValidNodeIndex_;
 	global nodeMap4CutBasedModel_;
 	global boundaryCond_;
+	global validElements_;
 	%%1. load valid elements
-	validElements = sort(validElements);
+	validElements_ = sort(validElements);
 	
 	%%2. remove unrelated elements and nodes
-	validNodes = eNodMat_(validElements,:); 
+	validNodes = eNodMat_(validElements_,:); 
 	validNodes = reshape(validNodes', size(validNodes,1)*size(validNodes,2), 1);
 	validNodes = unique(validNodes); originalValidNodeIndex_ = validNodes;
-	validDofs = edofMat_(validElements,:);
+	validDofs = edofMat_(validElements_,:);
 	validDofs = reshape(validDofs', size(validDofs,1)*size(validDofs,2), 1);
 	validDofs = unique(validDofs);	
-	edofMat_ = edofMat_(validElements,:);
-	eNodMat_ = eNodMat_(validElements,:);
+	edofMat_ = edofMat_(validElements_,:);
+	eNodMat_ = eNodMat_(validElements_,:);
 	numNod2ElesVec_ = zeros(length(validNodes), 1);
 	nodeCoords_ = nodeCoords_(validNodes,:);	
 	%%3. reorder elements and nodes
@@ -26,7 +27,7 @@ function CuttingDesignDomain(validElements)
 	oringinalDofSerials = (1:1:numDOFs_)'; currentDofSerials = (1:1:length(validDofs))';
 	oringinalNofSerials(validDofs) = currentDofSerials;	
 	edofMat_ = oringinalNofSerials(edofMat_);
-	for ii=1:1:length(validElements)
+	for ii=1:1:length(validElements_)
 		for jj=1:1:eleType_.numNode
 			numNod2ElesVec_(eNodMat_(ii,jj)) = numNod2ElesVec_(eNodMat_(ii,jj))+1;
 		end
@@ -39,5 +40,5 @@ function CuttingDesignDomain(validElements)
 	numDOFs_ = length(validDofs);
 	[invalidFixtion ia] = setdiff(boundaryCond_, validNodes);
 	boundaryCond_(ia) = [];	
-	%clear validElements validNodes validDofs currentNodSerials oringinalDofSerials currentDofSerials
+	%clear validElements_ validNodes validDofs currentNodSerials oringinalDofSerials currentDofSerials
 end
