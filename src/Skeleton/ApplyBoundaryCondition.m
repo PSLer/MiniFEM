@@ -20,7 +20,8 @@ function ApplyBoundaryCondition()
 				nn = size(boundaryCond_,1);
 				fixedNodes_ = zeros(nn,1)
 				for ii=1:nn
-					fixedNodes_ = min(vecnorm(boundaryCond_(ii,:)-nodeCoords_,2,2));
+					[minVal minValPos] = min(vecnorm(boundaryCond_(ii,:)-nodeCoords_,2,2));
+					fixedNodes_(ii) = minValPos;
 				end
 		else, error('Wrong boundary option! Error code: BBB');
 		end
