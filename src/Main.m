@@ -93,9 +93,8 @@ boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %%3.3 Loading
-%%----------------------------scaled, featureSize = 2   
 loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
-ApplyLoads('NormalizedLoads'); %%NormalizedLoads
+ApplyLoads();
 
 %%4. visualize FEM model
 %% argin = 'EleVis', (direct volume rendering, available for any) OR
@@ -111,8 +110,9 @@ disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelSt
 %[vtxUpperBound_(1) vtxLowerBound_(2) 0 -1] (ex-iLoad==4)
 %[vtxUpperBound_(1) vtxUpperBound_(2)/2 1 0; vtxUpperBound_(1)/2 vtxLowerBound_(2) 0 -1] (ex-iLoad==5)
 %[vtxUpperBound_(1) vtxUpperBound_(2)/2 1 0; vtxUpperBound_(1)/2 vtxUpperBound_(2) 1 0] (ex-iLoad==6)
-% loadingNodeCoord = nodeCoords_(vtxUpperBound_(1)==nodeCoords_(:,1),:);
-% LoadingVec = zeros(size(loadingNodeCoord)); LoadingVec(:,2) = -1; 
+% loadingNodeCoord = nodeCoords_(vtxUpperBound_(1)==nodeCoords_(:,1),:); 
+% numLoadedNodes = size(loadingNodeCoord,1);
+% LoadingVec = zeros(numLoadedNodes,1); LoadingVec(:,2) = -1/numLoadedNodes; 
 % loadingCond_ = [loadingNodeCoord LoadingVec]; %(ex-iLoad==7)
 % iLoad 5 500Hz %(ex-iLoad==8)
 
@@ -124,15 +124,21 @@ disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelSt
 % loadingNodeIndex_1 = find(vtxUpperBound_(1)==nodeCoords_(:,1));
 % loadingNodeIndex_2 = find(vtxLowerBound_(3)==nodeCoords_(loadingNodeIndex_1,3));
 % loadingNodeIndex = loadingNodeIndex_1(loadingNodeIndex_2);
-% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1); %(ex-iLoad==6, line loading)
+% force = force/length(loadingNodeIndex);
+% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1); 
+% loadingCond_ = [loadingNodeIndex LoadingVec]; %(ex-iLoad==6, line loading)
 % force = [0.0 0.0 -1];
 % loadingNodeIndex = find(vtxUpperBound_(1)==nodeCoords_(:,1));
-% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1);%(ex-iLoad==7, surface loading)
+% force = force/length(loadingNodeIndex);
+% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1);
+% loadingCond_ = [loadingNodeIndex LoadingVec]; %(ex-iLoad==7, surface loading)
 % force = [0.0 0.0 -1];
 % loadingNodeIndex_1 = find(vtxUpperBound_(1)==nodeCoords_(:,1));
 % loadingNodeIndex_2 = find(vtxLowerBound_(2)==nodeCoords_(loadingNodeIndex_1,2));
 % loadingNodeIndex = loadingNodeIndex_1(loadingNodeIndex_2);
-% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1); %(ex-iLoad==8, line loading, torsion)
+% force = force/length(loadingNodeIndex);
+% LoadingVec = repmat(force, size(loadingNodeIndex,1), 1); 
+% loadingCond_ = [loadingNodeIndex LoadingVec]; %(ex-iLoad==8, line loading, torsion)
 
 %%% femur 2D
 %%ex-iLoad==1

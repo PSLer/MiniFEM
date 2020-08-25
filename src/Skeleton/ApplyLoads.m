@@ -1,4 +1,4 @@
-function ApplyLoads(extraloadingCond_Opt)
+function ApplyLoads()
 	global domainType_;
 	global modelSource_;
 	global numDOFs_;
@@ -46,10 +46,6 @@ function ApplyLoads(extraloadingCond_Opt)
 				error('Wrong loading type! Error code: XXX');
 			end		
 	end
-	if strcmp(extraloadingCond_Opt, 'NormalizedLoads')
-		normer = norm(reshape(nodeLoadVec_(:,2:end)', numel(nodeLoadVec_(:,2:end)), 1));
-		nodeLoadVec_(:,2:end) = nodeLoadVec_(:,2:end)/normer;
-	end	
 	loadedNodes_ = nodeLoadVec_(:,1); 
 	loadedDofs_ = eleType_.numNodeDOFs*loadedNodes_-(eleType_.numNodeDOFs-1:-1:0);
 	loadedDofs_ = reshape(loadedDofs_', size(loadedDofs_,1)*size(loadedDofs_,2), 1);
