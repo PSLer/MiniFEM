@@ -11,7 +11,7 @@ clear all; clc
 addpath('./APP');
 addpath('./DataStruct');
 addpath('./Common');
-addpath('./Skeleton');
+addpath('./Kernel');
 addpath('./Solving');
 addpath('./TempTest');
 addpath('./Visualization');

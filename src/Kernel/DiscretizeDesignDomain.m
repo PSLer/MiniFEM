@@ -4,7 +4,7 @@ function DiscretizeDesignDomain()
 	global vtxLowerBound_; global vtxUpperBound_;
 	global numEles_; global numNodes_; global numDOFs_; global eleType_; global eleSize_;
 	global nodeCoords_; global edofMat_; global eNodMat_; 
-	global numNod2ElesVec_; global nodesOutline_;
+	global numNod2ElesVec_; global nodesOutline_; global validElements_;
 	global originalValidNodeIndex_; 
 	global opt_CUTTING_DESIGN_DOMAIN_;
 	
@@ -60,7 +60,7 @@ function DiscretizeDesignDomain()
 	numDOFs_ = eleType_.numNodeDOFs * numNodes_;
 	originalValidNodeIndex_ = (1:numNodes_)';
 	eNodMat_ = edofMat_(:,eleType_.numNodeDOFs*(1:eleType_.numNode))/eleType_.numNodeDOFs;
-
+	validElements_ = (1:1:numEles_)';
 	if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'OFF')
 		global numNod2ElesVec_; numNod2ElesVec_ = zeros(numNodes_,1);
 		global nodesOutline_;
