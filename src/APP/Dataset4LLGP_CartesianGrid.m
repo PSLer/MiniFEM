@@ -14,9 +14,7 @@ function Dataset4LLGP_CartesianGrid()
 	global nodesOutline_;
 	global cartesianStressField_;
 	global nodeLoadVec_;
-	% if strcmp(domainType_, '2D') || strcmp(modelSource_, 'ExtMesh')
-		% error('Does not work in this scenario!');
-	% end
+    
 	%%1. write mesh info in .vtk
 	%%1.1 file header (ignore 'volume mesh' for 2D)
 	%fileName = '../../../MyDataSets/StressFields4LLGP/stressField.vtk';
@@ -48,7 +46,7 @@ function Dataset4LLGP_CartesianGrid()
 					U_ = SolvingDynamicFEM('printP_ON');
 			end
 			cartesianStressField_ = ComputeCartesianStress(U_);
-			Deformation('T');
+			Deformation('T',1);
 			%%2.2 write
 			tmp = zeros(size(nodeLoadVec_)); tmp(:,1) = 1;
 			fprintf(fid, '%s %s %s %s', 'Number of Stress Fields');
@@ -78,7 +76,7 @@ function Dataset4LLGP_CartesianGrid()
 					U_ = SolvingDynamicFEM('printP_ON');
 			end
 			cartesianStressField_ = ComputeCartesianStress(U_);
-			Deformation('T');
+			Deformation('T',1);
 			%%2.2 write
 			tmp = zeros(size(nodeLoadVec_)); tmp(:,1) = 1;
 			fprintf(fid, '%s %s %s %s', 'Number of Stress Fields');

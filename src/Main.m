@@ -57,7 +57,7 @@ switch modelSource_
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
+ 				nelx_ = 40; nely_ = 20; nelz_ = 20; featureSize = 1;
 				%nelx_ = 140; nely_ = 93; nelz_ = 182;  featureSize = 1.5;  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
