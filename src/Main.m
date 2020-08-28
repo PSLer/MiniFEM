@@ -18,9 +18,11 @@ addpath('./Visualization');
 addpath('../data');
 
 GlobalVariables;
-outPath_ = 'D:/MyProjects/MiniFEM/out';  mkdir(outPath_);%recommend to use absolute path direction
+outPath_ = 'D:/MyProjects/MiniFEM/out'; %recommend to use absolute path direction
+if ~exist(outPath_, 'dir'), mkdir(outPath_); end
+
+%% 1. initialization
 crtFEModelStart = cputime; 
-%% 1. initialization, 
 domainType_ = '2D'; 
 if strcmp(domainType_, '2D'), eleType_ = Plane144(); 
 elseif strcmp(domainType_, '3D'), eleType_ = Solid188(); 

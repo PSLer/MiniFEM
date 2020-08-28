@@ -6,6 +6,8 @@ function DrawCyclicalVibration(varargin)
 	global domainType_;
 	global numDOFs_;
 	global numNodes_;
+	global outPath_;
+	
 	if ~strcmp(structureState_, 'DYNAMIC'), error('The cyclical vibration does not exist!'); end
 	if nargin<1 || nargin>3, error('Wrong input for drawing cyclical vibration!'); end
 	if ~(isnumeric(varargin{1}) & isequal([numDOFs_ 1], size(varargin{1})))
@@ -14,7 +16,7 @@ function DrawCyclicalVibration(varargin)
 	az = 0; el = 0;
 	hF = figure();
 	inVar = ScalarFieldForVolumeRendering();
-	fileName = '../../IO/vibro.gif';
+	fileName = strcat(outPath_, '/vibro.gif');
 	for ii=1:1:nFrame		
 		%inVar.shiftingTerm = varargin{1}*sin(2*pi*ii);
 		inVar.shiftingTerm = real(varargin{1}*exp(1i*2*pi*ii/nFrame));
