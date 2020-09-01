@@ -58,7 +58,7 @@ function VisualizingProblemDescription2D(visType)
 		'Color', [1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on
 	
 	%%4. formulated output
-	axis on; axis equal; axis off;
+	axis on; axis equal; axis tight; axis off;
 	xlabel('X'); ylabel('Y');
 	set(gca, 'FontName', 'Times New Roman', 'FontSize', 20)
 end
@@ -113,7 +113,7 @@ function VisualizingProblemDescription3D(visType)
 					valForExtctBoundary, 0)); hold on
 			end		
 			
-			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 0.15, 'EdgeColor', 'None');      
+			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 0.15, 'EdgeColor', 'None'); %%[206 205 203] concrete
 			lighting gouraud
 			camlight('headlight','infinite');
 			camlight('right','infinite');
@@ -132,7 +132,7 @@ function VisualizingProblemDescription3D(visType)
 			[1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); hold on	
 
 	%%4. formulated output
-	axis on; axis equal; axis off
+	axis on; axis equal; axis tight; axis off
 	xlabel('X'); ylabel('Y'); zlabel('Z')
 	view(3); camproj('perspective')
 	set(gca, 'FontName', 'Times New Roman', 'FontSize', 20)  
