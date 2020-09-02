@@ -66,18 +66,18 @@ switch modelSource_
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			%fileName = '../../../MyDataSets/ClippingMdls/femur3D_140_93_182.txt';
+			%fileName = 'D:/MyDataSets/ClippingMdls/femur3D_140_93_182.txt';
 			fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		%srcName = '../../../MyDataSets/TopOptiMdls4FEA/roof3D.topopti';	
+		%srcName = 'D:/MyDataSets/TopOptiMdls4FEA/roof3D.topopti';	
 		srcName = '../data/demo-DataSet-TopoOpti2D.topopti';	
 		extractThreshold = 0.5;
 		featureSize = 1;
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
-		%srcName = '../../../MyDataSets/ExternalMdls4FEA/dragonStand1_hexa_FEA.vtk';
+		%srcName = 'D:/MyDataSets/ExternalMdls4FEA/dragonStand1_hexa_FEA.vtk';
 		srcName = '../data/demo-DataSet-ExternalInputMeshVTK.vtk';
 		CreateModelExtMeshSrc(srcName);
 	otherwise
