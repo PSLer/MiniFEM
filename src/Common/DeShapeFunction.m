@@ -1,18 +1,13 @@
 function dShape = DeShapeFunction(varargin)	
-	global eleType_;
 	if 2==nargin
 		s = varargin{1}; t = varargin{2};
 		dN1ds = -(1-t); dN2ds = 1-t; 	dN3ds = 1+t; dN4ds = -(1+t);
 		dN1dt = -(1-s); dN2dt = -(1+s); dN3dt = 1+s; dN4dt = 1-s;
+		
 		numCoord = length(s);
-		dShape = zeros( eleType_.numNodeDOFs*numCoord, eleType_.numNode );
-		for ii=1:1:numCoord
-			var1 = 0.25 * [
-				dN1ds(ii) dN2ds(ii) dN3ds(ii) dN4ds(ii)
-				dN1dt(ii) dN2dt(ii) dN3dt(ii) dN4dt(ii)	
-			];
-			dShape(eleType_.numNodeDOFs*(ii-1)+1:eleType_.numNodeDOFs*ii,:) = var1;
-		end
+		dShape = zeros(2*numCoord, 4);
+		dShape(1:2:end,:) = 0.25*[dN1ds dN2ds dN3ds dN4ds];
+		dShape(2:2:end,:) = 0.25*[dN1dt dN2dt dN3dt dN4dt];
 	elseif 3==nargin
 		s = varargin{1}; t = varargin{2}; p = varargin{3};
 		dN1ds = -0.125*(1-t).*(1-p); dN2ds = 0.125*(1-t).*(1-p); 
@@ -29,16 +24,12 @@ function dShape = DeShapeFunction(varargin)
 		dN3dp = -0.125*(1+s).*(1+t); dN4dp = -0.125*(1-s).*(1+t);
 		dN5dp = 0.125*(1-s).*(1-t);  dN6dp = 0.125*(1+s).*(1-t); 
 		dN7dp = 0.125*(1+s).*(1+t);  dN8dp = 0.125*(1-s).*(1+t);
+		
 		numCoord = length(s);
-		dShape = zeros( eleType_.numNodeDOFs*numCoord, eleType_.numNode );
-		for ii=1:1:numCoord
-			var1 = [
-				dN1ds(ii) dN2ds(ii) dN3ds(ii) dN4ds(ii) dN5ds(ii) dN6ds(ii) dN7ds(ii) dN8ds(ii)
-				dN1dt(ii) dN2dt(ii) dN3dt(ii) dN4dt(ii) dN5dt(ii) dN6dt(ii) dN7dt(ii) dN8dt(ii)
-				dN1dp(ii) dN2dp(ii) dN3dp(ii) dN4dp(ii) dN5dp(ii) dN6dp(ii) dN7dp(ii) dN8dp(ii)		
-			];
-			dShape( eleType_.numNodeDOFs*(ii-1)+1:eleType_.numNodeDOFs*ii,: ) = var1;
-		end		
+		dShape = zeros(3*numCoord, 8);
+		dShape(1:3:end,:) = [dN1ds dN2ds dN3ds dN4ds dN5ds dN6ds dN7ds dN8ds];
+		dShape(2:3:end,:) = [dN1dt dN2dt dN3dt dN4dt dN5dt dN6dt dN7dt dN8dt];
+		dShape(3:3:end,:) = [dN1dp dN2dp dN3dp dN4dp dN5dp dN6dp dN7dp dN8dp];
 	else
 		error('Wrong input for computing the 1st derivative of shape function!');
 	end
