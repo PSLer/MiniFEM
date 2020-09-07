@@ -59,14 +59,14 @@ switch modelSource_
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 40; nely_ = 20; nelz_ = 20; featureSize = 1;
+ 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
 				%nelx_ = 140; nely_ = 93; nelz_ = 182;  featureSize = 1.5;  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			%fileName = 'D:/MyDataSets/ClippingMdls/femur3D_140_93_182.txt';
+			%fileName = 'D:/MyDataSets/ClippingMdls/femur2D_140_182.txt';
 			fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
@@ -94,7 +94,7 @@ AssembleSystemMatrices();
 boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
-%%3.3 Loading
+%3.3 Loading
 loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
 ApplyLoads();
 
@@ -151,9 +151,9 @@ disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelSt
 % ctr2 = [126 167]; rad2 = 13; %%ex-iLoad==1
 %%----------------------------scaled, featureSize = 1
 % load1 = [-1/sqrt(2) -1/sqrt(2)];
-% ctr1 = [0.18 0.83]; rad1 = 0.05;
+% ctr1 = [0.18 0.83]; rad1 = 0.02;
 % load2 = [1/2 sqrt(3)/2];
-% ctr2 = [0.69 0.94]; rad2 = 0.07; %%ex-iLoad==1, featureSize=1
+% ctr2 = [0.69 0.94]; rad2 = 0.03; %%ex-iLoad==1, featureSize=1
 %%================================================
 % loadedNode1 = nodesOutline_(find(vecnorm(ctr1-nodeCoords_(nodesOutline_,:),2,2)<rad1));
 % LoadedVec1 = repmat(load1,size(loadedNode1,1),1);
