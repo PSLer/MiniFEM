@@ -23,7 +23,7 @@ function ApplyBoundaryCondition()
 					[minVal minValPos] = min(vecnorm(boundaryCond_(ii,:)-nodeCoords_,2,2));
 					fixedNodes_(ii) = minValPos;
 				end
-		else, error('Wrong boundary option! Error code: BBB');
+		else, error('Wrong boundary option!');
 		end
 	elseif ischar(boundaryCond_)
 		switch boundaryCond_
@@ -34,12 +34,12 @@ function ApplyBoundaryCondition()
 			case 'Z'
 				if strcmp(domainType_, '3D')
 					fixedNodes_ = find(vtxLowerBound_(3)==nodeCoords_(:,3));
-				else, error('Wrong boundary option! Error code: AAA'); end
+				else, error('Wrong boundary option!'); end
 			otherwise
-				error('Wrong boundary option! Error code: XXX');
+				error('Wrong boundary option!');
 		end
 	else
-		error('Wrong boundary option! Error code: YYY');
+		error('Wrong boundary option!');
 	end
 	
 	fixeddofs_ = eleType_.numNodeDOFs*fixedNodes_-(eleType_.numNodeDOFs-1:-1:0);
