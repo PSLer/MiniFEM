@@ -87,7 +87,7 @@ function Dataset4LLGP_CartesianGrid()
 			fprintf(fid, '%d %.6f %6f %6f\n', (nodeLoadVec_-tmp)');
 			fprintf(fid, '%s %s', 'Cartesian Stress'); 
 			fprintf(fid, ' %d\n', numNodes_);
-			fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');	
+			fprintf(fid, '%.6f %.6f %6f %.6f %.6f %6f\n', cartesianStressField_');	
 	end
 	fclose(fid);
 end
