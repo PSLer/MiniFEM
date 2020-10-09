@@ -102,7 +102,7 @@ ApplyLoads();
 %% argin = 'EleVis', (direct volume rendering, available for any) OR
 %%  		'NodVis', (point cloud without rendering) OR 
 %% 			'outlineVis', (unavailable for external mesh)
-VisualizingProblemDescription('EleVis');
+VisualizingProblemDescription('outlineVis');
 disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelStart) 's'])
 
 
