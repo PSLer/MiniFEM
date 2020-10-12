@@ -46,7 +46,7 @@ function Dataset4LLGP_CartesianGrid()
 					U_ = SolvingDynamicFEM('printP_ON');
 			end
 			cartesianStressField_ = ComputeCartesianStress(U_);
-			Deformation('T',1);
+			Deformation('T');
 			%%2.2 write
 			tmp = zeros(size(nodeLoadVec_)); tmp(:,1) = 1;
 			fprintf(fid, '%s %s %s %s', 'Number of Stress Fields');
@@ -76,7 +76,7 @@ function Dataset4LLGP_CartesianGrid()
 					U_ = SolvingDynamicFEM('printP_ON');
 			end
 			cartesianStressField_ = ComputeCartesianStress(U_);
-			Deformation('T',1);
+			Deformation('T');
 			%%2.2 write
 			tmp = zeros(size(nodeLoadVec_)); tmp(:,1) = 1;
 			fprintf(fid, '%s %s %s %s', 'Number of Stress Fields');
