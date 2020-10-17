@@ -7,6 +7,7 @@ function sol = myCG(AtX, b, tol, maxIT, preCond, printP)
 	%%preCond --- switch for precondition 1==with precondition; 0==non precondition
 	
 	n = length(b);
+	normB = norm(b);
 	its = 0;
 	x = zeros(n,1);
 	r1 = zeros(n,1);
@@ -14,7 +15,7 @@ function sol = myCG(AtX, b, tol, maxIT, preCond, printP)
 	p2 = zeros(n,1);
 	
 	r1 = b - AtX(x);
-	if norm(r1) <= tol
+	if norm(r1)/normB <= tol
 		sol = b; disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end	
 
@@ -37,7 +38,7 @@ function sol = myCG(AtX, b, tol, maxIT, preCond, printP)
 		x = x + alpha*p2;		
 		r2 = r1 - alpha*valMTV;
 		
-		resnorm = norm(r2);
+		resnorm = norm(r2)/normB;
 		if strcmp(printP, 'printP_ON')
 			disp([' It.: ' sprintf('%4i',its) ' Res.: ' sprintf('%16.6e',resnorm)]);
 		end
@@ -60,3 +61,4 @@ function sol = myCG(AtX, b, tol, maxIT, preCond, printP)
 		disp(['The iterative process stops at residual = ' sprintf('%10.4f',norm(r2))]);		
 	end
 end
+

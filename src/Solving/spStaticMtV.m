@@ -11,7 +11,7 @@ function v = spStaticMtV(v1)
 			v = zeros(numDOFs_,1);
 			for ii=1:1:size(vEleWise,2)
 				v(edofMat_(:,ii)) = v(edofMat_(:,ii)) + vEleWise(:,ii);
-			end
+			end	
 			v = v(freeDofs_);
 	end
 end

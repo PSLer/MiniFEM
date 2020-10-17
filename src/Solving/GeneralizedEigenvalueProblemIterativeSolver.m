@@ -27,6 +27,7 @@ function sol = CGsolver(b)
 	global maxIT_;
 	
 	n = length(b);
+	normB = norm(b);
 	its = 0;
 	x = zeros(n,1);
 	r1 = zeros(n,1);
@@ -34,7 +35,7 @@ function sol = CGsolver(b)
 	p2 = zeros(n,1);
 		
 	r1 = b - K_*x;
-	if norm(r1) <= tol_
+	if norm(r1)/normB <= tol_
 		sol = b; disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end	
 	
@@ -53,7 +54,7 @@ function sol = CGsolver(b)
 		x = x + alpha*p2;		
 		r2 = r1 - alpha*valMTV;
 		
-		resnorm = norm(r2);
+		resnorm = norm(r2)/normB;
 		if resnorm<tol_
 			sol = x; 
 			disp(['CGsolver converged at iteration' sprintf('%5i', its) ' to a solution with relative residual' ...
@@ -82,6 +83,7 @@ function sol = CGsolver_GPU(b)
 	
 	n = length(b);
 	b = gpuArray(b);
+	normB = norm(b);
 	its = 0;
 	tmp = zeros(n,1,'gpuArray');
 	x = tmp;
@@ -96,7 +98,7 @@ function sol = CGsolver_GPU(b)
 	end
 	r1 = b - Ax;
 	
-	if norm(r1) <= tol_
+	if norm(r1)/normB <= tol_
 		sol = gather(b); disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end
 	
@@ -119,7 +121,7 @@ function sol = CGsolver_GPU(b)
 		x = x + alpha*p2;		
 		r2 = r1 - alpha*valMTV;
 		
-		resnorm = norm(r2);
+		resnorm = norm(r2)/normB;
 		%disp([' It.: ' sprintf('%4i',its) ' Res.: ' sprintf('%16.6e',resnorm)]);
 		if resnorm<tol_
 			sol = gather(x); 

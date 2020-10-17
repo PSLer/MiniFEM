@@ -1,5 +1,6 @@
 function sol = myCG_GPU(A, b, tol, maxIT, printP)
 	n = length(b);
+	normB = norm(b);
 	its = 0;
 	
 	tmp = zeros(n,1,'gpuArray');
@@ -16,7 +17,7 @@ function sol = myCG_GPU(A, b, tol, maxIT, printP)
 	end
 	r1 = b - Ax;
 	
-	if norm(r1) <= tol
+	if norm(r1)/normB <= tol
 		sol = gather(b); disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end
 
@@ -39,7 +40,7 @@ function sol = myCG_GPU(A, b, tol, maxIT, printP)
 		x = x + alpha*p2;		
 		r2 = r1 - alpha*valMTV;
 		
-		resnorm = norm(r2);
+		resnorm = norm(r2)/normB;
 		if strcmp(printP, 'printP_ON')
 			disp([' It.: ' sprintf('%4i',its) ' Res.: ' sprintf('%16.6e',resnorm)]);
 		end
