@@ -114,7 +114,7 @@ disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelSt
 %[vtxUpperBound_(1) vtxUpperBound_(2)/2 1 0; vtxUpperBound_(1)/2 vtxUpperBound_(2) 1 0] (ex-iLoad==6)
 % loadingNodeCoord = nodeCoords_(vtxUpperBound_(1)==nodeCoords_(:,1),:); 
 % numLoadedNodes = size(loadingNodeCoord,1);
-% LoadingVec = zeros(numLoadedNodes,1); LoadingVec(:,2) = -1/numLoadedNodes; 
+% LoadingVec = zeros(numLoadedNodes,2); LoadingVec(:,2) = -1/numLoadedNodes; 
 % loadingCond_ = [loadingNodeCoord LoadingVec]; %(ex-iLoad==7)
 % iLoad 5 500Hz %(ex-iLoad==8)
 
