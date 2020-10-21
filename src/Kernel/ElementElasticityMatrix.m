@@ -5,23 +5,17 @@ function D = ElementElasticityMatrix()
 	var = zeros(eleType_.numStressComponents);
 	switch domainType_
 		case '2D'
-			D = [
-				HL	var	var	var
-				var	HL	var	var
-				var	var	HL	var
-				var	var	var	HL
-			];		
+			D = zeros(12);
+			for ii=1:4
+				index = (ii-1)*3+1:ii*3;
+				D(index,index) = HL;
+			end
 		case '3D'
-			D = [
-				HL	var	var	var	var	var	var	var
-				var	HL	var	var	var	var	var	var
-				var	var	HL	var	var	var	var	var
-				var	var	var	HL	var	var	var	var
-				var	var	var	var	HL	var	var	var
-				var	var	var	var	var	HL	var	var
-				var	var	var	var	var	var	HL	var
-				var	var	var	var	var	var	var	HL
-			];		
+			D = zeros(48);
+			for ii=1:8
+				index = (ii-1)*6+1:ii*6;
+				D(index,index) = HL;
+			end						
 	end
 	D = sparse(D);
 end
