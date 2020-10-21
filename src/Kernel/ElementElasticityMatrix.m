@@ -2,7 +2,6 @@ function D = ElementElasticityMatrix()
 	global domainType_;
 	global eleType_;
 	HL = HookeLaw();
-	var = zeros(eleType_.numStressComponents);
 	switch domainType_
 		case '2D'
 			D = zeros(12);
