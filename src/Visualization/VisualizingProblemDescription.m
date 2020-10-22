@@ -129,7 +129,7 @@ function VisualizingProblemDescription3D(visType)
 	amplitudesF = min(vtxUpperBound_-vtxLowerBound_)/5*nodeLoadVec_(:,2:4)./vecnorm(nodeLoadVec_(:,2:4), 2, 2);
 	quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), ...
 		amplitudesF(:,1), amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', ...
-			[1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); hold on	
+			[1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on	
 
 	%%4. formulated output
 	axis on; axis equal; axis tight; axis off
