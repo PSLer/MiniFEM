@@ -1,4 +1,4 @@
-function carStr = ComputecartesianStress(dis)
+function carStr = ComputeCartesianStress(dis)
 	%% %% sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (3D)
 	global numEles_; global numNodes_; global eleType_; 
 	global eNodMat_; global numNod2ElesVec_;

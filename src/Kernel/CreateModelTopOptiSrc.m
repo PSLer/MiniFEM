@@ -25,6 +25,7 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e', [3 numLoadedNodes])';			
 			vtxLowerBound_ = [0 0];
+			if isempty(featureSize), featureSize = max([nelx_ nely_]); end
 			vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 		case '3D'
 			tmp = fscanf(fid, '%d %d %d', 3);
@@ -39,6 +40,7 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e %e', [4 numLoadedNodes])';
 			vtxLowerBound_ = [0 0 0];
+			if isempty(featureSize), featureSize = max([nelx_ nely_ nelz_]); end
 			vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);				
 	end
 	fclose(fid);
