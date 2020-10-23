@@ -15,7 +15,7 @@ function sol = myCG(AtX, b, tol, maxIT, preCond, printP)
 	p2 = zeros(n,1);
 	
 	r1 = b - AtX(x);
-	if norm(r1)/normB <= tol
+	if norm(r1) <= tol
 		sol = b; disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end	
 

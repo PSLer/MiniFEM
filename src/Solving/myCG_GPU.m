@@ -17,7 +17,7 @@ function sol = myCG_GPU(A, b, tol, maxIT, printP)
 	end
 	r1 = b - Ax;
 	
-	if norm(r1)/normB <= tol
+	if norm(r1) <= tol
 		sol = gather(b); disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end
 

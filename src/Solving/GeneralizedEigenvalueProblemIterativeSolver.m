@@ -35,7 +35,7 @@ function sol = CGsolver(b)
 	p2 = zeros(n,1);
 		
 	r1 = b - K_*x;
-	if norm(r1)/normB <= tol_
+	if norm(r1) <= tol_
 		sol = b; disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end	
 	
@@ -98,7 +98,7 @@ function sol = CGsolver_GPU(b)
 	end
 	r1 = b - Ax;
 	
-	if norm(r1)/normB <= tol_
+	if norm(r1) <= tol_
 		sol = gather(b); disp('The right hand side vector b is approximately 0, so x=b.'); return;
 	end
 	
