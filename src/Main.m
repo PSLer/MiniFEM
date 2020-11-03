@@ -42,9 +42,9 @@ GPU_ = 'ON';
 %% 'ON', OFF. Only valid for iteratively solving the linear system in 'TimePriority' way
 preCond_ = 'ON'; 
 
-%moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
+moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
 %moduls_ = 2.1e11;  poissonRatio_ = 0.3;  density_ = 7900; %%steel
-moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
+%moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
 %moduls_ = 3.7e9;  poissonRatio_ = 0.3;  density_ = 1200; %%artificial bone
 
 %% 2. create geometrical model
@@ -54,19 +54,19 @@ switch modelSource_
 		switch domainType_
 			case '2D'
 				vtxLowerBound_ = [0 0];
-				nelx_ = 500; nely_ = 250; featureSize = 1;
-				%nelx_ = 140; nely_ = 182; featureSize = 1; %femur 2D 
+				nelx_ = 300; nely_ = 250; featureSize = max([nelx_,nely_]);
+				%nelx_ = 140; nely_ = 182; featureSize = max([nelx_,nely_]);; %femur 2D 
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
-				%nelx_ = 140; nely_ = 93; nelz_ = 182;  featureSize = 1.5;  %%femur 3D				
+ 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = max([nelx_,nely_, nelz_]);
+				%nelx_ = 140; nely_ = 92; nelz_ = 182; featureSize = max([nelx_,nely_, nelz_]);  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			%fileName = 'D:/MyDataSets/ClippingMdls/femur2D_140_182.txt';
+			%fileName = 'D:/MyDataSets/ClippingMdls/femur3D_140_92_182.txt';
 			fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
@@ -74,7 +74,7 @@ switch modelSource_
 		%srcName = 'D:/MyDataSets/TopOptiMdls4FEA/roof3D.topopti';	
 		srcName = '../data/demo-DataSet-TopoOpti2D.topopti';	
 		extractThreshold = 0.5;
-		featureSize = 1;
+		featureSize = []; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		%srcName = 'D:/MyDataSets/ExternalMdls4FEA/dragonStand1_hexa_FEA.vtk';
@@ -94,7 +94,7 @@ AssembleSystemMatrices();
 boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
-%3.3 Loading
+%3.3 Loading 
 loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
 ApplyLoads();
 

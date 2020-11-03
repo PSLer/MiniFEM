@@ -2,6 +2,7 @@ function Dataset4LLGP(opt)
 	%0==opt: single stress field under current loading condition
 	%1==opt: multiple stress fields under varying loading direction
 	global domainType_;
+	global outPath_;
 	global structureState_;
 	global U_;
 	global numNodes_;
@@ -10,8 +11,8 @@ function Dataset4LLGP(opt)
 	global eNodMat_;
 	global nodesOutline_;
 	global cartesianStressField_;
-	global nodeLoadVec_;
-    global outPath_;
+	global nodeLoadVec_; global fixedNodes_;
+	
 	%%1. write mesh info in .vtk 3.0
 	%%1.1 file header (ignore 'volume mesh' for 2D)
 	fileName = strcat(outPath_, '/stressField.vtk');
@@ -68,30 +69,25 @@ function Dataset4LLGP(opt)
 	switch opt
 		case 0
 			%%2.1 compute
-			switch structureState_
-				case 'STATIC'
-					U_ = SolvingStaticFEM('printP_ON');
-				case 'DYNAMIC'
-					U_ = SolvingDynamicFEM('printP_ON');
-			end
+			Deformation('T');
 			cartesianStressField_ = ComputeCartesianStress(U_);
-            Deformation('T');
 			%%2.2 write
-			fprintf(fid, '%s %s %s %s', 'Number of Stress Fields');
-			fprintf(fid, ' %d\n', 1);
-            fprintf(fid, '%s %s %s %s', 'Number of Loaded Nodes');
-            fprintf(fid, ' %d\n', size(nodeLoadVec_,1));
+			fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 			switch domainType_
 				case '2D'
-					fprintf(fid, '%s %s', 'Node Force'); fprintf(fid, '\n');
-                    fprintf(fid, '%d %.6f %6f\n', (nodeLoadVec_-tmp)');
-					fprintf(fid, '%s %s', 'Cartesian Stress'); fprintf(fid, '\n');			
-					fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');
+					fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(nodeLoadVec_,1));
+                    fprintf(fid, '%d %.6f %6f\n', [nodeLoadVec_(:,1)-1 nodeLoadVec_(:,2:end)]');
+					fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
+					fprintf(fid, '%d\n', fixedNodes_-1);					
+					fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);		
+					fprintf(fid, '%.6f %.6f %6f\n', cartesianStressField_');
 				case '3D'
-					fprintf(fid, '%s %s', 'Node Force'); fprintf(fid, '\n');
-                    fprintf(fid, '%d %.6f %6f %6f\n', (nodeLoadVec_-tmp)');
-					fprintf(fid, '%s %s', 'Cartesian Stress'); fprintf(fid, '\n');
-					fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');
+					fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(nodeLoadVec_,1));
+                    fprintf(fid, '%d %.6f %6f %6f\n', [nodeLoadVec_(:,1)-1 nodeLoadVec_(:,2:end)]');
+					fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
+					fprintf(fid, '%d\n', fixedNodes_-1);						
+					fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
+					fprintf(fid, '%.6f %.6f %6f %.6f %.6f %6f\n', cartesianStressField_');
 			end	
 		case 1
 			if strcmp(domainType_, '2D')
@@ -100,34 +96,32 @@ function Dataset4LLGP(opt)
 				loadVaryStep = 20;
 				amplitudes = -ones(size(loadingCond_,1),1);
 				amplitudes = amplitudes/norm(amplitudes);
-				fprintf(fid, '%s %s %s %s', 'Number of Stress fields');
-				fprintf(fid, ' %d\n', floor(varyRange/loadVaryStep)+1);
-                fprintf(fid, '%s %s %s %s', 'Number of Loaded Nodes');
-                fprintf(fid, ' %d\n', size(nodeLoadVec_,1));
+				fprintf(fid, '%s %s %s %s ', 'Number of Stress fields:');
+				fprintf(fid, '%d\n', floor(varyRange/loadVaryStep)+1);
+                
 				for ii=0:loadVaryStep:varyRange
 					loadingCond_(:,end-1) = amplitudes*sin(ii/180*pi);
 					loadingCond_(:,end) = amplitudes*cos(ii/180*pi);
-					ApplyLoads('nonNormalizedLoads');
+					ApplyLoads();
 					%%2.1 compute
-					switch structureState_
-						case 'STATIC'
-							U_ = SolvingStaticFEM('printP_ON');
-						case 'DYNAMIC'
-							U_ = SolvingDynamicFEM('printP_ON');
-					end
+					U_ = []; Deformation();
 					cartesianStressField_ = ComputeCartesianStress(U_);					
 					%%2.2 write														
 					switch domainType_
 						case '2D'
-							fprintf(fid, '%s %s', 'Node Force'); fprintf(fid, '\n');
-                            fprintf(fid, '%d %.6f %6f\n', (nodeLoadVec_-tmp)');
-							fprintf(fid, '%s %s', 'Cartesian Stress'); fprintf(fid, '\n');			
-							fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');
+							fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(nodeLoadVec_,1));
+                            fprintf(fid, '%d %.6f %6f\n', [nodeLoadVec_(:,1)-1 nodeLoadVec_(:,2:end)]');
+							fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
+							fprintf(fid, '%d\n', fixedNodes_-1);							
+							fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);			
+							fprintf(fid, '%.6f %.6f %6f\n', cartesianStressField_');
 						case '3D'
-							fprintf(fid, '%s %s', 'Node Force'); fprintf(fid, '\n'); 
-                            fprintf(fid, '%d %.6f %6f %6f\n', (nodeLoadVec_-tmp)');
-							fprintf(fid, '%s %s', 'Cartesian Stress'); fprintf(fid, '\n');
-							fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');
+							fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(nodeLoadVec_,1));
+                            fprintf(fid, '%d %.6f %6f %6f\n', [nodeLoadVec_(:,1)-1 nodeLoadVec_(:,2:end)]');
+							fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
+							fprintf(fid, '%d\n', fixedNodes_-1);							
+							fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
+							fprintf(fid, '%.6f %.6f %6f %.6f %.6f %6f\n', cartesianStressField_');
 					end	 
 				end
 			end
