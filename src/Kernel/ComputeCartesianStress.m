@@ -1,5 +1,5 @@
 function carStr = ComputeCartesianStress(dis)
-	%% %% sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (3D)
+	%% sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (3D)
 	global numEles_; global numNodes_; global eleType_; 
 	global eNodMat_; global numNod2ElesVec_;
 	global dShape_; global invJ_; global eleD_;	global eleB_;
