@@ -14,7 +14,6 @@ function VisualizingProblemDescription2D(visType)
 	global nodeLoadVec_;
 	global fixedNodes_;
 	global freeNodes_;
-	figure
 	
 	%%1. draw object
 	switch visType
@@ -73,7 +72,6 @@ function VisualizingProblemDescription3D(visType)
 	global originalValidNodeIndex_;
 	global nodesOutline_;
 	global modelSource_;
-	figure
 	
 	%%1. draw object
 	switch visType

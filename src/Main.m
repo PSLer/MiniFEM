@@ -54,12 +54,12 @@ switch modelSource_
 		switch domainType_
 			case '2D'
 				vtxLowerBound_ = [0 0];
-				nelx_ = 300; nely_ = 250; featureSize = max([nelx_,nely_]);
+				nelx_ = 100; nely_ = 50; featureSize = max([nelx_,nely_]);
 				%nelx_ = 140; nely_ = 182; featureSize = max([nelx_,nely_]);; %femur 2D 
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = max([nelx_,nely_, nelz_]);
+ 				nelx_ = 40; nely_ = 20; nelz_ = 20; featureSize = max([nelx_,nely_, nelz_]);
 				%nelx_ = 140; nely_ = 92; nelz_ = 182; featureSize = max([nelx_,nely_, nelz_]);  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
@@ -102,7 +102,7 @@ ApplyLoads();
 %% argin = 'EleVis', (direct volume rendering, available for any) OR
 %%  		'NodVis', (point cloud without rendering) OR 
 %% 			'outlineVis', (unavailable for external mesh)
-VisualizingProblemDescription('outlineVis');
+figure; VisualizingProblemDescription('outlineVis');
 disp(['Creating FEM model costs totally: ' sprintf('%10.3g',cputime-crtFEModelStart) 's'])
 
 
