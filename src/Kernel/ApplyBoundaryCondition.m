@@ -8,12 +8,7 @@ function ApplyBoundaryCondition()
 	global boundaryCond_;
 	if isnumeric(boundaryCond_)
 		if 1==min(size(boundaryCond_))
-			global nodeMap4CutBasedModel_;
-			if strcmp(modelSource_, 'TopOpti')
-				fixedNodes_ =  nodeMap4CutBasedModel_(boundaryCond_);
-			else
-				fixedNodes_ = boundaryCond_;
-			end	
+			fixedNodes_ = boundaryCond_;
 		elseif (2==size(boundaryCond_,2)&strcmp(domainType_, '2D')) || ...
 			(3==size(boundaryCond_,2)&strcmp(domainType_, '3D'))
 				tmp = boundaryCond_;

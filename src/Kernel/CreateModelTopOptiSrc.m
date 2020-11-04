@@ -4,7 +4,8 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 	global nelx_; global nely_; global nelz_;
 	global boundaryCond_;
 	global loadingCond_;
-	
+	global nodeMap4CutBasedModel_;
+	global opt_CUTTING_DESIGN_DOMAIN_;
 	fid = fopen(srcName, 'r');
 	fgetl(fid);
 	tmp = fscanf(fid, '%s %s', 2);
@@ -44,7 +45,12 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 			vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);				
 	end
 	fclose(fid);
+	opt_CUTTING_DESIGN_DOMAIN_ = 'ON';
 	DiscretizeDesignDomain();
 	validElements = eleList(find(eleList(:,2)>=extractThreshold),1);
-	CuttingDesignDomain(validElements); 
+	CuttingDesignDomain(validElements);
+	%% update
+	loadingCond_(:,1) = nodeMap4CutBasedModel_(loadingCond_(:,1));
+	boundaryCond_ = nodeMap4CutBasedModel_(boundaryCond_);
+	boundaryCond_(0==boundaryCond_) = [];
 end

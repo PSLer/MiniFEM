@@ -21,7 +21,7 @@ function CuttingDesignDomain(validElements)
 	numNod2ElesVec_ = zeros(length(validNodes), 1);
 	nodeCoords_ = nodeCoords_(validNodes,:);	
 	%%3. reorder elements and nodes
-	nodeMap4CutBasedModel_ = (1:1:numNodes_)'; currentNodSerials = (1:1:length(validNodes))';
+	nodeMap4CutBasedModel_ = zeros(numNodes_,1); currentNodSerials = (1:1:length(validNodes))';
 	nodeMap4CutBasedModel_(validNodes) = currentNodSerials;
 	eNodMat_ = nodeMap4CutBasedModel_(eNodMat_);
 	oringinalDofSerials = (1:1:numDOFs_)'; currentDofSerials = (1:1:length(validDofs))';
@@ -38,7 +38,5 @@ function CuttingDesignDomain(validElements)
 	numEles_ = size(eNodMat_,1);
 	numNodes_ = length(validNodes);
 	numDOFs_ = length(validDofs);
-	[invalidFixtion ia] = setdiff(boundaryCond_, validNodes);
-	boundaryCond_(ia) = [];	
 	%clear validElements_ validNodes validDofs currentNodSerials oringinalDofSerials currentDofSerials
 end

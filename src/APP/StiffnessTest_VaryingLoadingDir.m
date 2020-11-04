@@ -1,5 +1,6 @@
 function complianceList = StiffnessTest_VaryingLoadingDir(varargin)
 	global domainType_;
+	global nodeCoords_;
 	global K_; global F_; global U_;  
 	global freeDofs_;
 	global loadingCond_;
@@ -10,11 +11,17 @@ function complianceList = StiffnessTest_VaryingLoadingDir(varargin)
 		switch domainType_
 			case '2D'
 				visType = 'EleVis';
+				if 3==size(loadingCond_,2)
+					loadingCond_ = [nodeCoords_(loadingCond_(:,1),:) loadingCond_(:,2:end)];
+				end
 				amps = vecnorm(loadingCond_(:,3:end),2,2);	
 				thetaX = acos(loadingCond_(:,3)./amps);
 				thetaY = acos(loadingCond_(:,4)./amps)-pi;
 			case '3D'
 				visType = 'outlineVis';
+				if 4==size(loadingCond_,2)
+					loadingCond_ = [nodeCoords_(loadingCond_(:,1),:) loadingCond_(:,2:end)];
+				end				
 				amps = vecnorm(loadingCond_(:,4:end),2,2);
 				thetaX = acos(loadingCond_(:,4)./amps);
 				thetaY = acos(loadingCond_(:,5)./amps);
@@ -41,5 +48,6 @@ function complianceList = StiffnessTest_VaryingLoadingDir(varargin)
 			figure; VisualizingProblemDescription(visType);
 		end
 		figure; plot(loadingSteps, complianceList, '-xk', 'LineWidth', 2, 'MarkerSize', 10);
+		complianceList = complianceList';
 	end
 end
