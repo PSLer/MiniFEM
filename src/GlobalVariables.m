@@ -32,6 +32,7 @@ global numNod2ElesVec_;
 global nodesOutline_;
 global nodeMap4CutBasedModel_;
 global originalValidNodeIndex_;
+global validElements_;
 
 global Ke_;
 global K_;
