@@ -6,6 +6,7 @@ function ApplyLoads()
 	global eleType_; global nodeCoords_;
 	global nodeLoadVec_; global F_; F_ = sparse(numDOFs_,1);
 	global loadingCond_;
+	if isempty(loadingCond_), nodeLoadVec_ = []; loadedNodes_ = []; loadedDofs_ = []; return; end
 	switch domainType_
 		case '2D'			
 			if isnumeric(loadingCond_)

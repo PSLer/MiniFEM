@@ -6,6 +6,13 @@ function ApplyBoundaryCondition()
 	global freeNodes_; global freeDofs_;
 	global eleType_; global vtxLowerBound_; global nodeCoords_;
 	global boundaryCond_;
+	if isempty(boundaryCond_)
+		fixedNodes_ = [];
+		fixeddofs_ = [];
+		freeNodes_ = [1:numNodes_]; 
+		freeDofs_ = [1:numDOFs_];
+		return;
+	end
 	if isnumeric(boundaryCond_)
 		if 1==min(size(boundaryCond_))
 			fixedNodes_ = boundaryCond_;

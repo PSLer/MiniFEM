@@ -46,15 +46,19 @@ function VisualizingProblemDescription2D(visType)
 	end
 
 	%%2. draw fixed nodes
-	plot(nodeCoords_(fixedNodes_,1), nodeCoords_(fixedNodes_,2), 'x', 'Color', ...
-		[0.0 0.0 0.0], 'LineWidth', 2, 'MarkerSize', 6); hold on
-		
+	if ~isempty(fixedNodes_)
+		plot(nodeCoords_(fixedNodes_,1), nodeCoords_(fixedNodes_,2), 'x', 'Color', ...
+			[0.0 0.0 0.0], 'LineWidth', 2, 'MarkerSize', 6); hold on
+	end
+	
 	%%3. draw force			
-	coordLoadedNodes = nodeCoords_(nodeLoadVec_(:,1),:); 
-	amplitudesF = min(vtxUpperBound_-vtxLowerBound_)/5*nodeLoadVec_(:,2:3)./...
-		vecnorm(nodeLoadVec_(:,2:3), 2, 2);
-	quiver(coordLoadedNodes(:,1), coordLoadedNodes(:,2), amplitudesF(:,1), amplitudesF(:,2), 0, ...
-		'Color', [1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on
+	if ~isempty(nodeLoadVec_)
+		coordLoadedNodes = nodeCoords_(nodeLoadVec_(:,1),:); 
+		amplitudesF = min(vtxUpperBound_-vtxLowerBound_)/5*nodeLoadVec_(:,2:3)./...
+			vecnorm(nodeLoadVec_(:,2:3), 2, 2);
+		quiver(coordLoadedNodes(:,1), coordLoadedNodes(:,2), amplitudesF(:,1), amplitudesF(:,2), 0, ...
+			'Color', [1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on
+	end
 	
 	%%4. formulated output
 	axis on; axis equal; axis tight; axis off;
@@ -119,16 +123,19 @@ function VisualizingProblemDescription3D(visType)
 	end
 	
 	%%2. draw fixed nodes
-	plot3(nodeCoords_(fixedNodes_,1), nodeCoords_(fixedNodes_,2), nodeCoords_(fixedNodes_,3), ...
-		'x', 'Color', [0.0 0.0 0.0], 'LineWidth', 2, 'MarkerSize', 6); hold on
+	if ~isempty(fixedNodes_)
+		plot3(nodeCoords_(fixedNodes_,1), nodeCoords_(fixedNodes_,2), nodeCoords_(fixedNodes_,3), ...
+			'x', 'Color', [0.0 0.0 0.0], 'LineWidth', 2, 'MarkerSize', 6); hold on
+	end
 	
 	%%3. draw force			
-	coordLoadedNodes = nodeCoords_(nodeLoadVec_(:,1),:);
-	amplitudesF = min(vtxUpperBound_-vtxLowerBound_)/5*nodeLoadVec_(:,2:4)./vecnorm(nodeLoadVec_(:,2:4), 2, 2);
-	quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), ...
-		amplitudesF(:,1), amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', ...
-			[1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on	
-
+	if ~isempty(nodeLoadVec_)
+		coordLoadedNodes = nodeCoords_(nodeLoadVec_(:,1),:);
+		amplitudesF = min(vtxUpperBound_-vtxLowerBound_)/5*nodeLoadVec_(:,2:4)./vecnorm(nodeLoadVec_(:,2:4), 2, 2);
+		quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), ...
+			amplitudesF(:,1), amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', ...
+				[1.0 0.0 0.0], 'LineWidth', 2, 'MaxHeadSize', 1); hold on	
+	end
 	%%4. formulated output
 	axis on; axis equal; axis tight; axis off
 	xlabel('X'); ylabel('Y'); zlabel('Z')
