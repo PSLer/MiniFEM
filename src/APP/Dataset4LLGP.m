@@ -80,14 +80,14 @@ function Dataset4LLGP(opt)
 					fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
 					fprintf(fid, '%d\n', fixedNodes_-1);					
 					fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);		
-					fprintf(fid, '%.6f %.6f %6f\n', cartesianStressField_');
+					fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');
 				case '3D'
 					fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(nodeLoadVec_,1));
                     fprintf(fid, '%d %.6f %6f %6f\n', [nodeLoadVec_(:,1)-1 nodeLoadVec_(:,2:end)]');
 					fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
 					fprintf(fid, '%d\n', fixedNodes_-1);						
 					fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
-					fprintf(fid, '%.6f %.6f %6f %.6f %.6f %6f\n', cartesianStressField_');
+					fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');
 			end	
 		case 1
 			if strcmp(domainType_, '2D')

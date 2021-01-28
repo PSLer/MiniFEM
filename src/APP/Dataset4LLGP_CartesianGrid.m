@@ -49,7 +49,7 @@ function Dataset4LLGP_CartesianGrid()
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
 			fprintf(fid, '%d\n', originalValidNodeIndex_(fixedNodes_)-1);
 			fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
-			fprintf(fid, '%.6f %.6f %6f\n', cartesianStressField_');				
+			fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');				
 		case '3D'			
 			fprintf(fid, ' %d %d %d\n', [nelx_ nely_ nelz_]);
 			fprintf(fid, '%s', 'LowerBound:');
@@ -72,7 +72,7 @@ function Dataset4LLGP_CartesianGrid()
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixedNodes_));
 			fprintf(fid, '%d\n', originalValidNodeIndex_(fixedNodes_)-1);			
 			fprintf(fid, '%s %s', 'Cartesian Stresss:'); fprintf(fid, '%d\n', numNodes_);
-			fprintf(fid, '%.6f %.6f %6f %.6f %.6f %6f\n', cartesianStressField_');	
+			fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');	
 	end
 	fclose(fid);
 end
