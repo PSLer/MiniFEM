@@ -59,22 +59,22 @@ switch modelSource_
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 40; nely_ = 20; nelz_ = 20; featureSize = max([nelx_,nely_, nelz_]);
+ 				nelx_ = 120; nely_ = 100; nelz_ = 150; featureSize = max([nelx_,nely_, nelz_]);
 				%nelx_ = 140; nely_ = 92; nelz_ = 182; featureSize = max([nelx_,nely_, nelz_]);  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			%fileName = 'D:/MyDataSets/ClippingMdls/femur3D_140_92_182.txt';
-			fileName = '../data/demo-DataSet-CroppingModel.txt';
+			fileName = 'D:/MyDataSets/ClippingMdls/SketchedFemur3D_120_100_150.txt';
+			%fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/Vis2021_kitten3D.topopti';	
+		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/SketchedFemur3D.topopti';	
 		%srcName = '../data/demo-DataSet-TopoOpti2D.topopti';	
 		extractThreshold = 0.5;
-		featureSize = 86.8; %% scalar or empty
+		featureSize = 1; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		srcName = 'D:/MyDataSets/ExternalMdls4FEA/kitten_hexa_FEA.vtk';
@@ -91,12 +91,11 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-% boundaryCond_ = 'X';
+% boundaryCond_ = 'Z';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 
-% loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
-loadingCond_(:,2:4) = loadingCond_(:,2:4) / size(loadingCond_,1);
+loadingCond_(:,2:4) = loadingCond_(:,2:4) * 1000;
 ApplyLoads();
 
 %%4. visualize FEM model
