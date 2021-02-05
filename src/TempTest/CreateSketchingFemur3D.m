@@ -10,11 +10,11 @@ eles2Bdiscard = [];
 
 %%z=0 -> 100
 iEles2Bdiscard = find(eleCentroidList_(:,3)<=100);
-iEles2Bdiscard = iEles2Bdiscard(find(eleCentroidList_(iEles2Bdiscard,1)<=20));
+iEles2Bdiscard = iEles2Bdiscard(find(eleCentroidList_(iEles2Bdiscard,1)<=10));
 eles2Bdiscard = [eles2Bdiscard; iEles2Bdiscard];
 
 iEles2Bdiscard = find(eleCentroidList_(:,3)<=100);
-iEles2Bdiscard = iEles2Bdiscard(find(eleCentroidList_(iEles2Bdiscard,1)>85));
+iEles2Bdiscard = iEles2Bdiscard(find(eleCentroidList_(iEles2Bdiscard,1)>100));
 eles2Bdiscard = [eles2Bdiscard; iEles2Bdiscard];
 
 iEles2Bdiscard = find(eleCentroidList_(:,3)<=100);
@@ -48,11 +48,12 @@ eles2Bdiscard = [eles2Bdiscard; iEles2Bdiscard];
 eles2Bdiscard = unique(eles2Bdiscard);
 tarEles = setdiff(allEleList, eles2Bdiscard);
 numTarEles = length(tarEles)
+validEles = [tarEles ones(size(tarEles))];
 
 %%
-
-ctr1 = [100 45 150]; rad1 = 7;
+ctr1 = [100 45 150]; rad1 = 10;
 load1 = [-1/sqrt(2) 0 -1/sqrt(2)];
-ctr2 = [25 55 130]; rad2 = 5;
+ctr2 = [25 55 130]; rad2 = 7;
 load2 = [1/2 0 sqrt(3)/2];
+
 
