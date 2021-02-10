@@ -87,8 +87,19 @@ function VisualizingProblemDescription3D(visType)
 			%camlight('right','infinite');
 			%camlight('left','infinite');				
 		case 'NodVis'			
-			plot3(nodeCoords_(nodesOutline_,1), nodeCoords_(nodesOutline_,2), ...
-				nodeCoords_(nodesOutline_,3), '.', 'Color', [0.5 0.5 0.5]); hold on
+			% plot3(nodeCoords_(nodesOutline_,1), nodeCoords_(nodesOutline_,2), ...
+				% nodeCoords_(nodesOutline_,3), '.', 'Color', [0.5 0.5 0.5]); hold on
+			global patchIndices_;
+			if 0==numel(patchIndices_), InitializeQuadPatchs4Rendering(); end
+			tmp = zeros(size(nodeCoords_,1),1); tmp(nodesOutline_) = 1;
+			tmp = tmp(patchIndices_');
+			tmp = sum(tmp,2);
+			BoundaryEleFace = patchIndices_(:,find(4==tmp)');
+			xPatchs = nodeCoords_(:,1); xPatchs = xPatchs(BoundaryEleFace);
+			yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(BoundaryEleFace);
+			zPatchs = nodeCoords_(:,3); zPatchs = zPatchs(BoundaryEleFace);
+			cPatchs = zeros(size(xPatchs));				
+			handlePatchs = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on				
 		case 'outlineVis'
 			if strcmp(modelSource_, 'ExtMesh')
 			%if 1

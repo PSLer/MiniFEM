@@ -79,3 +79,5 @@ global naturalFreqs_;
 global gpuK_;
 
 global patchIndices_; 
+
+global PickedNodeCache_; PickedNodeCache_ = [];
