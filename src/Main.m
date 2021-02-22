@@ -23,7 +23,7 @@ if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %% 1. initialization
 crtFEModelStart = cputime; 
-domainType_ = '2D'; 
+domainType_ = '3D'; 
 if strcmp(domainType_, '2D'), eleType_ = Plane144(); 
 elseif strcmp(domainType_, '3D'), eleType_ = Solid188(); 
 else, error('Critical ERROR! Wrong element type!!!'); end
@@ -48,7 +48,7 @@ moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
 %moduls_ = 3.7e9;  poissonRatio_ = 0.3;  density_ = 1200; %%artificial bone
 
 %% 2. create geometrical model
-modelSource_ = 'SelfDef'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
+modelSource_ = 'TopOpti'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
 switch modelSource_
 	case 'SelfDef'
 		switch domainType_
@@ -71,10 +71,10 @@ switch modelSource_
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/Vis2021_bunny3D_2.topopti';	
+		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/bridge3D_3.topopti';	
 		%srcName = '../data/demo-DataSet-TopoOpti2D.topopti';	
 		extractThreshold = 0.5;
-		featureSize = 1.995; %% scalar or empty
+		featureSize = []; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		srcName = 'D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk';
@@ -91,11 +91,11 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-boundaryCond_ = 'X';
+% boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 
-loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
+% loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
 ApplyLoads();
 
 %%4. visualize FEM model

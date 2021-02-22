@@ -125,12 +125,13 @@ function VisualizingProblemDescription3D(visType)
 				handlePatchs(2) = patch(isocaps(nodPosX, nodPosY, nodPosZ, ...
 					valForExtctBoundary, 0)); hold on
 			end		
-			
 			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 0.15, 'EdgeColor', 'None'); %%[206 205 203] concrete
+% 			set(handlePatchs, 'FaceColor', [206 205 203]/255, 'FaceAlpha', 1, 'EdgeColor', 'None'); %%[206 205 203] concrete
 			lighting gouraud
 			camlight('headlight','infinite');
 			camlight('right','infinite');
-			camlight('left','infinite');			
+			camlight('left','infinite');
+%             material dull; %% dull, shiny, metal
 	end
 	
 	%%2. draw fixed nodes
