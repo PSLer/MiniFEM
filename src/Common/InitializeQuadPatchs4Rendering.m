@@ -8,7 +8,8 @@ function InitializeQuadPatchs4Rendering()
 			patchIndices_ = eNodMat_';
 		case '3D'
 			patchIndices_ = zeros(4,6*numEles_);
-			mapEle2patch = [1 2 3 4; 5 6 7 8; 1 2 6 5; 4 3 7 8; 1 4 8 5; 2 3 7 6]';
+			%mapEle2patch = [1 2 3 4; 5 6 7 8; 1 2 6 5; 4 3 7 8; 1 4 8 5; 2 3 7 6]';
+			mapEle2patch = [4 3 2 1; 5 6 7 8; 1 2 6 5; 8 7 3 4; 5 8 4 1; 2 3 7 6]';
 			for ii=1:1:numEles_
 				index = (ii-1)*6;
 				iEleVtx = eNodMat_(ii,:)';

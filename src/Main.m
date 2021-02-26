@@ -48,7 +48,7 @@ moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
 %moduls_ = 3.7e9;  poissonRatio_ = 0.3;  density_ = 1200; %%artificial bone
 
 %% 2. create geometrical model
-modelSource_ = 'TopOpti'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
+modelSource_ = 'SelfDef'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
 switch modelSource_
 	case 'SelfDef'
 		switch domainType_
@@ -67,18 +67,15 @@ switch modelSource_
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
 			fileName = 'D:/MyDataSets/ClippingMdls/SketchedFemur3D_120_100_150.txt';
-			%fileName = '../data/demo-DataSet-CroppingModel.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/bridge3D_3.topopti';	
-		%srcName = '../data/demo-DataSet-TopoOpti2D.topopti';	
+		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/bridge3D_4.topopti';	
 		extractThreshold = 0.5;
 		featureSize = []; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		srcName = 'D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk';
-		%srcName = '../data/demo-DataSet-ExternalInputMeshVTK.vtk';
 		CreateModelExtMeshSrc(srcName);
 	otherwise
 		error('VitaL ERROR! Failed to create geometrical model!!!')
@@ -91,11 +88,11 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-% boundaryCond_ = 'X';
+boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 
-% loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 0 -1];
+loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 vtxUpperBound_(3)/2 0.0 0.0 -1];
 ApplyLoads();
 
 %%4. visualize FEM model
