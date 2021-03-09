@@ -42,37 +42,37 @@ GPU_ = 'ON';
 %% 'ON', OFF. Only valid for iteratively solving the linear system in 'TimePriority' way
 preCond_ = 'ON'; 
 
-moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
+%moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
 %moduls_ = 2.1e11;  poissonRatio_ = 0.3;  density_ = 7900; %%steel
-%moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
+moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
 %moduls_ = 3.7e9;  poissonRatio_ = 0.3;  density_ = 1200; %%artificial bone
 
 %% 2. create geometrical model
-modelSource_ = 'SelfDef'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
+modelSource_ = 'TopOpti'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
 switch modelSource_
 	case 'SelfDef'
 		switch domainType_
 			case '2D'
 				vtxLowerBound_ = [0 0];
-				nelx_ = 100; nely_ = 50; featureSize = max([nelx_,nely_]);
+				nelx_ = 100; nely_ = 50; featureSize = 1;
 				%nelx_ = 140; nely_ = 182; featureSize = max([nelx_,nely_]);; %femur 2D 
 				vtxUpperBound_ = featureSize*[nelx_ nely_]/max([nelx_ nely_]);
 			case '3D'
 				vtxLowerBound_ = [0 0 0];
- 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = max([nelx_,nely_, nelz_]);
+ 				nelx_ = 100; nely_ = 50; nelz_ = 50; featureSize = 1;
 				%nelx_ = 140; nely_ = 92; nelz_ = 182; featureSize = max([nelx_,nely_, nelz_]);  %%femur 3D				
 				vtxUpperBound_ = featureSize*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_]);			
 		end
 		opt_CUTTING_DESIGN_DOMAIN_ = 'OFF'; %% 'ON', 'OFF'
 		DiscretizeDesignDomain();		
 		if strcmp(opt_CUTTING_DESIGN_DOMAIN_, 'ON')
-			fileName = 'D:/MyDataSets/ClippingMdls/SketchedFemur3D_120_100_150.txt';
+			fileName = 'D:/MyDataSets/CartesianGrids/femur3D_140_92_182.txt';
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/bridge3D_4.topopti';	
-		extractThreshold = 0.5;
-		featureSize = []; %% scalar or empty
+		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/parts_1_R256_nonOptimized.topopti';	
+		extractThreshold = 0.0;
+		featureSize = 1; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		srcName = 'D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk';
@@ -88,11 +88,12 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-boundaryCond_ = 'X';
+% boundaryCond_ = 'Z';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 
-loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 vtxUpperBound_(3)/2 0.0 0.0 -1];
+% loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 vtxUpperBound_(3)/2 0.0 0.0 -1];
+loadingCond_(:,2:4) = loadingCond_(:,2:4)*1000;
 ApplyLoads();
 
 %%4. visualize FEM model

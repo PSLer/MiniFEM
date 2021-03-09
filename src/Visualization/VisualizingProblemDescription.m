@@ -99,7 +99,15 @@ function VisualizingProblemDescription3D(visType)
 			yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(BoundaryEleFace);
 			zPatchs = nodeCoords_(:,3); zPatchs = zPatchs(BoundaryEleFace);
 			cPatchs = zeros(size(xPatchs));				
-			handlePatchs = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on				
+			handlePatchs = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on	
+			
+			set(handlePatchs, 'FaceColor', [224 223 219]/255, 'FaceAlpha', 1, 'EdgeColor', 'k'); 
+			view(-1.960848849982980e+02, 1.313055949258412e+01);
+			lighting gouraud
+			% camlight('headlight','infinite');
+			% camlight('right','infinite');
+			camlight('left','infinite');
+            material dull; %% dull, shiny, metal			
 		case 'outlineVis'
 			if strcmp(modelSource_, 'ExtMesh')
 			%if 1
@@ -125,13 +133,18 @@ function VisualizingProblemDescription3D(visType)
 				handlePatchs(2) = patch(isocaps(nodPosX, nodPosY, nodPosZ, ...
 					valForExtctBoundary, 0)); hold on
 			end		
-			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 0.15, 'EdgeColor', 'None'); %%[206 205 203] concrete
-% 			set(handlePatchs, 'FaceColor', [206 205 203]/255, 'FaceAlpha', 1, 'EdgeColor', 'None'); %%[206 205 203] concrete
+			%% default RGB --- [65 174 118]
+			%% concrete RGB --- [206 205 203]
+			%% stainless steel RGB --- [224 223 219]			
+			set(handlePatchs, 'FaceColor', [224 223 219]/255, 'FaceAlpha', 1, 'EdgeColor', 'None'); 
+			% view(6.87e-01, 1.13e+01); %%kitten
+			% view(-1.96e+02, 1.31e+01); %%bunny
+			view(1.92e+02, 2.46e+01); %%parts
 			lighting gouraud
-			camlight('headlight','infinite');
-			camlight('right','infinite');
+			% camlight('headlight','infinite');
+			% camlight('right','infinite');
 			camlight('left','infinite');
-%             material dull; %% dull, shiny, metal
+            material dull; %% dull, shiny, metal
 	end
 	
 	%%2. draw fixed nodes
@@ -151,6 +164,7 @@ function VisualizingProblemDescription3D(visType)
 	%%4. formulated output
 	axis on; axis equal; axis tight; axis off
 	xlabel('X'); ylabel('Y'); zlabel('Z')
-	view(3); camproj('perspective')
+	% view(3); 
+	camproj('perspective')
 	set(gca, 'FontName', 'Times New Roman', 'FontSize', 20)  
 end
