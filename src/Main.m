@@ -42,13 +42,13 @@ GPU_ = 'ON';
 %% 'ON', OFF. Only valid for iteratively solving the linear system in 'TimePriority' way
 preCond_ = 'ON'; 
 
-%moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
+moduls_ = 1;  poissonRatio_ = 0.3;  density_ = 1; %%academic use
 %moduls_ = 2.1e11;  poissonRatio_ = 0.3;  density_ = 7900; %%steel
-moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
+%moduls_ = 7.0e10;  poissonRatio_ = 0.3;  density_ = 2700; %%aluminium
 %moduls_ = 3.7e9;  poissonRatio_ = 0.3;  density_ = 1200; %%artificial bone
 
 %% 2. create geometrical model
-modelSource_ = 'TopOpti'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
+modelSource_ = 'SelfDef'; %% 'SelfDef', 'TopOpti', 'ExtMesh'
 switch modelSource_
 	case 'SelfDef'
 		switch domainType_
@@ -70,9 +70,9 @@ switch modelSource_
 			CuttingDesignDomain(LoadClipModel(fileName)); 
 		end
 	case 'TopOpti'
-		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/parts_1_R256_nonOptimized.topopti';	
-		extractThreshold = 0.0;
-		featureSize = 1; %% scalar or empty
+		srcName = 'D:/MyDataSets/TopOptiMdls4FEA/roof3D.topopti';	
+		extractThreshold = 0.5;
+		featureSize = 3; %% scalar or empty
 		CreateModelTopOptiSrc(srcName, extractThreshold, featureSize);
 	case 'ExtMesh'
 		srcName = 'D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk';
@@ -88,12 +88,11 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-% boundaryCond_ = 'Z';
+boundaryCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 
-% loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 vtxUpperBound_(3)/2 0.0 0.0 -1];
-loadingCond_(:,2:4) = loadingCond_(:,2:4)*1000;
+loadingCond_ = [vtxUpperBound_(1) vtxUpperBound_(2)/2 vtxUpperBound_(3)/2 0.0 0.0 -1];
 ApplyLoads();
 
 %%4. visualize FEM model

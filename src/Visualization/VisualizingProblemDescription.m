@@ -101,8 +101,8 @@ function VisualizingProblemDescription3D(visType)
 			cPatchs = zeros(size(xPatchs));				
 			handlePatchs = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on	
 			
-			set(handlePatchs, 'FaceColor', [224 223 219]/255, 'FaceAlpha', 1, 'EdgeColor', 'k'); 
-			view(-1.960848849982980e+02, 1.313055949258412e+01);
+			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 1, 'EdgeColor', 'k'); 
+			% view(-1.96e+02, 1.31e+01);
 			lighting gouraud
 			% camlight('headlight','infinite');
 			% camlight('right','infinite');
@@ -136,10 +136,11 @@ function VisualizingProblemDescription3D(visType)
 			%% default RGB --- [65 174 118]
 			%% concrete RGB --- [206 205 203]
 			%% stainless steel RGB --- [224 223 219]			
-			set(handlePatchs, 'FaceColor', [224 223 219]/255, 'FaceAlpha', 1, 'EdgeColor', 'None'); 
+			set(handlePatchs, 'FaceColor', [65 174 118]/255, 'FaceAlpha', 1, 'EdgeColor', 'None'); 
 			% view(6.87e-01, 1.13e+01); %%kitten
 			% view(-1.96e+02, 1.31e+01); %%bunny
-			view(1.92e+02, 2.46e+01); %%parts
+			% view(1.92e+02, 2.46e+01); %%parts
+			% view(-3.62e+01, 1.33e+01); %%roof
 			lighting gouraud
 			% camlight('headlight','infinite');
 			% camlight('right','infinite');
@@ -164,7 +165,7 @@ function VisualizingProblemDescription3D(visType)
 	%%4. formulated output
 	axis on; axis equal; axis tight; axis off
 	xlabel('X'); ylabel('Y'); zlabel('Z')
-	% view(3); 
+	view(3); 
 	camproj('perspective')
 	set(gca, 'FontName', 'Times New Roman', 'FontSize', 20)  
 end
