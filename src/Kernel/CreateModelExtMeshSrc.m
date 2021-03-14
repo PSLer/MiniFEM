@@ -9,6 +9,8 @@ function CreateModelExtMeshSrc(fileName)
 	global originalValidNodeIndex_; 
 	global edofMat_;
 	global eleType_;
+	global eleState_;
+	global nodState_;		
 	global numDOFs_;
 	global boundaryCond_;
 	global loadingCond_;
@@ -32,17 +34,17 @@ function CreateModelExtMeshSrc(fileName)
 	reOrdering = [5 6 2 1 8 7 3 4];
 	eNodMat_ = eNodMat_(:, reOrdering);
 	
-	%%4. read element type (useless here)
+	%%4. read element type 
 	tmp = fscanf(fid, '%s', 1);
 	tmp = fscanf(fid, '%d', 1);
-	tmp = fscanf(fid, '%d', [1 tmp])';
+	eleState_ = fscanf(fid, '%d', [1 tmp])';
 	
 	%%5. identify node type (interior or not)
 	tmp = fscanf(fid, '%s %s', 2);
 	tmp = fscanf(fid, '%s %s %s', 3);
 	tmp = fscanf(fid, '%s %s', 2);
-	tmp = fscanf(fid, '%d', [1 numNodes_])';
-	nodesOutline_ = find(1==tmp);
+	nodState_ = fscanf(fid, '%d', [1 numNodes_])';
+	nodesOutline_ = find(1==nodState_);
 	
 	%%6. boundary condition
 	tmp = fscanf(fid, '%s %s', 2);
@@ -67,8 +69,6 @@ function CreateModelExtMeshSrc(fileName)
 			numNod2ElesVec_(eNodMat_(ii,jj)) = numNod2ElesVec_(eNodMat_(ii,jj))+1;
 		end
 	end
-	nodesOutline_ = find(numNod2ElesVec_<eleType_.numNode);
-	originalValidNodeIndex_ = (1:numNodes_)';
 	
 	edofMat_ = eNodMat_*3;
 	index1 = 1:8;

@@ -22,6 +22,8 @@ global numEles_;
 global numNodes_; 
 global numDOFs_;
 global eleSize_;
+global eleState_;
+global nodState_;	
 global opt_CUTTING_DESIGN_DOMAIN_;
 
 global nodeStruct_;
