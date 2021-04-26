@@ -5,30 +5,30 @@ function ApplyBoundaryCondition()
 	global fixedNodes_; global fixeddofs_;
 	global freeNodes_; global freeDofs_;
 	global eleType_; global vtxLowerBound_; global nodeCoords_;
-	global boundaryCond_;
-	if isempty(boundaryCond_)
+	global fixingCond_;
+	if isempty(fixingCond_)
 		fixedNodes_ = [];
 		fixeddofs_ = [];
 		freeNodes_ = [1:numNodes_]; 
 		freeDofs_ = [1:numDOFs_];
 		return;
 	end
-	if isnumeric(boundaryCond_)
-		if 1==min(size(boundaryCond_))
-			fixedNodes_ = boundaryCond_;
-		elseif (2==size(boundaryCond_,2)&strcmp(domainType_, '2D')) || ...
-			(3==size(boundaryCond_,2)&strcmp(domainType_, '3D'))
-				tmp = boundaryCond_;
-				nn = size(boundaryCond_,1);
+	if isnumeric(fixingCond_)
+		if 1==min(size(fixingCond_))
+			fixedNodes_ = fixingCond_;
+		elseif (2==size(fixingCond_,2)&strcmp(domainType_, '2D')) || ...
+			(3==size(fixingCond_,2)&strcmp(domainType_, '3D'))
+				tmp = fixingCond_;
+				nn = size(fixingCond_,1);
 				fixedNodes_ = zeros(nn,1)
 				for ii=1:nn
-					[minVal minValPos] = min(vecnorm(boundaryCond_(ii,:)-nodeCoords_,2,2));
+					[minVal minValPos] = min(vecnorm(fixingCond_(ii,:)-nodeCoords_,2,2));
 					fixedNodes_(ii) = minValPos;
 				end
 		else, error('Wrong boundary option!');
 		end
-	elseif ischar(boundaryCond_)
-		switch boundaryCond_
+	elseif ischar(fixingCond_)
+		switch fixingCond_
 			case 'X'
 				fixedNodes_ = find(vtxLowerBound_(1)==nodeCoords_(:,1));
 			case 'Y'

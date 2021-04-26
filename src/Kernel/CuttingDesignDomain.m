@@ -4,7 +4,7 @@ function CuttingDesignDomain(validElements)
 	global numNod2ElesVec_; global nodesOutline_;
 	global originalValidNodeIndex_;
 	global nodeMap4CutBasedModel_;
-	global boundaryCond_;
+	global fixingCond_;
 	global validElements_;
 	%%1. load valid elements
 	validElements_ = sort(validElements);

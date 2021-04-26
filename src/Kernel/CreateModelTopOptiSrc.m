@@ -2,7 +2,7 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 	global domainType_;
 	global vtxLowerBound_; global vtxUpperBound_;
 	global nelx_; global nely_; global nelz_;
-	global boundaryCond_;
+	global fixingCond_;
 	global loadingCond_;
 	global nodeMap4CutBasedModel_;
 	global opt_CUTTING_DESIGN_DOMAIN_;
@@ -21,7 +21,7 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 			eleList = fscanf(fid, '%d %f', [2 numEleDD])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
-			boundaryCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+			fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e', [3 numLoadedNodes])';			
@@ -36,7 +36,7 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 			eleList = fscanf(fid, '%d %f', [2 numEleDD])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
-			boundaryCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+			fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e %e', [4 numLoadedNodes])';
@@ -53,6 +53,6 @@ function CreateModelTopOptiSrc(srcName, extractThreshold, featureSize)
 	CuttingDesignDomain(validElements);
 	%% update
 	loadingCond_(:,1) = nodeMap4CutBasedModel_(loadingCond_(:,1));
-	boundaryCond_ = nodeMap4CutBasedModel_(boundaryCond_);
-	boundaryCond_(0==boundaryCond_) = [];
+	fixingCond_ = nodeMap4CutBasedModel_(fixingCond_);
+	fixingCond_(0==fixingCond_) = [];
 end

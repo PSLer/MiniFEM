@@ -88,7 +88,7 @@ AssembleSystemMatrices();
 %%3.2 Apply boundary condition
 %% argin = [fixedNodes_] (approximate coordinates also acceptable) OR
 %% 'X', 'Y', 'Z' (only valid for the self-defined model, and 'Z' for 3D) OR
-boundaryCond_ = 'X';
+fixingCond_ = 'X';
 ApplyBoundaryCondition(); 
 
 %3.3 Loading 

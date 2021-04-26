@@ -1,30 +1,21 @@
-function InitializeFixingCond(varargin)
-	global nodesOutline_;
+function InitializeFixingCond()
+	global eleType_;
+	global boundaryNodes_;
 	global nodeCoords_;
-	global boundaryCond_;
+	global fixingCond_;
 	global PickedNodeCache_;
-	ndC = nodeCoords_(nodesOutline_,:);
-	if isempty(PickedNodeCache_), warning('There is no node selected!'); end
-	if 0==nargin
-		if size(PickedNodeCache_,1)<2
-			[~,tarNodes] =  min(vecnorm(PickedNodeCache_-ndC,2,2));
-			iLth = 1;
-		else
-			ctr = PickedNodeCache_(end-1,:);
-			rangeLimitNode = PickedNodeCache_(end,:);
-			effectRad = norm(rangeLimitNode-ctr);
-			tarNodes = find(vecnorm(ctr-ndC,2,2)<=effectRad);
-			iLth = length(tarNodes);
-		end
+	ndC = nodeCoords_(boundaryNodes_,:);
+	if isempty(PickedNodeCache_), warning('There is no node available!'); end
+	PickedNodeCache_ = unique(PickedNodeCache_);
+	numTarNodes = length(PickedNodeCache_);
+
+	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+		iFixingVec = PickedNodeCache_;
 	else
-		ctr = PickedNodeCache_(end,:);
-		effectRad = varargin{1};
-		tarNodes = find(vecnorm(ctr-ndC,2,2)<=effectRad);
-		iLth = length(tarNodes);
-	end
-	boundaryCond_(end+1:end+iLth,1) = nodesOutline_(tarNodes);
-	boundaryCond_ = unique(boundaryCond_);
-	tarNodeCoord = ndC(tarNodes,:);	
-	hold on; plot3(tarNodeCoord(:,1), tarNodeCoord(:,2), ...
-				tarNodeCoord(:,3), 'xk', 'LineWidth', 2, 'MarkerSize', 6);
+		iFixingVec = boundaryNodes_(PickedNodeCache_,1);
+	end	
+	fixingCond_(end+1:end+numTarNodes,1) = iFixingVec;
+	
+	ClearPickedNodes();
+	ShowFixingCondition(iFixingVec);	
 end

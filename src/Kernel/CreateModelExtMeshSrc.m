@@ -12,7 +12,7 @@ function CreateModelExtMeshSrc(fileName)
 	global eleState_;
 	global nodState_;		
 	global numDOFs_;
-	global boundaryCond_;
+	global fixingCond_;
 	global loadingCond_;
 	
 	%%1. read head
@@ -49,7 +49,7 @@ function CreateModelExtMeshSrc(fileName)
 	%%6. boundary condition
 	tmp = fscanf(fid, '%s %s', 2);
 	numFixedNodes = fscanf(fid, '%d', 1);
-	boundaryCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+	fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
 	
 	%%7. loading condition
 	tmp = fscanf(fid, '%s %s', 2);
