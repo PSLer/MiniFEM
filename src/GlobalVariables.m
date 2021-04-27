@@ -12,19 +12,22 @@ global carNodMapBack_; global carNodMapForward_;
 global numNodsAroundEleVec_; %%to be moved
 global boundaryNodes_;
 global fixingCond_; global loadingCond_;
-
+global meshQualityJacobianRatio_;
+global matrixD_; %%to be moved
+global matrixB_; %%to be moved
 % global outPath_;
 % global domainType_; 			%% '2D' or '3D'
 % global material_;
 % global eleType_;				%% 'Plane144', 'Solid188'
 % global meshType_; meshType_ = 'Any';
-% global GPU_;					%% 'ON', 'OFF', for Modal Analysis
+global GPU_; GPU_ = 'OFF';				
 % global structureState_;  		%% 'STATIC', 'DYNAMIC'
 % global modelSource_;			%% 'SelfDef', 'TopOpti', 'ExtMesh'
 % global advancedSolvingOpt_;		%% 'TimePriority'; 'SpacePriority'
+%% Solving Opt
 % global preCond_;				%% 'ON', 'OFF'
-% global tol_; tol_ = 1.0e-6;
-% global maxIT_; maxIT_ = 20000;
+global tol_; tol_ = 1.0e-6;
+global maxIT_; maxIT_ = 20000;
 % global moduls_; 				
 % global poissonRatio_; 			
 % global density_;				
@@ -81,7 +84,7 @@ global F_;
 % global fixeddofs_;
 % global fixedNodes_;
 % global freeNodes_;
-global freeDOFs_;
+global freeDOFs_; freeDOFs_ = [];
 
 % global freqRange_;
 % global freqSweepStep_;
@@ -90,16 +93,19 @@ global freeDOFs_;
 % global solSpace_;
 % global numNaturalFreqs_;
 
-global U_; 
-% global cartesianStressField_;
-% global vonMisesStressField_;
-% global principalStressField_;
+global U_; U_ = [];
+global cartesianStressField_; cartesianStressField_ = [];
+global vonMisesStressField_; vonMisesStressField_ = [];
+global principalStressField_; principalStressField_ = [];
+global natureFrequencyList_; natureFrequencyList_ = [];
+global modeSpace_; modeSpace_ = [];
 
-% global modalSpace_;
+% global modeSpace_;
 % global naturalFreqs_;
 % global gpuK_;
 
 % global patchIndices_; 
 %% Interaction
+global outPath_;
 global hdPickedNode_; hdPickedNode_ = [];
 global PickedNodeCache_; PickedNodeCache_ = [];

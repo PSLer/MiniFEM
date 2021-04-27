@@ -1,6 +1,6 @@
 function Me = ElementMassMatrix(N, w, detJ, dens)
 	global eleType_;
-	wgt = dens*w.*detJ;	wgt = repmat(wgt, 1, eleType_.numNodeDOFs);
+	wgt = dens*w.*detJ;	wgt = repmat(wgt, 1, eleType_.nEleNodeDOFs);
 	wgt = reshape(wgt', 1, numel(wgt));
 	Me = N'.*wgt*N;
 	%%%%ref

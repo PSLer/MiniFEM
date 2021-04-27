@@ -22,7 +22,7 @@ function GenerateCartesianMesh3D(voxelizedModel)
 	end	
 	carNodMapBack_ = unique(eNodMat_);
 	numNodes_ = length(carNodMapBack_);
-	numDOFs_ = 2*numNodes_;
+	numDOFs_ = 3*numNodes_;
 	carNodMapForward_ = zeros((nelx_+1)*(nely_+1)*(nelz_+1),1,'int32');
 	carNodMapForward_(carNodMapBack_) = (1:numNodes_)';		
 	for ii=1:8

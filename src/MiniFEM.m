@@ -15,7 +15,7 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
+SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 ModelingOpt = 4;
@@ -31,7 +31,7 @@ switch ModelingOpt
 		CreateModelFromExistingVoxelizedModel('D:/MyDataSets/VoxelizedModels/femur3D_140_92_182.txt', 0.8);	
 	case 4
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever2D_500_250_iLoad5_single_cartesianMesh.topopti', 0.5);
+		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever2D_iLoad3_classic.topopti', 0.5, 1);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply', 128); 

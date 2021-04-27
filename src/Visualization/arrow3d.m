@@ -1,4 +1,3 @@
-% function [h]=arrow3d(x,y,z,head_frac,radii,radii2,colr)
 function [X1 Y1 Z1] = arrow3d(x,y,z,head_frac,radii,radii2,colr)
 	%
 	% The function plotting 3-dimensional arrow
