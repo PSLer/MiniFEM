@@ -65,6 +65,6 @@ ShowMesh();
 %ShowSilhouette();
 % ShowBoundaryCondition();
 
-%%5. (Interactively) Apply For Boundary Condition
+%%4. (Interactively) Apply For Boundary Condition
 
 
