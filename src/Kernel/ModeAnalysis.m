@@ -2,7 +2,7 @@ function ModeAnalysis(numModalModes)
 	global eleType_;
 	global numDOFs_;
 	global freeDOFs_;
-	global natureFrequencyList_; 
+	global naturalFrequencyList_; 
 	global modeSpace_; 
 
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
@@ -14,9 +14,9 @@ function ModeAnalysis(numModalModes)
 	end
 	modeSpace_ = zeros(numDOFs_, numModalModes);
 	if numDOFs_<climactericDOF
-		[modeSpace_(freeDOFs_,:), natureFrequencyList_, flag] = GeneralizedEigenvalueProblemDirectSolver(numModalModes);
+		[modeSpace_(freeDOFs_,:), naturalFrequencyList_, flag] = GeneralizedEigenvalueProblemDirectSolver(numModalModes);
 	else
-		[modeSpace_(freeDOFs_,:), natureFrequencyList_, flag] = GeneralizedEigenvalueProblemIterativeSolver(numModalModes);
+		[modeSpace_(freeDOFs_,:), naturalFrequencyList_, flag] = GeneralizedEigenvalueProblemIterativeSolver(numModalModes);
 	end
 
 	if 0==flag
@@ -24,7 +24,7 @@ function ModeAnalysis(numModalModes)
 	else
 		error('Failed to perform Modal Analysis!'); 
 	end
-	natureFrequencyList_ = diag(natureFrequencyList_);
-	natureFrequencyList_ = sqrt(natureFrequencyList_)/2/pi;
+	naturalFrequencyList_ = diag(naturalFrequencyList_);
+	naturalFrequencyList_ = sqrt(naturalFrequencyList_)/2/pi;
 	modeSpace_ = modeSpace_./vecnorm(modeSpace_,2,1);
 end
