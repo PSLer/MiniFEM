@@ -16,8 +16,7 @@ function ShowCyclicalVibration(amp, scalingFac, varargin)
 		minFeaterSize = min(boundingBox_(2,:)-boundingBox_(1,:)); selfFac = 10;
 		scalingFac = minFeaterSize/selfFac/max(abs(amp));		
 	end	
-	
-	
+		
 	nFrame = 36;
 	az = 0; el = 0;
 	hF = figure; axis equal; axis tight; axis off;	
@@ -144,4 +143,3 @@ function ShowCyclicalVibration(amp, scalingFac, varargin)
 	end
 	close(hF);
 end
-

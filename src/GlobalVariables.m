@@ -20,7 +20,7 @@ global matrixB_; %%to be moved
 % global material_;
 % global eleType_;				%% 'Plane144', 'Solid188'
 % global meshType_; meshType_ = 'Any';
-global GPU_; GPU_ = 'OFF';				
+global GPU_; GPU_ = 'ON';				
 % global structureState_;  		%% 'STATIC', 'DYNAMIC'
 % global modelSource_;			%% 'SelfDef', 'TopOpti', 'ExtMesh'
 % global advancedSolvingOpt_;		%% 'TimePriority'; 'SpacePriority'

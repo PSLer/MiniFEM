@@ -30,8 +30,8 @@ switch ModelingOpt
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromExistingVoxelizedModel('D:/MyDataSets/VoxelizedModels/femur3D_140_92_182.txt', 0.8);	
 	case 4
-		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever2D_iLoad3_classic.topopti', 0.5, 1);
+		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
+		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply', 128); 

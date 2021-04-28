@@ -9,7 +9,6 @@ function GenerateCartesianMesh2D(voxelizedModel)
 	global numNodsAroundEleVec_;
 	global boundaryNodes_;
 	
-	meshType_ = 'Cartesian';
 	carEleMapBack_ = int32(find(1==voxelizedModel));
 	numEles_ = length(carEleMapBack_);
 	carEleMapForward_ = zeros(nelx_*nely_,1,'int32');	
@@ -47,6 +46,7 @@ function GenerateCartesianMesh2D(voxelizedModel)
 		eDofMat_ = eDofMat_(:,[1 4 2 5 3 6]);
 		numAdjacentNodes2Ele = 6;
 	else
+		meshType_ = 'Cartesian';
 		tmp = 2*eNodMat_; eDofMat_ = [tmp-1 tmp];
 		eDofMat_ = eDofMat_(:,[1 5 2 6 3 7 4 8]);
 		numAdjacentNodes2Ele = 4;
