@@ -38,7 +38,7 @@ function GenerateCartesianMesh2D(voxelizedModel)
 	nodeCoords_(:,2) = tmp(carNodMapBack_);
 	
 	if strcmp(eleType_.eleName, 'Plane133')
-		eNodMat_ = eNodMat_(:, [1 2 4 3 4 2]);
+		eNodMat_ = eNodMat_(:, [2 4 1 4 2 3]);
 		eNodMat_ = reshape(eNodMat_', numel(eNodMat_), 1);
 		numEles_ = 2*numEles_;
 		eNodMat_ = reshape(eNodMat_, 3, numEles_)';
