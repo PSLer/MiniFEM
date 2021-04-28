@@ -1,8 +1,10 @@
 function B = ElementStrainMatrix(dShape, invJ)
-	global domainType_;
+	global eleType_;
 	derivatives = invJ * dShape;
-	switch domainType_
-		case '2D'
+	switch eleType_.eleName
+		case 'Plane133'
+
+		case 'Plane144'
 			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);
 			dNds2 = derivatives(3,:);	dNdt2 = derivatives(4,:);
 			dNds3 = derivatives(5,:);	dNdt3 = derivatives(6,:);
@@ -33,8 +35,10 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B21 B22 B23 B24
 				B31 B32 B33 B34
 				B41 B42 B43 B44
-			];		
-		case '3D'
+			];	
+		case 'Solid144'
+
+		case 'Solid188'
 			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);	dNdp1 = derivatives(3,:);
 			dNds2 = derivatives(4,:);	dNdt2 = derivatives(5,:);	dNdp2 = derivatives(6,:);
 			dNds3 = derivatives(7,:);	dNdt3 = derivatives(8,:);	dNdp3 = derivatives(9,:);	
@@ -126,5 +130,11 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B7_1 B7_2 B7_3 B7_4 B7_5 B7_6 B7_7 B7_8
 				B8_1 B8_2 B8_3 B8_4 B8_5 B8_6 B8_7 B8_8		
 			];		
+		case 'Shell133'
+
+			
+		case 'Shell144'
+
+			
 	end
 end

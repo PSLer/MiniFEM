@@ -1,16 +1,11 @@
-function val = ComputeVonMisesStress(cartesianStress)
-	global domainType_;
+function val = ComputeVonMisesStress(carStress)
 	%% order: sigma_x, sigma_y, tadisxy (2D)
 	%% order: sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (3D)
-	switch domainType_
-		case '2D'
-			val = sqrt(cartesianStress(:,1).^2 + ...
-				cartesianStress(:,2).^2 - cartesianStress(:,1).*...
-					cartesianStress(:,2) + 3*cartesianStress(:,3).^2 );
-		case '3D'
-			val = sqrt(0.5*((cartesianStress(:,1)-cartesianStress(:,2)).^2 + ...
-				(cartesianStress(:,2)-cartesianStress(:,3)).^2 + (cartesianStress(:,3)...
-					-cartesianStress(:,1)).^2 ) + 3*( cartesianStress(:,6).^2 + ...
-						cartesianStress(:,4).^2 + cartesianStress(:,5).^2 ));
-	end		
+	global eleType_;
+	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
+		val = sqrt(carStress(:,1).^2 + carStress(:,2).^2 - carStress(:,1).*carStress(:,2) + 3*carStress(:,3).^2 );	
+	else
+		val = sqrt(0.5*((carStress(:,1)-carStress(:,2)).^2 + (carStress(:,2)-carStress(:,3)).^2 + (carStress(:,3)...
+				-carStress(:,1)).^2 ) + 3*( carStress(:,6).^2 + carStress(:,4).^2 + carStress(:,5).^2 ));	
+	end	
 end

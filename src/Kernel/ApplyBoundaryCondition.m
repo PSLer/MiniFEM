@@ -1,58 +1,42 @@
 function ApplyBoundaryCondition()
-	global domainType_;
-	global modelSource_;
-	global numDOFs_; global numNodes_; 	
-	global fixedNodes_; global fixeddofs_;
-	global freeNodes_; global freeDofs_;
-	global eleType_; global vtxLowerBound_; global nodeCoords_;
-	global boundaryCond_;
-	if isempty(boundaryCond_)
-		fixedNodes_ = [];
-		fixeddofs_ = [];
-		freeNodes_ = [1:numNodes_]; 
-		freeDofs_ = [1:numDOFs_];
-		return;
-	end
-	if isnumeric(boundaryCond_)
-		if 1==min(size(boundaryCond_))
-			fixedNodes_ = boundaryCond_;
-		elseif (2==size(boundaryCond_,2)&strcmp(domainType_, '2D')) || ...
-			(3==size(boundaryCond_,2)&strcmp(domainType_, '3D'))
-				tmp = boundaryCond_;
-				nn = size(boundaryCond_,1);
-				fixedNodes_ = zeros(nn,1)
-				for ii=1:nn
-					[minVal minValPos] = min(vecnorm(boundaryCond_(ii,:)-nodeCoords_,2,2));
-					fixedNodes_(ii) = minValPos;
-				end
-		else, error('Wrong boundary option!');
+	global eleType_;
+	global numDOFs_;
+	global F_;
+	global freeDOFs_;
+	global fixingCond_; 
+	global loadingCond_;
+	
+	freeDOFs_ = (1:numDOFs_)';
+	if ~isempty(fixingCond_)
+		if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
+			tmp = 2*fixingCond_;
+			fixedDOFs = [tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
+		elseif strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
+			tmp = 3*fixingCond_;
+			fixedDOFs = [tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
+		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+			tmp = 6*fixingCond_;
+			fixedDOFs = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
 		end
-	elseif ischar(boundaryCond_)
-		switch boundaryCond_
-			case 'X'
-				fixedNodes_ = find(vtxLowerBound_(1)==nodeCoords_(:,1));
-			case 'Y'
-				fixedNodes_ = find(vtxLowerBound_(2)==nodeCoords_(:,2));
-			case 'Z'
-				if strcmp(domainType_, '3D')
-					fixedNodes_ = find(vtxLowerBound_(3)==nodeCoords_(:,3));
-				else, error('Wrong boundary option!'); end
-			otherwise
-				error('Wrong boundary option!');
-		end
-	else
-		error('Wrong boundary option!');
+		freeDOFs_ = setdiff(freeDOFs_, fixedDOFs);	
 	end
 	
-	fixeddofs_ = eleType_.numNodeDOFs*fixedNodes_-(eleType_.numNodeDOFs-1:-1:0);
-	fixeddofs_ = reshape(fixeddofs_', size(fixeddofs_,1)*size(fixeddofs_,2), 1);
-	allNodes = [1:numNodes_]; freeNodes_ = setdiff(allNodes, fixedNodes_);
-	allDofs = [1:numDOFs_]; freeDofs_ = setdiff(allDofs, fixeddofs_);
-	
-	global K_; global M_; 
-	global advancedSolvingOpt_; global structureState_;	
-	if ~strcmp(advancedSolvingOpt_, 'SpacePriority')
-		K_ = K_(freeDofs_,freeDofs_); 
-		if strcmp(structureState_, 'DYNAMIC'), M_ = M_(freeDofs_,freeDofs_); end
+	F_ = sparse(numDOFs_,1);
+	if ~isempty(loadingCond_)
+		if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
+			tmp = 2*loadingCond_(:,1);
+			loadedDOFs = [tmp-1 tmp]'; loadedDOFs = loadedDOFs(:);
+			loadingVec = loadingCond_(:,2:3)'; loadingVec = loadingVec(:);
+		elseif strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
+			tmp = 3*loadingCond_(:,1);
+			loadedDOFs = [tmp-2 tmp-1 tmp]'; loadedDOFs = loadedDOFs(:);
+			loadingVec = loadingCond_(:,2:4)'; loadingVec = loadingVec(:);
+		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+			tmp = 6*loadingCond_(:,1);
+			loadedDOFs = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; loadedDOFs = loadedDOFs(:);
+			loadingVec = loadingCond_(:,2:7)'; loadingVec = loadingVec(:);
+		end
+		F_(loadedDOFs) = loadingVec;
 	end
+	F_ = F_(freeDOFs_);
 end

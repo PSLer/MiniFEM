@@ -1,7 +1,9 @@
 function Nm = ElementShapeFunctionMatrix(Nf)
-	global domainType_;
-	switch domainType_
-		case '2D'
+	global eleType_;
+	switch eleType_.eleName
+		case 'Plane133'
+	
+		case 'Plane144'
 			Nm = [
 				Nf(1,1)	0	Nf(1,2) 0	Nf(1,3) 0	Nf(1,4) 0
 				0 Nf(1,1)	0 Nf(1,2)	0 Nf(1,3)	0 Nf(1,4)
@@ -11,8 +13,10 @@ function Nm = ElementShapeFunctionMatrix(Nf)
 				0 Nf(3,1)	0 Nf(3,2)	0 Nf(3,3)	0 Nf(3,4)
 				Nf(4,1) 0	Nf(4,2) 0	Nf(4,3) 0	Nf(4,4) 0
 				0 Nf(4,1)	0 Nf(4,2)	0 Nf(4,3)	0 Nf(4,4)		
-				];		
-		case '3D'
+				];			
+		case 'Solid144'
+
+		case 'Solid188'
 			Nm = [
 				Nf(1,1)	0 0  Nf(1,2) 0 0  Nf(1,3) 0 0  Nf(1,4) 0 0  Nf(1,5)	0 0  Nf(1,6) 0 0  Nf(1,7) 0 0  Nf(1,8) 0 0
 				0 Nf(1,1) 0  0 Nf(1,2) 0  0 Nf(1,3) 0  0 Nf(1,4) 0  0 Nf(1,5) 0  0 Nf(1,6) 0  0 Nf(1,7) 0  0 Nf(1,8) 0
@@ -38,6 +42,11 @@ function Nm = ElementShapeFunctionMatrix(Nf)
 				Nf(8,1)	0 0  Nf(8,2) 0 0  Nf(8,3) 0 0  Nf(8,4) 0 0  Nf(8,5)	0 0  Nf(8,6) 0 0  Nf(8,7) 0 0  Nf(8,8) 0 0
 				0 Nf(8,1) 0  0 Nf(8,2) 0  0 Nf(8,3) 0  0 Nf(8,4) 0  0 Nf(8,5) 0  0 Nf(8,6) 0  0 Nf(8,7) 0  0 Nf(8,8) 0
 				0 0 Nf(8,1)  0 0 Nf(8,2)  0 0 Nf(8,3)  0 0 Nf(8,4)  0 0 Nf(8,5)  0 0 Nf(8,6)  0 0 Nf(8,7)  0 0 Nf(8,8)			
-				];		
-	end
+				];				
+		case 'Shell133'
+
+			
+		case 'Shell144'
+			
+	end		
 end
