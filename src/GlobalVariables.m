@@ -10,7 +10,6 @@ global numEles_; global eNodMat_; global eDofMat_;
 global numNodes_; global numDOFs_; global nodeCoords_;
 global carEleMapBack_; global carEleMapForward_;
 global carNodMapBack_; global carNodMapForward_;
-global numNodsAroundEleVec_; %%to be moved
 global boundaryNodes_;
 global fixingCond_; global loadingCond_;
 global meshQualityJacobianRatio_;

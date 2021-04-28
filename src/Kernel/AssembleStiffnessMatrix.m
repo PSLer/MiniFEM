@@ -20,27 +20,107 @@ function AssembleStiffnessMatrix()
 	K_ = sparse(numDOFs_,numDOFs_);
 	switch eleType_.eleName
 		case 'Plane133'
-			if strcmp(meshType_, 'Cartesian')
-			
-			else
-			
-			end			
-		case 'Plane144'
+			nEN = eleType_.nEleNodes;
+			nEND = eleType_.nEleNodeDOFs;
+			nESC = eleType_.nEleStressComponents;
+			nEGIP = eleType_.nEleGaussIntegralPoints;
+	
 			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
 			deShapeFuncs_ = DeShapeFunction(gaussIPs);		
-			invJ = zeros(8,8);			
+			invJ = zeros(nEND*nEGIP,nEND*nEGIP);
+			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
+				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);	
+				detJ_ = zeros(nEGIP,numEles_);
+				iDetJ = zeros(nEGIP,1);
+				matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+				for jj=1:size(blockIndex,1)
+					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
+					sK = zeros(17, length(rangeIndex)); %%17 is based on the feature of element stiffness matrix of 'Plane133'
+					index = 0;
+					for ii=rangeIndex(1):rangeIndex(end)
+						index = index + 1;
+						probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
+						for kk=1:nEGIP
+							Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
+							iDetJ(kk) = det(Jac);
+							invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
+						end
+						detJ_(:,ii) = iDetJ;
+						meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
+						iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ);;
+						matrixB_(:,:,ii) = iMatrixB;
+						Ke = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, iDetJ);
+						semiKe = tril(Ke); 
+						[eKi, eKj, eKs] = find(semiKe);				
+						sK(:,index) = eKs;				
+					end
+					iK = eDofMat_(rangeIndex,eKi)';
+					jK = eDofMat_(rangeIndex,eKj)';
+					tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
+					tmpK = tmpK + tmpK' - diag(diag(tmpK));
+					K_ = K_ + tmpK;
+				end				
+			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+				detJ_ = zeros(nEGIP,numEles_);
+				iDetJ = zeros(nEGIP,1);
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
+				matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+				for jj=1:size(blockIndex,1)
+					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
+					sK = zeros(17, length(rangeIndex)); %%17 is based on the feature of element stiffness matrix of 'Plane133'
+					index = 0;
+					for ii=rangeIndex(1):rangeIndex(end)
+						index = index + 1;
+						probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
+						for kk=1:nEGIP
+							Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
+							iDetJ(kk) = det(Jac);
+							invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
+						end
+						detJ_(:,ii) = iDetJ;
+						meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
+						iMatrixB = ElementStrainMatrix(dShape_, invJ_(ii,1).SPmat);;
+						matrixB_(:,:,ii) = iMatrixB;
+						iMatrixD = ElementElasticityMatrix(material_.modulus(ii), material_.poissonRatio(ii));	
+						matrixD_(ii).arr = iMatrixD;
+						Ke = ElementStiffMatrix(iMatrixB, iMatrixD, wgts, iDetJ);				
+						semiKe = tril(Ke); 
+						[eKi, eKj, eKs] = find(semiKe);				
+						sK(:,index) = eKs;				
+					end
+					iK = eDofMat_(rangeIndex,eKi)';
+					jK = eDofMat_(rangeIndex,eKj)';
+					tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
+					tmpK = tmpK + tmpK' - diag(diag(tmpK));
+					K_ = K_ + tmpK;
+				end				
+			else
+				error('Un-supported Material Property!');			
+			end
+		case 'Plane144'
+			nEN = eleType_.nEleNodes;
+			nEND = eleType_.nEleNodeDOFs;
+			nESC = eleType_.nEleStressComponents;
+			nEGIP = eleType_.nEleGaussIntegralPoints;
+			
+			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
+			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
+			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
+			deShapeFuncs_ = DeShapeFunction(gaussIPs);		
+			invJ = zeros(nEND*nEGIP,nEND*nEGIP);			
 			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)			
-				matrixD_ = struct('arr', sparse(12,12));
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);				
 				if strcmp(meshType_, 'Cartesian')
-					detJ_ = zeros(4,1);
-					for jj=1:4
+					detJ_ = zeros(nEGIP,1);
+					for jj=1:nEGIP
 						probeEleNods = nodeCoords_(eNodMat_(1,:)',:);
-						Jac = deShapeFuncs_(2*(jj-1)+1:2*jj,:)*probeEleNods;
+						Jac = deShapeFuncs_(nEND*(jj-1)+1:nEND*jj,:)*probeEleNods;
 						detJ_(jj) = det(Jac);
-						invJ(2*(jj-1)+1:2*jj, 2*(jj-1)+1:2*jj) = inv(Jac);
+						invJ(nEND*(jj-1)+1:nEND*jj, nEND*(jj-1)+1:nEND*jj) = inv(Jac);
 					end
 					matrixB_ = ElementStrainMatrix(deShapeFuncs_, invJ);
 					Ke = ElementStiffMatrix(matrixB_, matrixD_.arr, wgts, detJ_);
@@ -56,20 +136,20 @@ function AssembleStiffnessMatrix()
 						K_ = K_ + tmpK;					
 					end
 				else
-					detJ_ = zeros(4,numEles_);
-					iDetJ = zeros(4,1);
-					matrixB_ = zeros(3*4, 2*4); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+					detJ_ = zeros(nEGIP,numEles_);
+					iDetJ = zeros(nEGIP,1);
+					matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
-						sK = zeros(8*(8+1)/2, length(rangeIndex));
+						sK = zeros(8*(8+1)/2, length(rangeIndex)); %%Ke = 8-by-8
 						index = 0;
 						for ii=rangeIndex(1):rangeIndex(end)
 							index = index + 1;
 							probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
-							for kk=1:4
-								Jac = deShapeFuncs_(2*(kk-1)+1:2*kk,:)*probeEleNods;
+							for kk=1:nEGIP
+								Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
 								iDetJ(kk) = det(Jac);
-								invJ(2*(kk-1)+1:2*kk, 2*(kk-1)+1:2*kk) = inv(Jac);							
+								invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
 							end
 							detJ_(:,ii) = iDetJ;
 							meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
@@ -88,21 +168,21 @@ function AssembleStiffnessMatrix()
 					end
 				end			
 			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
-				detJ_ = zeros(4,numEles_);
-				iDetJ = zeros(4,1);
-				matrixD_ = struct('arr', sparse(12,12)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
-				matrixB_ = zeros(3*4, 2*4); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+				detJ_ = zeros(nEGIP,numEles_);
+				iDetJ = zeros(nEGIP,1);
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
+				matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
-					sK = zeros(8*(8+1)/2, length(rangeIndex));
+					sK = zeros(8*(8+1)/2, length(rangeIndex)); %%Ke = 8-by-8
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
-						for kk=1:4
-							Jac = deShapeFuncs_(2*(kk-1)+1:2*kk,:)*probeEleNods;
+						for kk=1:nEGIP
+							Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
 							iDetJ(kk) = det(Jac);
-							invJ(2*(kk-1)+1:2*kk, 2*(kk-1)+1:2*kk) = inv(Jac);							
+							invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
 						end
 						detJ_(:,ii) = iDetJ;
 						meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
@@ -127,21 +207,26 @@ function AssembleStiffnessMatrix()
 		case 'Solid144'
 		
 		case 'Solid188'
+			nEN = eleType_.nEleNodes;
+			nEND = eleType_.nEleNodeDOFs;
+			nESC = eleType_.nEleStressComponents;
+			nEGIP = eleType_.nEleGaussIntegralPoints;
+		
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
 			deShapeFuncs_ = DeShapeFunction(gaussIPs);
-			invJ = zeros(24,24);
+			invJ = zeros(nEND*nEGIP,nEND*nEGIP);
 			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
-				matrixD_ = struct('arr', sparse(48,48));
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);	
 				if strcmp(meshType_, 'Cartesian')
-					detJ_ = zeros(4,1);
-					for jj=1:8
+					detJ_ = zeros(nEGIP,1);
+					for jj=1:nEGIP
 						probeEleNods = nodeCoords_(eNodMat_(1,:)',:);
-						Jac = deShapeFuncs_(3*(jj-1)+1:3*jj,:)*probeEleNods;
+						Jac = deShapeFuncs_(nEND*(jj-1)+1:nEND*jj,:)*probeEleNods;
 						detJ_(jj) = det(Jac);
-						invJ(3*(jj-1)+1:3*jj, 3*(jj-1)+1:3*jj) = inv(Jac);
+						invJ(nEND*(jj-1)+1:nEND*jj, nEND*(jj-1)+1:nEND*jj) = inv(Jac);
 					end
 					matrixB_ = ElementStrainMatrix(deShapeFuncs_, invJ);
 					Ke = ElementStiffMatrix(matrixB_, matrixD_.arr, wgts, detJ_);
@@ -157,20 +242,20 @@ function AssembleStiffnessMatrix()
 						K_ = K_ + tmpK;					
 					end					
 				else
-					detJ_ = zeros(8,numEles_);
-					iDetJ = zeros(8,1);				
-					matrixB_ = zeros(6*8, 3*8); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+					detJ_ = zeros(nEGIP,numEles_);
+					iDetJ = zeros(nEGIP,1);				
+					matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
-						sK = zeros(24*(24+1)/2, length(rangeIndex));
+						sK = zeros(24*(24+1)/2, length(rangeIndex)); %%Ke = 24-by-24
 						index = 0;
 						for ii=rangeIndex(1):rangeIndex(end)
 							index = index + 1;
 							probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
-							for kk=1:8
-								Jac = deShapeFuncs_(3*(kk-1)+1:3*kk,:)*probeEleNods;
+							for kk=1:nEGIP
+								Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
 								iDetJ(kk) = det(Jac);
-								invJ(3*(kk-1)+1:3*kk, 3*(kk-1)+1:3*kk) = inv(Jac);							
+								invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
 							end
 							detJ_(:,ii) = iDetJ;
 							meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
@@ -189,21 +274,21 @@ function AssembleStiffnessMatrix()
 					end
 				end
 			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
-				detJ_ = zeros(8,numEles_);
-				iDetJ = zeros(8,1);
-				matrixD_ = struct('arr', sparse(48,48)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
-				matrixB_ = zeros(6*8, 3*8); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
+				detJ_ = zeros(nEGIP,numEles_);
+				iDetJ = zeros(nEGIP,1);
+				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
+				matrixB_ = zeros(nESC*nEGIP, nEND*nEGIP); matrixB_ = repmat(matrixB_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
-					sK = zeros(24*(24+1)/2, length(rangeIndex));
+					sK = zeros(24*(24+1)/2, length(rangeIndex)); %%Ke = 24-by-24
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
-						for kk=1:8
-							Jac = deShapeFuncs_(3*(kk-1)+1:3*kk,:)*probeEleNods;
+						for kk=1:nEGIP
+							Jac = deShapeFuncs_(nEND*(kk-1)+1:nEND*kk,:)*probeEleNods;
 							iDetJ(kk) = det(Jac);
-							invJ(3*(kk-1)+1:3*kk, 3*(kk-1)+1:3*kk) = inv(Jac);							
+							invJ(nEND*(kk-1)+1:nEND*kk, nEND*(kk-1)+1:nEND*kk) = inv(Jac);							
 						end
 						detJ_(:,ii) = iDetJ;
 						meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);

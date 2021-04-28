@@ -53,8 +53,13 @@ function hd = ShowSilhouette()
 		% camlight('left','infinite');
         material dull; %% dull, shiny, metal		
 	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		edgeIndices = eNodMat_(:, [1 2 2 1  2 3 3 2  3 4 4 3  4 1 1 4;])';
-		edgeIndices = reshape(edgeIndices(:), 4, 4*numEles_);
+		if strcmp(eleType_.eleName, 'Plane133')
+			edgeIndices = eNodMat_(:, [1 2 2 1  2 3 3 2  3 1 1 3])';
+			edgeIndices = reshape(edgeIndices(:), 4, 3*numEles_);			
+		else
+			edgeIndices = eNodMat_(:, [1 2 2 1  2 3 3 2  3 4 4 3  4 1 1 4])';
+			edgeIndices = reshape(edgeIndices(:), 4, 4*numEles_);		
+		end
 		tmp = zeros(size(nodeCoords_,1),1); tmp(boundaryNodes_) = 1;
 		tmp = tmp(edgeIndices); tmp = sum(tmp,1);
 		boundaryEleEdges = edgeIndices(:,find(4==tmp));

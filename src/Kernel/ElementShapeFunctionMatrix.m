@@ -2,7 +2,14 @@ function Nm = ElementShapeFunctionMatrix(Nf)
 	global eleType_;
 	switch eleType_.eleName
 		case 'Plane133'
-	
+			Nm = [
+				Nf(1,1)	0	Nf(1,2) 0	Nf(1,3) 0
+				0 Nf(1,1)	0 Nf(1,2)	0 Nf(1,3)
+				Nf(2,1) 0	Nf(2,2) 0	Nf(2,3) 0
+				0 Nf(2,1)	0 Nf(2,2)	0 Nf(2,3)	
+				Nf(3,1) 0	Nf(3,2) 0	Nf(3,3) 0
+				0 Nf(3,1)	0 Nf(3,2)	0 Nf(3,3)		
+				];		
 		case 'Plane144'
 			Nm = [
 				Nf(1,1)	0	Nf(1,2) 0	Nf(1,3) 0	Nf(1,4) 0
