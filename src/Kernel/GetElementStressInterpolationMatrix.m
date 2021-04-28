@@ -4,6 +4,11 @@ function Ns = GetElementStressInterpolationMatrix()
 		case 'Plane133'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussIPs);
+			Ns = sparse(9,9);
+			ii = 3*(1:3);
+			Ns(1,ii-2) = N(1,:); Ns(2,ii-1) = N(1,:); Ns(3,ii) = N(1,:);
+			Ns(4,ii-2) = N(2,:); Ns(5,ii-1) = N(2,:);	Ns(6,ii) = N(2,:);	
+			Ns(7,ii-2) = N(3,:); Ns(8,ii-1) = N(3,:); Ns(9,ii) = N(3,:);				
 		case 'Plane144'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussIPs);
