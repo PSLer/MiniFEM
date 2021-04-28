@@ -3,7 +3,27 @@ function B = ElementStrainMatrix(dShape, invJ)
 	derivatives = invJ * dShape;
 	switch eleType_.eleName
 		case 'Plane133'
-
+			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);
+			dNds2 = derivatives(3,:);	dNdt2 = derivatives(4,:);
+			dNds3 = derivatives(5,:);	dNdt3 = derivatives(6,:);
+			
+			B11 = [dNds1(1) 0; 0 dNdt1(1); dNdt1(1) dNds1(1)];
+			B12 = [dNds1(2) 0; 0 dNdt1(2); dNdt1(2) dNds1(2)];
+			B13 = [dNds1(3) 0; 0 dNdt1(3); dNdt1(3) dNds1(3)];
+			
+			B21 = [dNds2(1) 0; 0 dNdt2(1); dNdt2(1) dNds2(1)];
+			B22 = [dNds2(2) 0; 0 dNdt2(2); dNdt2(2) dNds2(2)];
+			B23 = [dNds2(3) 0; 0 dNdt2(3); dNdt2(3) dNds2(3)];
+			
+			B31 = [dNds3(1) 0; 0 dNdt3(1); dNdt3(1) dNds3(1)];
+			B32 = [dNds3(2) 0; 0 dNdt3(2); dNdt3(2) dNds3(2)];
+			B33 = [dNds3(3) 0; 0 dNdt3(3); dNdt3(3) dNds3(3)];
+			
+			B = [
+				B11 B12 B13
+				B21 B22 B23
+				B31 B32 B33
+			];
 		case 'Plane144'
 			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);
 			dNds2 = derivatives(3,:);	dNdt2 = derivatives(4,:);

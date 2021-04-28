@@ -22,7 +22,7 @@ ModelingOpt = 4;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
-		CreateRectangle([100, 50]);
+		CreateRectangle([100, 50], [0 0; 1 0.5]);
 	case 2
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
