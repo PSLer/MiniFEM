@@ -28,7 +28,7 @@ switch ModelingOpt
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateModelFromExistingVoxelizedModel('D:/MyDataSets/VoxelizedModels/femur3D_140_92_182.txt', 0.8);	
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/VoxelizedModels/femur3D_140_92_182.txt', 0.8);	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
@@ -37,7 +37,7 @@ switch ModelingOpt
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply', 128); 
 	case 6
 		SetElement('Solid188'); %% 'Solid188'
-		CreateWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk');
+		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/wrappedHexFEAmodel.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/armchair_hexa.vtk'); 

@@ -1,6 +1,6 @@
-function CreateModelFromExistingVoxelizedModel(fileName, varargin)
-	%% CreateModelFromExistingVoxelizedModel(fileName); 
-	%% CreateModelFromExistingVoxelizedModel(fileName, sizeScaling); 
+function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
+	%% CreateFromWrappedVoxelFEAmodel(fileName); 
+	%% CreateFromWrappedVoxelFEAmodel(fileName, sizeScaling); 
 	global eleType_;
 	global nelx_; global nely_; global nelz_; global boundingBox_;
 	global fixingCond_; global loadingCond_;

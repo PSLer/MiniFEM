@@ -20,7 +20,7 @@ function GenerateDatasetForTSV()
 	
 	fileName = strcat(outPath_, '/dataset_TSV.vtk');
 	fid = fopen(fileName, 'w');	
-	if 1%% strcmp(meshType_, 'Any')
+	if strcmp(meshType_, 'Any')
 		%%write in .vtk style	
 		%%1.1 file header (ignore 'volume mesh' for 2D)
 		fprintf(fid, '%s %s %s %s', '# vtk DataFile Version');
@@ -53,14 +53,14 @@ function GenerateDatasetForTSV()
 			fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 			fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
+				fprintf(fid, '%d %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
 			end        
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
 			if ~isempty(fixingCond_)
 				fprintf(fid, '%d\n', fixingCond_-1);
 			end								
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);		
-			fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');			
+			fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');			
 		else
 			%%1.2 node coordinates
 			fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
@@ -83,14 +83,14 @@ function GenerateDatasetForTSV()
 			fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 			fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %6f %6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
+				fprintf(fid, '%d %.6f %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
 			end
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
 			if ~isempty(fixingCond_)
 				fprintf(fid, '%d\n', fixingCond_-1);						
 			end
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
-			fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');			
+			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');			
 		end
 	else
 		%%write in economic Cartesian mesh style
@@ -105,9 +105,9 @@ function GenerateDatasetForTSV()
 			%%2.2 mesh description
 			fprintf(fid, ' %d %d\n', [nelx_ nely_]);
 			fprintf(fid, '%s', 'LowerBound:');
-			fprintf(fid, ' %f %f\n', boundingBox_(1,:));
+			fprintf(fid, ' %.6f %.6f\n', boundingBox_(1,:));
 			fprintf(fid, '%s', 'UpperBound:');
-			fprintf(fid, ' %f %f\n', boundingBox_(2,:));	
+			fprintf(fid, ' %.6f %.6f\n', boundingBox_(2,:));	
 			fprintf(fid, '%s', 'ELEMENTS');
 			fprintf(fid, ' %d', numEles_);
 			fprintf(fid, ' %s \n', 'int');	
@@ -118,21 +118,21 @@ function GenerateDatasetForTSV()
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
+				fprintf(fid, '%d %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
 			end
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
 			if ~isempty(fixingCond_)
 				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_)-1);
 			end
 			fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
-			fprintf(fid, '%.6e %.6e %6e\n', cartesianStressField_');				
+			fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');				
 		else
 			%%2.2 mesh description
 			fprintf(fid, ' %d %d %d\n', [nelx_ nely_ nelz_]);
 			fprintf(fid, '%s', 'LowerBound:');
-			fprintf(fid, ' %f %f %f\n', boundingBox_(1,:));
+			fprintf(fid, ' %.6f %.6f %.6f\n', boundingBox_(1,:));
 			fprintf(fid, '%s', 'UpperBound:');
-			fprintf(fid, ' %f %f %f\n', boundingBox_(2,:));	
+			fprintf(fid, ' %.6f %.6f %.6f\n', boundingBox_(2,:));	
 			fprintf(fid, '%s', 'ELEMENTS');
 			fprintf(fid, ' %d', numEles_);
 			fprintf(fid, ' %s \n', 'int');	
@@ -143,14 +143,14 @@ function GenerateDatasetForTSV()
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %6f %6\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
+				fprintf(fid, '%d %.6f %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
 			end
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
 			if ~isempty(fixingCond_)
 				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_)-1);
 			end
 			fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
-			fprintf(fid, '%.6e %.6e %6e %.6e %.6e %6e\n', cartesianStressField_');				
+			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');				
 		end
 	end
 	fclose(fid);

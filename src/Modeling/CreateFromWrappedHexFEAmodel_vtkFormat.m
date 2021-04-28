@@ -1,4 +1,4 @@
-function CreateWrappedHexFEAmodel_vtkFormat(fileName)
+function CreateFromWrappedHexFEAmodel_vtkFormat(fileName)
 	global eleType_;
 	global boundingBox_;
 	global numEles_; global eNodMat_; global eDofMat_; 
@@ -39,19 +39,19 @@ function CreateWrappedHexFEAmodel_vtkFormat(fileName)
 	tmp = fscanf(fid, '%s %s', 2);
 	nodState_ = fscanf(fid, '%d', [1 numNodes_])'; nodState_ = int32(nodState_);
 	
-
 	%%6. boundary condition
 	tmp = fscanf(fid, '%s %s', 2);
 	numFixedNodes = fscanf(fid, '%d', 1);
 	if numFixedNodes
-		fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])'; fixingCond_ = int32(fixingCond_);
+		fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])'; fixingCond_ = int32(fixingCond_)+1;
 	end
 
 	%%7. loading condition
 	tmp = fscanf(fid, '%s %s', 2);
 	numLoadedNodes = fscanf(fid, '%d', 1);
 	if numLoadedNodes
-		loadingCond_ = fscanf(fid, '%d %e %e %e', [4 numLoadedNodes])';		
+		loadingCond_ = fscanf(fid, '%d %e %e %e', [4 numLoadedNodes])';
+		loadingCond_(:,1) = loadingCond_(:,1) + 1;
 	end
 	fclose(fid);
 
