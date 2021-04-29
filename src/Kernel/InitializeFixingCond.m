@@ -4,8 +4,7 @@ function InitializeFixingCond()
 	global nodeCoords_;
 	global fixingCond_;
 	global PickedNodeCache_;
-	ndC = nodeCoords_(boundaryNodes_,:);
-	if isempty(PickedNodeCache_), warning('There is no node available!'); end
+	if isempty(PickedNodeCache_), warning('There is no node available!'); return; end
 	PickedNodeCache_ = unique(PickedNodeCache_);
 	numTarNodes = length(PickedNodeCache_);
 

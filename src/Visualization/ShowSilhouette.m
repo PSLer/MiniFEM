@@ -43,11 +43,12 @@ function hd = ShowSilhouette()
 			cPatchs = zeros(size(xPatchs));				
 			hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;			
 		end
+		camproj('perspective');
 		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 0.3, 'EdgeColor', 'None');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el)
+		camlight(az,el);
 		% camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
@@ -75,11 +76,12 @@ function hd = ShowSilhouette()
 		zPatchs = nodeCoords_(:,3); zPatchs = zPatchs(eNodMat_');
 		cPatchs = zeros(size(yPatchs));
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;	
+		camproj('perspective');
 		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 0.3, 'EdgeColor', 'None');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el)
+		camlight(az,el);
 		% camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');

@@ -64,9 +64,10 @@ function ShowMeshNormal()
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;
 		hdNormal = quiver3(ctrCoords(:,1), ctrCoords(:,2), ctrCoords(:,3), aveNormal(:,1), aveNormal(:,2), aveNormal(:,3));	
 	end
+	camproj('perspective');
 	[az, el] = view(3);
 	lighting gouraud;
-	camlight(az,el)
+	camlight(az,el);
 	% camlight('headlight','infinite');
 	% %camlight('right','infinite');
 	% camlight('left','infinite');

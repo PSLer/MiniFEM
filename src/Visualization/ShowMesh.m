@@ -23,6 +23,7 @@ function hd = ShowMesh()
 		zPatchs = nodeCoords_(:,3); zPatchs = zPatchs(boundaryEleFaces);	
 		cPatchs = zeros(size(xPatchs));				
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;
+		camproj('perspective');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		[az, el] = view(3);
 		lighting gouraud;
@@ -43,10 +44,11 @@ function hd = ShowMesh()
 		zPatchs = nodeCoords_(:,3); zPatchs = zPatchs(eNodMat_');
 		cPatchs = zeros(size(yPatchs));
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;
+		camproj('perspective');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el)
+		camlight(az,el);
 		% camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
