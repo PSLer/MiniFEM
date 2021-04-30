@@ -44,16 +44,16 @@ switch ModelingOpt
 	case 8
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/dragon.mesh');
-	case 9
+	case 9 %%unavailable yet
 		SetElement('Solid144'); %% 'Solid144'
-		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/red_circular_box_output_tet.mesh');		
-	case 10
+		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/airplane1_output_tet.mesh');		
+	case 10 %%unavailable yet
 		SetElement('Shell133'); %% 'Shell133'
 		CreateFromExternalTriSurfMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply');
-	case 11
+	case 11 %%unavailable yet
 		SetElement('Shell133'); %% 'Shell133'
 		CreateFromExternalTriSurfMesh_objFormat('D:/MyDataSets/TriPolyGraph_obj/58009_sf.obj');
-	case 12
+	case 12 %%unavailable yet
 		SetElement('Shell144'); %% 'Shell144'
 		CreateFromExternalQuadSurfMesh_meshFormat('D:/MyDataSets/QuadSurfMesh_mesh/3_octa-flower.mesh');
 	otherwise

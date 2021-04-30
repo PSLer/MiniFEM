@@ -6,6 +6,7 @@ function CreateFromExternalTetMesh_meshFormat(fileName)
 	global boundaryNodes_;
 	global numNodsAroundEleVec_;
 	global nodState_; global eleState_;
+	global eleVolumes_;
 	if ~strcmp(eleType_.eleName, 'Solid144')
 		error('Only Works with Solid144 Element!');
 	end
@@ -56,4 +57,10 @@ function CreateFromExternalTetMesh_meshFormat(fileName)
 	end
 	tmp = 3*eNodMat_; eDofMat_ = [tmp-2 tmp-1 tmp];
 	eDofMat_ = eDofMat_(:,[1 5 9  2 6 10  3 7 11  4 8 12]);
+	
+	tetVtxs = zeros(4,3,numEles_);
+	for ii=1:numEles_
+		tetVtxs(:,:,ii) = nodeCoords_(eNodMat_(ii,:),:);
+	end
+	eleVolumes_ = CalcTetVolume(tetVtxs);
 end

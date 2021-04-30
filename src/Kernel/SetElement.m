@@ -123,7 +123,16 @@ function val = Solid144()
 	val.nEleNodeDOFs = 3;
 	val.nEleStressComponents = 6;
 	val.nEleGaussIntegralPoints = 4;
-	val.GaussIntegralPointsNaturalSpace = [];
+	s1 = 0.58541020;
+	t1 = 0.13819660;
+	w = 0.25;
+	val.GaussIntegralPointsNaturalSpace = [
+		s1		t1		t1		t1
+		t1		s1		t1		t1
+		t1		t1		s1		t1
+		t1		t1		t1		s1
+		w		w		w		w
+	];
 end
 
 function val = Solid188()

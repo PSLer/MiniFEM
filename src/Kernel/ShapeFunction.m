@@ -28,9 +28,7 @@ function N = ShapeFunction(paraCoords)
 			N(:,3) = 0.25*(1+s).*(1+t);
 			N(:,4) = 0.25*(1-s).*(1+t);			
 		case 'Solid144'
-			s = paraCoords(:,1);
-			t = paraCoords(:,2);
-			p = paraCoords(:,3);
+			N = paraCoords;
 		case 'Solid188'
 			%				*8			*7
 			%			*5			*6

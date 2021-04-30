@@ -19,7 +19,7 @@ global M_;
 global F_;
 
 %% Solving Opt
-global GPU_; GPU_ = 'ON';				
+global GPU_; GPU_ = 'OFF';				
 global tol_; tol_ = 1.0e-6;
 global maxIT_; maxIT_ = 20000;
 
