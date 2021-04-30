@@ -5,6 +5,7 @@ function hd = ShowMesh()
 	global numEles_;
 	global eNodMat_;
 	global boundaryNodes_;
+	figure;
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		if strcmp(eleType_.eleName, 'Solid144')
 			patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified
@@ -27,7 +28,7 @@ function hd = ShowMesh()
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el)
+		camlight(az,el);
 		% camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
