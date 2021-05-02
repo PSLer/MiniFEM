@@ -51,6 +51,7 @@ function x = myCG4MA(b)
 		r2 = r1 - alpha*valMTV;
 		
 		resnorm = norm(r2)/normB;
+		%disp([' It.: ' sprintf('%4i',its) ' Res.: ' sprintf('%16.6e',resnorm)]);
 		if resnorm<tol_
 			disp(['myCG4MA converged at iteration' sprintf('%5i', its) ' to a solution with relative residual' ...
 					sprintf('%16.6e',resnorm)]);
@@ -115,7 +116,7 @@ function x = myCG4MA_GPU(b)
 		%disp([' It.: ' sprintf('%4i',its) ' Res.: ' sprintf('%16.6e',resnorm)]);
 		if resnorm<tol_
 			x = gather(x); 
-			disp(['Conjugate Gradient Solver (on GPU) Converged at Iteration' sprintf('%5i', its) ' to a solution with relative residual' ...
+			disp(['myCG4MA (on GPU) converged at iteration' sprintf('%5i', its) ' to a solution with relative residual' ...
 					sprintf('%16.6e',resnorm)]);
 			break;
 		end		

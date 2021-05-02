@@ -18,8 +18,7 @@ function ShowCyclicalVibration(amp, scalingFac, varargin)
 	end	
 		
 	nFrame = 36;
-	az = 0; el = 0;
-	hF = figure; axis equal; axis tight; axis off;	
+	hF = figure; axis equal; axis tight; axis off; camproj('perspective');
 	fileName = strcat(outPath_, 'CyclicalVibration.gif');	
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		if strcmp(eleType_.eleName, 'Solid144')
@@ -45,20 +44,20 @@ function ShowCyclicalVibration(amp, scalingFac, varargin)
 			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(boundaryEleFaces);
 			
 			hGlyph = patch(xPatchs, yPatchs, zPatchs, cPatchs); 
-			view(3); 
-			camproj('perspective');
 			if 2==nargin
 				colormap('jet'); set(hGlyph, 'FaceColor', 'Interp', 'FaceAlpha', 1, 'EdgeColor', 'None');
 			else
 				set(hGlyph, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 1, 'EdgeColor', 'None');
 			end
 			if 1==ii
+				view(3); 
 				axis vis3d;
 				disp('Adjust the Posture of the Object for better Presentation!');
 				pause; [az, el] = view; viewAngle = [az el];
 				if 3==nargin
 					lighting gouraud;
-					camlight(az,el);
+					hdLight = camlight(viewAngle(1), viewAngle(2));
+					% hdLight = camlight('headlight','infinite');
 					material dull;
 				end
 			else

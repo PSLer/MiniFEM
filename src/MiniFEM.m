@@ -19,7 +19,7 @@ SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 6;
+ModelingOpt = 8;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
