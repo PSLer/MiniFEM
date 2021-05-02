@@ -4,7 +4,7 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
 	global nodeCoords_;
 	global numEles_;
 	global eNodMat_;
-	global boundaryNodes_;
+	global nodState_;
 	global U_;
 	global boundingBox_;
 	
@@ -26,8 +26,7 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
 			patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
 			numNodsEleFace = 4;
 		end
-		tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
-		tmp = tmp(patchIndices); tmp = sum(tmp,1);
+		tmp = nodState_(patchIndices); tmp = sum(tmp,1);
 		boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
 		meshCoords = reshape(meshCoords, 3, numNodes_)' + nodeCoords_;
 		xPatchs = meshCoords(:,1); xPatchs = xPatchs(boundaryEleFaces);

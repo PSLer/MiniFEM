@@ -4,6 +4,8 @@ function GetCartesianStressField()
 	%% stress_GaussPoints = Ns * stress_Nodes -> stress_Nodes = inv(Ns) * stress_GaussPoints
 	global U_;
 	if isempty(U_), warning('No Deformation Available for Stress Analysis'); return; end
+	tStart = tic;
 	ComputeCartesianStress();
+	disp(['Compute Cartesian Stresses Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 	ShowStressComp('Sigma_xx');
 end

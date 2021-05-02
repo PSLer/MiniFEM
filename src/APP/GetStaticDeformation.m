@@ -8,7 +8,7 @@ function GetStaticDeformation(varargin)
 	if isempty(loadingCond_), error('No Loads!'); end
 	if isempty(F_), ApplyBoundaryCondition(); end
 	if isempty(K_), AssembleStiffnessMatrix(); end
-
+	tStart = tic;
 	if 0==nargin
 		U_ = SolvingStaticLinearSystemEquations();
 	elseif 1==nargin
@@ -20,5 +20,6 @@ function GetStaticDeformation(varargin)
 	else
 		error('Wrong Input!');
 	end
+	disp(['Compute Static Deformation Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 	ShowDeformation('T');
 end

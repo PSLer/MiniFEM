@@ -8,6 +8,7 @@ function GetFrequencyResponse(iFreq, varargin)
 	if isempty(F_), ApplyBoundaryCondition(); end
 	if isempty(K_), AssembleStiffnessMatrix(); end
 	if isempty(M_), AssembleMassMatrix(); end
+	tStart = tic;
 	if 1==nargin
 		U_ = SolvingDynamicLinearSystemEquations(iFreq);
 	elseif 2==nargin
@@ -18,6 +19,7 @@ function GetFrequencyResponse(iFreq, varargin)
 		end	
 	else
 		error('Wrong Input!');
-	end	
+	end
+	disp(['Compute Frequency Response Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 	ShowDeformation('T');
 end

@@ -4,7 +4,6 @@ function hd = ShowElements(varargin)
 	global nodeCoords_;
 	global numEles_;
 	global eNodMat_;
-	global boundaryNodes_;
 	if 0==nargin, eleList = (1:numEles_)'; else, eleList = varargin{1}; eleList = eleList(:); end
 	if isempty(eleList), warning('No Element to be Shown!'); return; end
 	numEleToBeShown = length(eleList);

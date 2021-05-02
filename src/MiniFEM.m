@@ -13,12 +13,12 @@ addpath('./Kernel');
 addpath('./Visualization');
 GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
-cachePach_ = 'D:/MyProjects/MiniFEM/cache/'; if ~exist(cachePach_, 'dir'), mkdir(cachePach_); end
 
 %%1. Set Material Properties
 SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
+tStart = tic;
 ModelingOpt = 6;
 switch ModelingOpt
 	case 1	
@@ -29,16 +29,16 @@ switch ModelingOpt
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/VoxelizedModels/femur3D_140_92_182.txt', 0.8);	
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/femur3D_140_92_182.txt', 0.8);	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/TopOptiMdls4FEA/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
+		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply', 128); 
 	case 6
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk');
+		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny2_hexa_FEA.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/camel_hexa.vtk'); 
@@ -60,12 +60,11 @@ switch ModelingOpt
 	otherwise
 		error('Unsupported Modeling Option!');
 end
-
-%%3. Show Problem
+disp(['Create FEA Model Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 ShowMesh();
-%ShowSilhouette();
-% ShowBoundaryCondition();
 
-%%4. (Interactively) Apply For Boundary Condition
+%%3. (Interactively) Apply For Boundary Condition
+%% ...
+%% ...
 
 

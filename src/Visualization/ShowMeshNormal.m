@@ -1,10 +1,9 @@
 function ShowMeshNormal()
 	global eleType_;
-	global numNodes_;
 	global nodeCoords_;
 	global numEles_;
 	global eNodMat_;
-	global boundaryNodes_;
+	global nodState_;
 	global boundingBox_;
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		warning('Only Work with 3D meshes!'); return;
@@ -12,11 +11,10 @@ function ShowMeshNormal()
 	figure;
 	normalFeatureSize = min(boundingBox_(2,:)-boundingBox_(1,:))/20;
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
-		tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
 		if strcmp(eleType_.eleName, 'Solid144')
 			patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified
 			patchIndices = reshape(patchIndices(:), 3, 4*numEles_);				
-			tmp = tmp(patchIndices); tmp = sum(tmp,1);
+			tmp = nodState_(patchIndices); tmp = sum(tmp,1);
 			boundaryEleFaces = patchIndices(:,find(3==tmp));
 			xPatchs = nodeCoords_(:,1); xPatchs = xPatchs(boundaryEleFaces);
 			yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(boundaryEleFaces);
@@ -29,7 +27,7 @@ function ShowMeshNormal()
 		else
 			patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
 			patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
-			tmp = tmp(patchIndices); tmp = sum(tmp,1);
+			tmp = nodState_(patchIndices); tmp = sum(tmp,1);
 			boundaryEleFaces = patchIndices(:,find(4==tmp));
 			xPatchs = nodeCoords_(:,1); xPatchs = xPatchs(boundaryEleFaces);
 			yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(boundaryEleFaces);

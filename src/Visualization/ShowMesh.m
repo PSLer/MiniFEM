@@ -1,10 +1,9 @@
 function hd = ShowMesh()
 	global eleType_;
-	global numNodes_;
 	global nodeCoords_;
 	global numEles_;
 	global eNodMat_;
-	global boundaryNodes_;
+	global nodState_
 	figure;
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		if strcmp(eleType_.eleName, 'Solid144')
@@ -16,8 +15,7 @@ function hd = ShowMesh()
 			patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
 			numNodsEleFace = 4;
 		end
-		tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
-		tmp = tmp(patchIndices); tmp = sum(tmp,1);
+		tmp = nodState_(patchIndices); tmp = sum(tmp,1);
 		boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
 		xPatchs = nodeCoords_(:,1); xPatchs = xPatchs(boundaryEleFaces);
 		yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(boundaryEleFaces);

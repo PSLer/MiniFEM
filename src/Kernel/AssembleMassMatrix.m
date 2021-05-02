@@ -10,8 +10,8 @@ function AssembleMassMatrix()
 	global detJ_;
 	
 	global M_;
-	
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
+	tStart = tic;
 	M_ = sparse(numDOFs_,numDOFs_);
 	switch eleType_.eleName
 		case 'Plane133'
@@ -183,5 +183,6 @@ function AssembleMassMatrix()
 		case 'Shell144'
 		
 	end
-	M_ = M_(freeDOFs_, freeDOFs_);	
+	M_ = M_(freeDOFs_, freeDOFs_);
+	disp(['Assemble Mass Matrix Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 end

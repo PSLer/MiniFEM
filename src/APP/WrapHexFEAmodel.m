@@ -47,11 +47,11 @@ function WrapHexFEAmodel()
 	%%1.6 boundary condition
 	fprintf(fid, '%s %s ', 'fixed position:'); fprintf(fid, '%d\n', length(fixingCond_));
 	if ~isempty(fixingCond_)
-		fprintf(fid, '%d\n', fixingCond_-1);						
+		fprintf(fid, '%d\n', fixingCond_);						
 	end
 	fprintf(fid, '%s %s ', 'loading condition:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 	if ~isempty(loadingCond_)
-		fprintf(fid, '%d %.6f %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
+		fprintf(fid, '%d %.6f %.6f %.6f\n', loadingCond_');
 	end	
 	fclose(fid);
 end
