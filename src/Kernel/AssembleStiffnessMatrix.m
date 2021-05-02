@@ -169,23 +169,24 @@ function AssembleStiffnessMatrix()
 						K_ = K_ + tmpK;					
 					end					
 				else
+timeList = zeros(1,4);				
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 						sK = zeros(24*(24+1)/2, length(rangeIndex)); %%Ke = 24-by-24
 						index = 0;
 						for ii=rangeIndex(1):rangeIndex(end)
 							index = index + 1;						
-							iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);					
-							Ke = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, detJ_(:,ii));	
+							iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);			
+							Ke = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, detJ_(:,ii));							
 							semiKe = tril(Ke); 
 							[eKi, eKj, eKs] = find(semiKe);				
-							sK(:,index) = eKs;				
-						end
+							sK(:,index) = eKs;						
+						end						
 						iK = eDofMat_(rangeIndex,eKi)';
 						jK = eDofMat_(rangeIndex,eKj)';
 						tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
 						tmpK = tmpK + tmpK' - diag(diag(tmpK));
-						K_ = K_ + tmpK;
+						K_ = K_ + tmpK;						
 					end					
 				end
 			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)

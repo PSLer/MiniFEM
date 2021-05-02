@@ -19,7 +19,7 @@ SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 8;
+ModelingOpt = 6;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -41,7 +41,7 @@ switch ModelingOpt
 		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny2_hexa_FEA.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/camel_hexa.vtk'); 
+		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/hand_hexa.vtk'); 
 	case 8
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/dragon_hexa.mesh');

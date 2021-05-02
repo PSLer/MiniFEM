@@ -8,6 +8,7 @@ function GetStaticDeformation(varargin)
 	if isempty(loadingCond_), error('No Loads!'); end
 	if isempty(F_), ApplyBoundaryCondition(); end
 	if isempty(K_), AssembleStiffnessMatrix(); end
+return	
 	tStart = tic;
 	if 0==nargin
 		U_ = SolvingStaticLinearSystemEquations();

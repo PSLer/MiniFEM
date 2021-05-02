@@ -1,10 +1,11 @@
-function PickByLine(constantDir)
+function PickByLine(constantDir, varargin)
 	global eleType_;
 	global nodeCoords_;
 	global boundaryNodes_;
 	global PickedNodeCache_;
 	global hdPickedNode_;
 	
+	if 1==nargin, lineRelaxFactor = 0; else, lineRelaxFactor = varargin{1}; end
 	dcm_obj = datacursormode;
 	info_struct = getCursorInfo(dcm_obj);
 	if isempty(info_struct)
@@ -22,9 +23,9 @@ function PickByLine(constantDir)
 		if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 		switch constantDir
 			case 'X'
-				nodesOnLine = find(boundaryNodeCoords(:,1)==tarNode(1));
+				nodesOnLine = find(abs(boundaryNodeCoords(:,1)-tarNode(1))<=lineRelaxFactor);
 			case 'Y'
-				nodesOnLine = find(boundaryNodeCoords(:,2)==tarNode(2));
+				nodesOnLine = find(abs(boundaryNodeCoords(:,2)-tarNode(2))<=lineRelaxFactor);
 			otherwise
 				error('Wrongly Defined Line Direction!');
 		end	
@@ -34,24 +35,24 @@ function PickByLine(constantDir)
 		if 2~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 		switch constantDir(1)
 			case 'X'
-				nodesOnLine1 = find(boundaryNodeCoords(:,1)==tarNode(1));
+				nodesOnLine1 = find(abs(boundaryNodeCoords(:,1)-tarNode(1))<=lineRelaxFactor);
 			case 'Y'
-				nodesOnLine1 = find(boundaryNodeCoords(:,2)==tarNode(2));
+				nodesOnLine1 = find(abs(boundaryNodeCoords(:,2)-tarNode(2))<=lineRelaxFactor);
 			case 'Z'
-				nodesOnLine1 = find(boundaryNodeCoords(:,3)==tarNode(3));				
+				nodesOnLine1 = find(abs(boundaryNodeCoords(:,3)-tarNode(3))<=lineRelaxFactor);				
 			otherwise
 				error('Wrongly Defined Line Direction!');
 		end
 		switch constantDir(2)
 			case 'X'
-				nodesOnLine = nodesOnLine1(find(boundaryNodeCoords(nodesOnLine1,1)==tarNode(1)));
+				nodesOnLine = nodesOnLine1(find(abs(boundaryNodeCoords(nodesOnLine1,1)-tarNode(1))<=lineRelaxFactor));
 			case 'Y'
-				nodesOnLine = nodesOnLine1(find(boundaryNodeCoords(nodesOnLine1,2)==tarNode(2)));
+				nodesOnLine = nodesOnLine1(find(abs(boundaryNodeCoords(nodesOnLine1,2)-tarNode(2))<=lineRelaxFactor));
 			case 'Z'
-				nodesOnLine = nodesOnLine1(find(boundaryNodeCoords(nodesOnLine1,3)==tarNode(3)));				
+				nodesOnLine = nodesOnLine1(find(abs(boundaryNodeCoords(nodesOnLine1,3)-tarNode(3))<=lineRelaxFactor));				
 			otherwise
 				error('Wrongly Defined Line Direction!');
-		end		
+		end			
 		hdPickedNode_(end+1) = plot3(boundaryNodeCoords(nodesOnLine,1), boundaryNodeCoords(nodesOnLine,2), ...
 			boundaryNodeCoords(nodesOnLine,3), 'xr', 'LineWidth', 2, 'MarkerSize', 8);
 	end

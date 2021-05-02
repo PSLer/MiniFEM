@@ -1,4 +1,4 @@
-function PickBySurface(constantDir)
+function PickBySurface(constantDir, varargin)
 	global eleType_;
 	global nodeCoords_;
 	global boundaryNodes_;
@@ -7,6 +7,7 @@ function PickBySurface(constantDir)
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		warning('Only Work with non-2D Mesh!');
 	end
+	if 1==nargin, surfRelaxFactor = 0; else, surfRelaxFactor = varargin{1}; end
 	dcm_obj = datacursormode;
 	info_struct = getCursorInfo(dcm_obj);
 	if isempty(info_struct)
@@ -24,11 +25,11 @@ function PickBySurface(constantDir)
 	if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 	switch constantDir
 		case 'X'
-			nodesOnLine = find(boundaryNodeCoords(:,1)==tarNode(1));
+			nodesOnLine = find(abs(boundaryNodeCoords(:,1)-tarNode(1))<=surfRelaxFactor);
 		case 'Y'
-			nodesOnLine = find(boundaryNodeCoords(:,2)==tarNode(2));
+			nodesOnLine = find(abs(boundaryNodeCoords(:,2)-tarNode(2))<=surfRelaxFactor);
 		case 'Z'
-			nodesOnLine = find(boundaryNodeCoords(:,3)==tarNode(3));				
+			nodesOnLine = find(abs(boundaryNodeCoords(:,3)-tarNode(3))<=surfRelaxFactor);			
 		otherwise
 			error('Wrongly Defined Line Direction!');
 	end
