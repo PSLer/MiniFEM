@@ -19,4 +19,5 @@ function CreateRectangle(resCtrl, varargin)
 		boundingBox_ = [0 0; nelx_ nely_];
 	end
 	GenerateCartesianMesh2D(ones(nely_, nelx_));
+	EvaluateMeshQuality();
 end

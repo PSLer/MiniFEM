@@ -10,7 +10,7 @@ function WrapVoxelFEAmodel()
 	if ~strcmp(meshType_, 'Cartesian')
 		warning('Only Work with Cartesian Mesh!'); return;
 	end
-	fileName = strcat(outPath_, '/wrappedVoxelFEAmodel.txt');
+	fileName = strcat(outPath_, 'wrappedVoxelFEAmodel.txt');
 	fid = fopen(fileName, 'w');	
 	fprintf(fid, '%s %s %s', '# clipping model '); fprintf(fid, '\n');
 	if strcmp(eleType_.eleName, 'Plane144')

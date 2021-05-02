@@ -5,7 +5,7 @@ function CameraFlying()
 		warning('Only Work with 3D Object!');
 	end
 	
-	filename = strcat(outPath_, '/rotatingObject3D.gif');
+	filename = strcat(outPath_, 'rotatingObject3D.gif');
 	[az, el] = view;
 	nFrame = 180;
 	step = 360/nFrame;

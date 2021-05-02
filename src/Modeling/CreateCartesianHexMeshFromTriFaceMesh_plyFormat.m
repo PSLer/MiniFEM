@@ -45,4 +45,5 @@ function CreateCartesianHexMeshFromTriFaceMesh_plyFormat(fileName, resCtrl)
 	voxelizedModel = flip(Voxelize(nelx_, nely_, nelz_, formatedTriMesh),1);
 	
 	GenerateCartesianMesh3D(voxelizedModel);
+	EvaluateMeshQuality();
 end

@@ -19,4 +19,5 @@ function CreateCuboid(resCtrl, varargin)
 		boundingBox_ = [0 0 0; nelx_ nely_ nelz_];
 	end
 	GenerateCartesianMesh3D(ones(nely_, nelx_, nelz_));
+	EvaluateMeshQuality();
 end

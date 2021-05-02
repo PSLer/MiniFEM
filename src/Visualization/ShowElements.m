@@ -6,6 +6,7 @@ function hd = ShowElements(varargin)
 	global eNodMat_;
 	global boundaryNodes_;
 	if 0==nargin, eleList = (1:numEles_)'; else, eleList = varargin{1}; eleList = eleList(:); end
+	if isempty(eleList), warning('No Element to be Shown!'); return; end
 	numEleToBeShown = length(eleList);
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		showAllMesh = 0;

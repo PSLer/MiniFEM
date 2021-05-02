@@ -2,6 +2,7 @@ function ComputeCartesianStress()
 	%% sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (solid)
 	%%NOTE: Outer Interpolate the stress at Gauss Points to Nodes by Element Stress Interpolation Matrix --- Ns
 	%% stress_GaussPoints = Ns * stress_Nodes -> stress_Nodes = inv(Ns) * stress_GaussPoints
+	global cachePach_;
 	global eleType_;
 	global meshType_;
 	global numEles_; 
@@ -10,9 +11,12 @@ function ComputeCartesianStress()
 	global eDofMat_;
 	global numNodsAroundEleVec_;
 	global matrixD_;
-	global matrixB_;	
+	global matrixB_;
 	global U_;
 	global cartesianStressField_;
+
+	iFileName = strcat(cachePach_, 'matrixB.mat');
+	tmp = load(iFileName); matrixB_ = tmp.matrixB_;
 	
 	switch eleType_.eleName 
 		case 'Plane133'

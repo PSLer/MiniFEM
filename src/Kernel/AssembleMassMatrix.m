@@ -8,10 +8,10 @@ function AssembleMassMatrix()
 	global eDofMat_;
 	global shapeFuncs_;
 	global detJ_;
+	
 	global M_;
 	
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
-	
 	M_ = sparse(numDOFs_,numDOFs_);
 	switch eleType_.eleName
 		case 'Plane133'

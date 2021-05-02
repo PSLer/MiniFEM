@@ -76,4 +76,5 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			end									
 	end
 	fclose(fid);
+	EvaluateMeshQuality();
 end

@@ -53,5 +53,6 @@ function CreateFromExternalHexMesh_vtkFormat(fileName)
 		numNodsAroundEleVec_(iEleNodes,1) = numNodsAroundEleVec_(iEleNodes,1) + 1;
 	end
 	tmp = 3*eNodMat_; eDofMat_ = [tmp-2 tmp-1 tmp];
-	eDofMat_ = eDofMat_(:,[1 9 17 2 10 18 3 11 19 4 12 20 5 13 21 6 14 22 7 15 23 8 16 24]);	
+	eDofMat_ = eDofMat_(:,[1 9 17 2 10 18 3 11 19 4 12 20 5 13 21 6 14 22 7 15 23 8 16 24]);
+	EvaluateMeshQuality();
 end

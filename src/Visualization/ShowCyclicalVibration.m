@@ -20,7 +20,7 @@ function ShowCyclicalVibration(amp, scalingFac, varargin)
 	nFrame = 36;
 	az = 0; el = 0;
 	hF = figure; axis equal; axis tight; axis off;	
-	fileName = strcat(outPath_, '/CyclicalVibration.gif');	
+	fileName = strcat(outPath_, 'CyclicalVibration.gif');	
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		if strcmp(eleType_.eleName, 'Solid144')
 			patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified

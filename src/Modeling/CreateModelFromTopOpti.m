@@ -67,5 +67,6 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			fixingCond_ = carNodMapForward_(fixingCond_);
 			loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));			
 	end
-	fclose(fid);	
+	fclose(fid);
+	EvaluateMeshQuality();
 end

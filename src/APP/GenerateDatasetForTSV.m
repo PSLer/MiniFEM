@@ -18,7 +18,7 @@ function GenerateDatasetForTSV()
 		warning('No Cartesian Stress Available!'); return;
 	end
 	
-	fileName = strcat(outPath_, '/dataset_TSV.vtk');
+	fileName = strcat(outPath_, 'dataset_TSV.vtk');
 	fid = fopen(fileName, 'w');	
 	if strcmp(meshType_, 'Any')
 		%%write in .vtk style	

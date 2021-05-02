@@ -12,13 +12,14 @@ addpath('./Modeling');
 addpath('./Kernel');
 addpath('./Visualization');
 GlobalVariables;
-outPath_ = 'D:/MyProjects/MiniFEM/out'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
+outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
+cachePach_ = 'D:/MyProjects/MiniFEM/cache/'; if ~exist(cachePach_, 'dir'), mkdir(cachePach_); end
 
 %%1. Set Material Properties
 SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
-ModelingOpt = 8;
+ModelingOpt = 6;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -37,7 +38,7 @@ switch ModelingOpt
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply', 128); 
 	case 6
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/wrappedHexFEAmodel.vtk');
+		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/bunny2_hexa_FEA.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/camel_hexa.vtk'); 

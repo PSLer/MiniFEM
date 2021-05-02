@@ -14,7 +14,7 @@ function WrapHexFEAmodel()
 		warning('Cartesian Mesh. Recomend to WrapVoxelFEAmodel(). Enter to Continue!'); pause;
 	end
 	
-	fileName = strcat(outPath_, '/wrappedHexFEAmodel.vtk');
+	fileName = strcat(outPath_, 'wrappedHexFEAmodel.vtk');
 	fid = fopen(fileName, 'w');	
 	%%write in .vtk style	
 	%%1.1 file header (ignore 'volume mesh' for 2D)
