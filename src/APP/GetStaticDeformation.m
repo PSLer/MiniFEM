@@ -4,11 +4,12 @@ function GetStaticDeformation(varargin)
 	global U_;
 	global fixingCond_; 
 	global loadingCond_;
+	
 	if isempty(fixingCond_), error('No Constraint!'); end
 	if isempty(loadingCond_), error('No Loads!'); end
 	if isempty(F_), ApplyBoundaryCondition(); end
 	if isempty(K_), AssembleStiffnessMatrix(); end
-return	
+	
 	tStart = tic;
 	if 0==nargin
 		U_ = SolvingStaticLinearSystemEquations();
