@@ -18,7 +18,7 @@ outPath_ = 'D:/MyProjects/MiniFEM/out'; if ~exist(outPath_, 'dir'), mkdir(outPat
 SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
-ModelingOpt = 4;
+ModelingOpt = 8;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -40,10 +40,10 @@ switch ModelingOpt
 		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/ExternalMdls4FEA/wrappedHexFEAmodel.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/armchair_hexa.vtk'); 
+		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/camel_hexa.vtk'); 
 	case 8
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/dragon.mesh');
+		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/dragon_hexa.mesh');
 	case 9 %%unavailable yet
 		SetElement('Solid144'); %% 'Solid144'
 		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/airplane1_output_tet.mesh');		
