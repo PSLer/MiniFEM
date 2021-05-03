@@ -6,7 +6,7 @@ function GenerateCartesianMesh3D(voxelizedModel)
 	global carEleMapBack_; global carEleMapForward_;
 	global carNodMapBack_; global carNodMapForward_;
 	global numNodsAroundEleVec_;
-	global boundaryNodes_;
+	global boundaryNodes_; global nodState_;
 	
 	meshType_ = 'Cartesian';
 	carEleMapBack_ = int32(find(1==voxelizedModel));
@@ -48,5 +48,7 @@ function GenerateCartesianMesh3D(voxelizedModel)
 		iEleNodes = eNodMat_(ii,:);
 		numNodsAroundEleVec_(iEleNodes,1) = numNodsAroundEleVec_(iEleNodes,1) + 1;
 	end
-	boundaryNodes_ = find(numNodsAroundEleVec_<8);	
+	boundaryNodes_ = find(numNodsAroundEleVec_<8);
+	nodState_ = zeros(numNodes_, 1, 'int32');
+	nodState_(boundaryNodes_) = 1;
 end
