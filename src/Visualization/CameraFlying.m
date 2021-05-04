@@ -11,10 +11,10 @@ function CameraFlying()
 	step = 360/nFrame;
 	light('visible', 'off');
 	lighting gouraud;
-	material dull;
 	for ii=1:nFrame
 		disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
 		hdLight = camlight(az, el);
+		material dull; %% dull, shiny, metal
 		f = getframe(gcf);
 		im = frame2im(f);
 		[imind, cm] = rgb2ind(im, 256);
