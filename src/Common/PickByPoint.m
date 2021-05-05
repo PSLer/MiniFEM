@@ -5,7 +5,7 @@ function PickByPoint(varargin)
 	global eleType_;
 	global nodeCoords_;
 	global boundaryNodes_;	
-	global PickedNodeCache_;
+	global pickedNodeCache_;
 	global hdPickedNode_;
 	if 0==nargin
 		dcm_obj = datacursormode;
@@ -31,5 +31,5 @@ function PickByPoint(varargin)
 		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
 		[~,newlyPickedNode] = min(vecnorm(tarNode-boundaryNodeCoords,2,2));		
 	end
-	PickedNodeCache_(end+1,1) = newlyPickedNode;
+	pickedNodeCache_(end+1,1) = newlyPickedNode;
 end

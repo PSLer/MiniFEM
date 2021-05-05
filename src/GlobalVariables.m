@@ -34,4 +34,4 @@ global modeSpace_; modeSpace_ = [];
 %% Interaction
 global outPath_;
 global hdPickedNode_; hdPickedNode_ = [];
-global PickedNodeCache_; PickedNodeCache_ = [];
+global pickedNodeCache_; pickedNodeCache_ = [];

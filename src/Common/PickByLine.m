@@ -2,7 +2,7 @@ function PickByLine(constantDir, varargin)
 	global eleType_;
 	global nodeCoords_;
 	global boundaryNodes_;
-	global PickedNodeCache_;
+	global pickedNodeCache_;
 	global hdPickedNode_;
 	
 	if 1==nargin, lineRelaxFactor = 0; else, lineRelaxFactor = varargin{1}; end
@@ -17,7 +17,7 @@ function PickByLine(constantDir, varargin)
 	else
 		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
 	end
-	numPickedNode = size(PickedNodeCache_,1);
+	numPickedNode = size(pickedNodeCache_,1);
 	hold on; 
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
@@ -57,5 +57,5 @@ function PickByLine(constantDir, varargin)
 			boundaryNodeCoords(nodesOnLine,3), 'xr', 'LineWidth', 2, 'MarkerSize', 8);
 	end
 	numNewlyPickedNodes = length(nodesOnLine);
-	PickedNodeCache_(end+1:end+numNewlyPickedNodes,1) = nodesOnLine;
+	pickedNodeCache_(end+1:end+numNewlyPickedNodes,1) = nodesOnLine;
 end

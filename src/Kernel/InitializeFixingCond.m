@@ -3,15 +3,15 @@ function InitializeFixingCond()
 	global boundaryNodes_;
 	global nodeCoords_;
 	global fixingCond_;
-	global PickedNodeCache_;
-	if isempty(PickedNodeCache_), warning('There is no node available!'); return; end
-	PickedNodeCache_ = unique(PickedNodeCache_);
-	numTarNodes = length(PickedNodeCache_);
+	global pickedNodeCache_;
+	if isempty(pickedNodeCache_), warning('There is no node available!'); return; end
+	pickedNodeCache_ = unique(pickedNodeCache_);
+	numTarNodes = length(pickedNodeCache_);
 
 	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-		iFixingVec = PickedNodeCache_;
+		iFixingVec = pickedNodeCache_;
 	else
-		iFixingVec = boundaryNodes_(PickedNodeCache_,1);
+		iFixingVec = boundaryNodes_(pickedNodeCache_,1);
 	end	
 	fixingCond_(end+1:end+numTarNodes,1) = iFixingVec;
 	

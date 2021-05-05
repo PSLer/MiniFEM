@@ -1,7 +1,7 @@
 function ClearPickedNodes()
-	global PickedNodeCache_;
+	global pickedNodeCache_;
 	global hdPickedNode_;
 	set(hdPickedNode_, 'visible', 'off');
 	hdPickedNode_ = [];
-	PickedNodeCache_ = [];	
+	pickedNodeCache_ = [];	
 end

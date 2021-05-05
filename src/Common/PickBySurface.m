@@ -2,10 +2,10 @@ function PickBySurface(constantDir, opt, varargin)
 	global eleType_;
 	global nodeCoords_;
 	global boundaryNodes_;
-	global PickedNodeCache_;
+	global pickedNodeCache_;
 	global hdPickedNode_;
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		warning('Only Work with non-2D Mesh!');
+		warning('Only Work with non-2D Mesh!'); return;
 	end
 	if ~(1==opt || 0==opt || -1==opt), warning('Wrong Input!'); return; end
 	if 0==opt
@@ -23,7 +23,7 @@ function PickBySurface(constantDir, opt, varargin)
 	else
 		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
 	end
-	numPickedNode = size(PickedNodeCache_,1);
+	numPickedNode = size(pickedNodeCache_,1);
 	hold on; 
 	if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 	switch constantDir
@@ -50,5 +50,5 @@ function PickBySurface(constantDir, opt, varargin)
 	hdPickedNode_(end+1) = plot3(boundaryNodeCoords(nodesOnLine,1), boundaryNodeCoords(nodesOnLine,2), ...
 		boundaryNodeCoords(nodesOnLine,3), 'xr', 'LineWidth', 2, 'MarkerSize', 8);
 	numNewlyPickedNodes = length(nodesOnLine);
-	PickedNodeCache_(end+1:end+numNewlyPickedNodes,1) = nodesOnLine;
+	pickedNodeCache_(end+1:end+numNewlyPickedNodes,1) = nodesOnLine;
 end
