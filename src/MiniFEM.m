@@ -19,7 +19,7 @@ SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 7;
+ModelingOpt = 3;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -28,8 +28,8 @@ switch ModelingOpt
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
-		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/femur3D_140_92_182.txt', 0.8);	
+		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever2D_500_250_iLoad5.txt');	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
@@ -61,7 +61,7 @@ switch ModelingOpt
 		error('Unsupported Modeling Option!');
 end
 disp(['Create FEA Model Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
-ShowMesh();
+ShowBoundaryCondition();
 
 %%3. (Interactively) Apply For Boundary Condition
 %% ...

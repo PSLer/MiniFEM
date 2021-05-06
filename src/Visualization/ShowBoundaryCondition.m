@@ -1,7 +1,6 @@
 function ShowBoundaryCondition()
-	figure;
-	ShowSilhouette();
+	%ShowSilhouette();
+	ShowMesh();
 	ShowFixingCondition();
 	ShowLoadingCondition();
-	axis off
 end

@@ -12,7 +12,6 @@ function WrapVoxelFEAmodel()
 	end
 	fileName = strcat(outPath_, 'wrappedVoxelFEAmodel.txt');
 	fid = fopen(fileName, 'w');	
-	fprintf(fid, '%s %s %s', '# clipping model '); fprintf(fid, '\n');
 	if strcmp(eleType_.eleName, 'Plane144')
 		fprintf(fid, '%s %s %s', 'domain type: 2D'); fprintf(fid, '\n');
 		fprintf(fid, '%s ', 'resolution:'); 
