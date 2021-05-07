@@ -15,7 +15,7 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
+SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
