@@ -2,7 +2,7 @@ function CameraFlying()
 	global eleType_;
 	global outPath_;
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		warning('Only Work with 3D Object!');
+		warning('Only Work with 3D Object!'); return;
 	end
 	
 	filename = strcat(outPath_, 'rotatingObject3D.gif');
