@@ -28,8 +28,8 @@ switch ModelingOpt
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
-		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever2D_500_250_iLoad5.txt');	
+		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever3D_100_50_50_iLoad5.txt');	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever3D_iLoad3_classic.topopti', 0.5, 1);

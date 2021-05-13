@@ -48,7 +48,7 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			tmp = fscanf(fid, '%s', 1);
 			tmp = fscanf(fid, '%d %d %d', 3);
 			nelx_ = tmp(1); nely_ = tmp(2); nelz_ = tmp(3);
-			if 2==nargin
+			if 1==nargin
 				boundingBox_ = [0 0 0; nelx_ nely_ nelz_];
 			else
 				boundingBox_ = [0 0 0; varargin{1}*[nelx_ nely_ nelz_]/max([nelx_ nely_ nelz_])];
