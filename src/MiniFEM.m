@@ -19,7 +19,7 @@ SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 3;
+ModelingOpt = 4;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -31,14 +31,14 @@ switch ModelingOpt
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever3D_100_50_50_iLoad5.txt');	
 	case 4
-		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever3D_iLoad3_classic.topopti', 0.5, 1);
+		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
+		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever2D_iLoad3_classic.topopti', 0.5, 1);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriSurfMesh_ply/bird_hexa.ply', 512); 
 	case 6
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny2_hexa_FEA.vtk');
+		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny_hexa_FEA.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/holes10_hexa.vtk'); 

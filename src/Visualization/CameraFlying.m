@@ -6,9 +6,9 @@ function CameraFlying(varargin)
 	end
 	
 	if 0==nargin
-		outputType = 'Animation';
-	elseif strcmp(varargin{1}, 'Animation') || strcmp(varargin{1}, 'Video')
 		outputType = 'Video';
+	elseif strcmp(varargin{1}, 'Animation') || strcmp(varargin{1}, 'Video')
+		outputType = varargin{1};
 	else
 		warning('Wrong Input!'); return;
 	end
