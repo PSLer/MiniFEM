@@ -8,3 +8,4 @@
 out/dataset_TSV.vtk
 out/wrappedHexFEAmodel.vtk
 out/wrappedVoxelFEAmodel.txt
+*.mp4
