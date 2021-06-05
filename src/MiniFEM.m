@@ -32,7 +32,7 @@ switch ModelingOpt
 		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever3D_100_50_50_iLoad5.txt');	
 	case 4
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/test20210604/optimizedModel.topopti', 0.5);
+		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever2D_iLoad3_blending.topopti', 0.5);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriSurfMesh_ply/bird_hexa.ply', 512); 

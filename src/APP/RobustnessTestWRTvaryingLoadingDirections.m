@@ -28,18 +28,9 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 	%%backup loading condtion
 	oriLoadingCond = loadingCond_;	
 
-	%%==================================================
-	%% 'cantilever2D_iLoad3'
-	%% 'cantilever2D_iLoad5'
-	modelName = 'cantilever2D_iLoad3';
-	switch modelName
-		case 'cantilever2D_iLoad3'
-			refTheta = pi*3/2;
-		case 'cantilever2D_iLoad5'
-			refTheta = [0; pi*3/2];
-		otherwse
-			error('Wrong Input!');
-	end
+	refTheta = acos(loadingCond_(:,2:3)*[1; 0] ./ vecnorm(loadingCond_(:,2:3),2,2));
+	minusY = find(loadingCond_(:,3)<0);
+	refTheta(minusY) = 2*pi-refTheta(minusY);
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	tStart = tic;
