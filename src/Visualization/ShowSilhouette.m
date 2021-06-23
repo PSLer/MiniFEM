@@ -44,12 +44,10 @@ function hd = ShowSilhouette()
 			hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;			
 		end
 		camproj('perspective');
-		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 0.3, 'EdgeColor', 'None');
+		set(hd, 'FaceColor', DelightfulColors('Concrete'), 'FaceAlpha', 1, 'EdgeColor', 'None');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
-		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el);
-		% camlight('headlight','infinite');
+		camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
         material dull; %% dull, shiny, metal		

@@ -1,15 +1,18 @@
 function ShowLoadingConditionBy3Darrowheads(nodeForces, colorOpt, shiftingOpt, radiusScalingFac, varargin)
 	%%1. initialize arguments
 	global domainType_;
-	global vtxLowerBound_; global vtxUpperBound_;
+	global eleType_;
+	global boundingBox_;
 	global nodeCoords_;
-	if ~strcmp(domainType_, '3D'), error('This function only works for 3D!'); end
+	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
+		warning('This function only works for 3D!'); return; 
+	end
 	samplingSpace = 1;
 	if 5==nargin, samplingSpace = max(1, round(varargin{1})); end
 	numVecs = size(nodeForces,1);
 
-	arrowLength = min(vtxUpperBound_-vtxLowerBound_)/8;
-	lineWidth = arrowLength/5*radiusScalingFac;
+	arrowLength = min(boundingBox_(2,:)-boundingBox_(1,:))/4;
+	lineWidth = arrowLength/10*radiusScalingFac;
 	head_frac = 0.6; radii = lineWidth/2; radii2 = 2*radii;
 	
 	%%2. Initialize info for arrow head
