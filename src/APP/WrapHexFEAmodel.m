@@ -45,9 +45,9 @@ function WrapHexFEAmodel()
 	tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
 	fprintf(fid, ' %d\n', tmp');
 	%%1.6 boundary condition
-	fprintf(fid, '%s %s ', 'fixed position:'); fprintf(fid, '%d\n', length(fixingCond_));
+	fprintf(fid, '%s %s ', 'fixed position:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 	if ~isempty(fixingCond_)
-		fprintf(fid, '%d\n', fixingCond_);						
+		fprintf(fid, '%d %d %d %d\n', fixingCond_');						
 	end
 	fprintf(fid, '%s %s ', 'loading condition:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 	if ~isempty(loadingCond_)

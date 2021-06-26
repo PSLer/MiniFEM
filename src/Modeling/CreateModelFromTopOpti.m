@@ -29,7 +29,7 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			eleList = fscanf(fid, '%d %f', [2 numEles])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
-			fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+			fixingCond_ = fscanf(fid, '%d %d %d', [3 numFixedNodes])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e', [3 numLoadedNodes])';
@@ -37,8 +37,10 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			qualifiedEles = eleList(find(eleList(:,2)>=extractThreshold),1);
 			allEles(qualifiedEles) = 1;
 			GenerateCartesianMesh2D(reshape(allEles, nely_, nelx_));
-			fixingCond_ = intersect(fixingCond_, carNodMapBack_);
-			fixingCond_ = carNodMapForward_(fixingCond_);
+			rawFixingPos = fixingCond_(:,1);
+			[~, realFixingPos] = intersect(rawFixingPos, carNodMapBack_);
+			fixingCond_ = fixingCond_(realFixingPos,:);
+			fixingCond_(:,1) = carNodMapForward_(fixingCond_(:,1));
 			loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));
 		case '3D'
 			if ~strcmp(eleType_.eleName, 'Solid188'), error('Unmatched Mesh and Data Set! Please Use Solid188 Element'); end
@@ -55,7 +57,7 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			eleList = fscanf(fid, '%d %f', [2 numEles])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
-			fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+			fixingCond_ = fscanf(fid, '%d %d %d %d', [4 numFixedNodes])';
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
 			loadingCond_ = fscanf(fid, '%d %e %e %e', [4 numLoadedNodes])';
@@ -63,8 +65,10 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			qualifiedEles = eleList(find(eleList(:,2)>=extractThreshold),1);
 			allEles(qualifiedEles) = 1;
 			GenerateCartesianMesh3D(reshape(allEles, nely_, nelx_, nelz_));
-			fixingCond_ = intersect(fixingCond_, carNodMapBack_);
-			fixingCond_ = carNodMapForward_(fixingCond_);
+			rawFixingPos = fixingCond_(:,1);
+			[~, realFixingPos] = intersect(rawFixingPos, carNodMapBack_);
+			fixingCond_ = fixingCond_(realFixingPos,:);
+			fixingCond_(:,1) = carNodMapForward_(fixingCond_(:,1));
 			loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));			
 	end
 	fclose(fid);

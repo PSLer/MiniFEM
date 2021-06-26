@@ -28,7 +28,7 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
 			if numFixedNodes>0
-				fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+				fixingCond_ = fscanf(fid, '%d %d %d', [3 numFixedNodes])';
 			end
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
@@ -38,7 +38,7 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			allEles = zeros(nelx_*nely_,1); allEles(eleList) = 1;
 			GenerateCartesianMesh2D(reshape(allEles, nely_, nelx_));
 			if numFixedNodes>0
-				fixingCond_ = carNodMapForward_(fixingCond_);
+				fixingCond_(:,1) = carNodMapForward_(fixingCond_(:,1));
 			end
 			if numLoadedNodes>0
 				loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));
@@ -59,7 +59,7 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			tmp = fscanf(fid, '%s %s', 2);
 			numFixedNodes = fscanf(fid, '%d', 1);
 			if numFixedNodes>0
-				fixingCond_ = fscanf(fid, '%d', [1 numFixedNodes])';
+				fixingCond_ = fscanf(fid, '%d %d %d %d', [4 numFixedNodes])';
 			end
 			tmp = fscanf(fid, '%s %s', 2);
 			numLoadedNodes = fscanf(fid, '%d', 1);	
@@ -69,7 +69,7 @@ function CreateFromWrappedVoxelFEAmodel(fileName, varargin)
 			allEles = zeros(nelx_*nely_*nelz_,1); allEles(eleList) = 1;
 			GenerateCartesianMesh3D(reshape(allEles, nely_, nelx_, nelz_));
 			if numFixedNodes>0
-				fixingCond_ = carNodMapForward_(fixingCond_);
+				fixingCond_(:,1) = carNodMapForward_(fixingCond_(:,1));
 			end			
 			if numLoadedNodes>0
 				loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));

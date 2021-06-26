@@ -55,9 +55,9 @@ function GenerateDatasetForTSV()
 			if ~isempty(loadingCond_)
 				fprintf(fid, '%d %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
 			end        
-			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 			if ~isempty(fixingCond_)
-				fprintf(fid, '%d\n', fixingCond_-1);
+				fprintf(fid, '%d\n', fixingCond_(:,1)-1);
 			end								
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);		
 			fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');			
@@ -85,9 +85,9 @@ function GenerateDatasetForTSV()
 			if ~isempty(loadingCond_)
 				fprintf(fid, '%d %.6f %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
 			end
-			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 			if ~isempty(fixingCond_)
-				fprintf(fid, '%d\n', fixingCond_-1);						
+				fprintf(fid, '%d\n', fixingCond_(:,1)-1);						
 			end
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
 			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');			
@@ -120,9 +120,9 @@ function GenerateDatasetForTSV()
 			if ~isempty(loadingCond_)
 				fprintf(fid, '%d %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
 			end
-			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 			if ~isempty(fixingCond_)
-				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_)-1);
+				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_(:,1))-1);
 			end
 			fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
 			fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');				
@@ -145,9 +145,9 @@ function GenerateDatasetForTSV()
 			if ~isempty(loadingCond_)
 				fprintf(fid, '%d %.6f %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
 			end
-			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', length(fixingCond_));
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 			if ~isempty(fixingCond_)
-				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_)-1);
+				fprintf(fid, '%d\n', carNodMapBack_(fixingCond_(:,1))-1);
 			end
 			fprintf(fid, '%s %s ', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
 			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');				

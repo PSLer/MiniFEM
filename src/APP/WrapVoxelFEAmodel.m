@@ -20,9 +20,9 @@ function WrapVoxelFEAmodel()
 		fprintf(fid, '%d\n', numEles_);
 		fprintf(fid, '%d\n', carEleMapBack_');
 		fprintf(fid, '%s %s ', 'fixed position:');
-		fprintf(fid, '%d\n', length(fixingCond_));
+		fprintf(fid, '%d\n', size(fixingCond_,1));
 		if ~isempty(fixingCond_)
-			fprintf(fid, '%d\n', carNodMapBack_(fixingCond_));
+			fprintf(fid, '%d %d %d \n', [carNodMapBack_(fixingCond_(:,1)) fixingCond_(:,2:end)]');
 		end
 		fprintf(fid, '%s %s ', 'loading condition:');
 		fprintf(fid, '%d\n', size(loadingCond_,1));
@@ -37,9 +37,9 @@ function WrapVoxelFEAmodel()
 		fprintf(fid, '%d\n', numEles_);
 		fprintf(fid, '%d\n', carEleMapBack_');
 		fprintf(fid, '%s %s ', 'fixed position:');
-		fprintf(fid, '%d\n', length(fixingCond_));		
+		fprintf(fid, '%d\n', size(fixingCond_,1));		
 		if ~isempty(fixingCond_)
-			fprintf(fid, '%d\n', carNodMapBack_(fixingCond_));
+			fprintf(fid, '%d %d %d %d\n', [carNodMapBack_(fixingCond_(:,1)) fixingCond_(:,2:end)]');
 		end
 		fprintf(fid, '%s %s ', 'loading condition:');
 		fprintf(fid, '%d\n', size(loadingCond_,1));

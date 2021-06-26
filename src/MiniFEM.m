@@ -19,7 +19,7 @@ SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 4;
+ModelingOpt = 3;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -28,11 +28,11 @@ switch ModelingOpt
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
-		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/cantilever3D_100_50_50_iLoad5.txt');	
-	case 4
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/cantilever2D_iLoad3_blending.topopti', 0.5);
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/fertility_1024_768_raw.txt');	
+	case 4
+		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
+		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/bracket3D_2.topopti', 0.5);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriSurfMesh_ply/bird_hexa.ply', 512); 
