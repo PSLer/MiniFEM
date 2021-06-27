@@ -19,8 +19,8 @@ function ApplyBoundaryCondition()
 			fixedDOFs = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
 		end
 		fixingState = fixingCond_(:,2:end)';
-		realFixedDOFs = find(1==fixingState(:));
-		freeDOFs_ = setdiff(freeDOFs_, fixedDOFs(realFixedDOFs));	
+		realFixedDOFs = fixedDOFs(find(1==fixingState(:)));
+		freeDOFs_ = setdiff(freeDOFs_, realFixedDOFs);	
 	end
 	
 	F_ = sparse(numDOFs_,1);
