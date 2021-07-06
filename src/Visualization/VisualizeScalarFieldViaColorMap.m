@@ -34,12 +34,10 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
 		zPatchs = meshCoords(:,3); zPatchs = zPatchs(boundaryEleFaces);	
 		cPatchs = srcField(boundaryEleFaces);				
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;
-		camproj('perspective');
+		view(3); camproj('perspective');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
-		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el);
-		% camlight('headlight','infinite');
+		camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
         material dull; %% dull, shiny, metal		
@@ -57,12 +55,10 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
 		zPatchs = meshCoords(:,3); zPatchs = zPatchs(eNodMat_');
 		cPatchs = srcField(eNodMat_');
 		hd = patch(xPatchs, yPatchs, zPatchs, cPatchs); hold on;
-		camproj('perspective');
+		view(3); camproj('perspective');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
-		[az, el] = view(3);
 		lighting gouraud;
-		camlight(az,el);
-		% camlight('headlight','infinite');
+		camlight('headlight','infinite');
 		% %camlight('right','infinite');
 		% camlight('left','infinite');
         material dull; %% dull, shiny, metal			
