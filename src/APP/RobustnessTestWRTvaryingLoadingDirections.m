@@ -6,6 +6,7 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 	global U_;
 	global fixingCond_; 
 	global loadingCond_;
+	global tol_; tol_ = 1.0e-3;
 	
 	complianceList = [];
 	if isempty(fixingCond_), error('No Constraint!'); end
@@ -39,7 +40,7 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 		end		
 	else
 		theta0 = -pi/4; theta1 = pi/4;
-		numLoadSteps = 7;
+		numLoadSteps = 11;
 		thetaList = linspace(theta0, theta1, numLoadSteps);
 		complianceList = zeros(numLoadSteps, 1);
 		loadingAmp = vecnorm(loadingCond_(:,2:end),2,2);
@@ -48,7 +49,7 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 		minusX = find(loadingCond_(:,2)<0);
 		pitchAngle(minusX) = 2*pi-pitchAngle(minusX);
 		
-		caseType = 'normal'; %%'special', 'normal'. WATCH OUT !!!	
+		caseType = 'special'; %%'special', 'normal'. WATCH OUT !!!	
 		switch caseType
 			case 'special' %% loads are parallel to z-axes
 				yawAngle = ones(size(pitchAngle)) .* pi/2; %%rotate around X
@@ -65,7 +66,7 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 				end					
 			case 'normal'
 				projecOnXYplane = loadingCond_(:,2:4); projecOnXYplane(:,end) = 0;
-				yawAngle = acos(projecOnXYplane*[1; 0; 0] ./ vecnorm(projecOnXYplane,2,2));
+				yawAngle = acos(projecOnXYplane*[1; 0; 0] ./ vecnorm(projecOnXYplane,2,2));			
 				minusY = find(projecOnXYplane(:,2)<0);
 				yawAngle(minusY) = 2*pi-yawAngle(minusY);
 				rotationOpt = 'pitch'; %%'pitch', 'yaw'	. WATCH OUT !!!				
@@ -73,14 +74,14 @@ function complianceList = RobustnessTestWRTvaryingLoadingDirections()
 					disp([' Progress.: ' sprintf('%4i %4i', [ii numLoadSteps] )]);
 					switch rotationOpt
 						case 'pitch'
-							loadingCond_(:,2) = loadingAmp .* sin(pitchAngle+thetaList(ii)) .* cos(yawAngle);
-							loadingCond_(:,3) = loadingAmp .* sin(pitchAngle+thetaList(ii)) .* sin(yawAngle);
+							loadingCond_(:,2) = abs(loadingAmp .* sin(pitchAngle+thetaList(ii))) .* cos(yawAngle);
+							loadingCond_(:,3) = abs(loadingAmp .* sin(pitchAngle+thetaList(ii))) .* sin(yawAngle);
 							loadingCond_(:,4) = loadingAmp .* cos(pitchAngle+thetaList(ii));							
 						case 'yaw'
-							loadingCond_(:,2) = loadingAmp .* sin(pitchAngle) .* cos(yawAngle+thetaList(ii));
-							loadingCond_(:,3) = loadingAmp .* sin(pitchAngle) .* sin(yawAngle+thetaList(ii));
+							loadingCond_(:,2) = abs(loadingAmp .* sin(pitchAngle)) .* cos(yawAngle+thetaList(ii));
+							loadingCond_(:,3) = abs(loadingAmp .* sin(pitchAngle)) .* sin(yawAngle+thetaList(ii));
 							loadingCond_(:,4) = loadingAmp .* cos(pitchAngle);						
-					end		
+					end				
 					ApplyBoundaryCondition(); 
 					U_ = SolvingStaticLinearSystemEquations();
 					complianceList(ii) = U_(freeDOFs_,1)' * (K_*U_(freeDOFs_,1));
