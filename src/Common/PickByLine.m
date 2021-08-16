@@ -18,7 +18,6 @@ function PickByLine(constantDir, opt, varargin)
 	else
 		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
 	end
-	numPickedNode = size(pickedNodeCache_,1);
 	hold on; 
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
