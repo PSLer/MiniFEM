@@ -1,7 +1,6 @@
 function InitializeFixingCond(varargin)
 	global eleType_;
 	global boundaryNodes_;
-	global nodeCoords_;
 	global fixingCond_;
 	global pickedNodeCache_;
 	if isempty(pickedNodeCache_), warning('There is no node available!'); return; end

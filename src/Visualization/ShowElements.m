@@ -1,6 +1,5 @@
 function hd = ShowElements(varargin)
 	global eleType_;
-	global numNodes_;
 	global nodeCoords_;
 	global numEles_;
 	global eNodMat_;
@@ -8,7 +7,6 @@ function hd = ShowElements(varargin)
 	if isempty(eleList), warning('No Element to be Shown!'); return; end
 	numEleToBeShown = length(eleList);
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
-		showAllMesh = 0;
 		if strcmp(eleType_.eleName, 'Solid144')
 			patchIndices = eNodMat_(eleList, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified
 			patchIndices = reshape(patchIndices(:), 3, 4*numEleToBeShown);		

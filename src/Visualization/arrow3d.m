@@ -1,4 +1,4 @@
-function [X1 Y1 Z1] = arrow3d(x,y,z,head_frac,radii,radii2,colr)
+function [X1, Y1, Z1] = arrow3d(x,y,z,head_frac,radii,radii2,colr)
 	%
 	% The function plotting 3-dimensional arrow
 	%
@@ -64,7 +64,7 @@ function [X1 Y1 Z1] = arrow3d(x,y,z,head_frac,radii,radii2,colr)
 	
 	X1=[];Y1=[];Z1=[];
 	j=1;
-	for theta=([0:N])*2*pi./(N);
+	for theta=([0:N])*2*pi./(N)
 		R1=Pc+radii*cos(theta).*(P1-Pc) + radii*sin(theta).*cross(dr,(P1-Pc)) -origin_shift;
 		X1(2:3,j)=R1(:,1);
 		Y1(2:3,j)=R1(:,2);
@@ -90,7 +90,7 @@ function [X1 Y1 Z1] = arrow3d(x,y,z,head_frac,radii,radii2,colr)
 	P1=n1+Pc;
 	
 	j=1;
-	for theta=([0:N])*2*pi./(N);
+	for theta=([0:N])*2*pi./(N)
 		R1=Pc+radii2*cos(theta).*(P1-Pc) + radii2*sin(theta).*cross(dr,(P1-Pc)) -origin_shift;
 		X1(4:5,j)=R1(:,1);
 		Y1(4:5,j)=R1(:,2);

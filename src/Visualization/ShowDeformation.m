@@ -36,7 +36,7 @@ function ShowDeformation(dir, varargin)
 			case 'Z'			
 				srcField = U_(3:6:end,1);
 			case 'T'
-				tmp = reshape(U_, 6, numNodes_)'
+				tmp = reshape(U_, 6, numNodes_)';
 				srcField = vecnorm(tmp(:,1:3),2,2);
 			case 'YZ'
 				srcField = U_(4:6:end,1);

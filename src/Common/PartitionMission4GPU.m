@@ -7,7 +7,7 @@ function [tarA, opt] = PartitionMission4GPU(varargin)
 		maxDivisionsOnGPU = varargin{2}; 
 	end
 	nn = length(varargin{1});
-	[rowIndexK colIndexK valK] = find(varargin{1});
+	[rowIndexK, colIndexK, valK] = find(varargin{1});
 	numNonZeros = length(valK);
 	requiredMem4A = numNonZeros*2*4+numNonZeros*8; %%storing row&col indices in int, nonZeros in double
 	handleGPU = gpuDevice(1); reset(handleGPU); 

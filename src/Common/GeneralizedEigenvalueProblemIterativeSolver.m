@@ -1,18 +1,18 @@
 function [eigVecs, eigVals, flag] = GeneralizedEigenvalueProblemIterativeSolver(numEVs)
 	global GPU_;
 	global K_; global M_; global tol_;
-	flag = 1; eigVals = []; eigVecs = [];
-	if strcmp(GPU_, 'ON')	
-		global gpuK_;
+    global gpuK_;
+    global preconditionerC_;
+	if strcmp(GPU_, 'ON')			
 		[gpuK_, opt] = PartitionMission4GPU(K_);
 		if opt
 			Afun = @myCG4MA_GPU;
 		else
-			global preconditionerC_; preconditionerC_ = ichol(K_);
+			preconditionerC_ = ichol(K_);
 			Afun = @myCG4MA;	
 		end
 	else		
-		global preconditionerC_; preconditionerC_ = ichol(K_);
+		 preconditionerC_ = ichol(K_);
 		Afun = @myCG4MA;	
 	end
 	[eigVecs, eigVals, flag] = eigs(Afun, length(M_), M_, numEVs, ...
@@ -30,10 +30,7 @@ function x = myCG4MA(b)
 	normB = norm(b);
 	its = 0;
 	x = zeros(n,1);
-	r1 = zeros(n,1);
-	z1 = zeros(n,1);
-	p2 = zeros(n,1);
-		
+	z1 = zeros(n,1);	
 	r1 = b - K_*x;
 	while its <= maxIT_
 		z2 = preconditionerC_'\(preconditionerC_\r1);
@@ -82,10 +79,7 @@ function x = myCG4MA_GPU(b)
 	its = 0;
 	tmp = zeros(n,1,'gpuArray');
 	x = tmp;
-	r1 = tmp;
 	z1 = tmp;
-	p2 = tmp;
-	
 	nSubMat = length(gpuK_);
 	Ax = tmp;
 	for ii=1:nSubMat

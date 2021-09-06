@@ -1,7 +1,6 @@
 function InitializeLoadingCond(force)
 	global eleType_;
 	global boundaryNodes_;
-	global nodeCoords_;
 	global loadingCond_;
 	global pickedNodeCache_;
 	if isempty(pickedNodeCache_), warning('There is no node available!'); end

@@ -1,6 +1,5 @@
 function ShowLoadingConditionBy3Darrowheads(nodeForces, colorOpt, shiftingOpt, radiusScalingFac, varargin)
 	%%1. initialize arguments
-	global domainType_;
 	global eleType_;
 	global boundingBox_;
 	global nodeCoords_;

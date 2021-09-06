@@ -3,7 +3,6 @@ function ShowStressComp(compName, varargin)
 	global cartesianStressField_;
 	global vonMisesStressField_;
 	global principalStressField_;	
-	global numNodes_;
 	if isempty(cartesianStressField_), warning('No Stress Field Available!'); return; end
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		switch compName

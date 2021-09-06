@@ -29,13 +29,13 @@ switch ModelingOpt
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/femur3D_192_128_256.txt');	
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten_132_115_200.txt');	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
-		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/optimizedModel.topopti', 0.5);
+		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/bridge3D_4.topopti', 0.5);
 	case 5
 		SetElement('Solid188'); %% 'Solid188'
-		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriSurfMesh_ply/bird_hexa.ply', 512); 
+		CreateCartesianHexMeshFromTriFaceMesh_plyFormat('D:/MyDataSets/TriSurfMesh_ply/bird.ply', 256); 
 	case 6
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny_hexa_FEA.vtk');
@@ -44,7 +44,7 @@ switch ModelingOpt
 		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/holes10_hexa.vtk'); 
 	case 8
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/dragon_hexa.mesh');
+		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/Bearing.mesh');
 	case 9 %%unavailable yet
 		SetElement('Solid144'); %% 'Solid144'
 		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/airplane1_output_tet.mesh');		

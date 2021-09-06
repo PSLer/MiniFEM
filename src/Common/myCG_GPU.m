@@ -1,14 +1,13 @@
 function x = myCG_GPU(A, b, printP)
 	global tol_; global maxIT_;
+    
 	tol = tol_; maxIT = maxIT_;
 	n = length(b);
 	normB = norm(b);
 	its = 0;
 	tmp = zeros(n,1,'gpuArray');
 	x = tmp;
-	r1 = tmp;
 	z1 = tmp;
-	p2 = tmp;
 	
 	%r1 = b - A*x;
 	nSubMat = length(A);

@@ -7,7 +7,6 @@ function x = myCG(ATX, Preconditioning, b, printP)
 	x = zeros(n,1);
 	r1 = b - ATX(x);
 	z1 = zeros(n,1);
-	p2 = zeros(n,1);
 
 	while its <= maxIT
 		its = its + 1;

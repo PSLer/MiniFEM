@@ -7,7 +7,6 @@ function x = myGMRES(ATX, Preconditioning, b, printP)
 	restart = 500;
 	epsmac = 1.0e-15; %%tolerance for stopping criterion,
 	x = zeros(n,1);
-	resVec = zeros(n,1);
 	b = Preconditioning(b);
 	
 	rhsnorm = norm(b);	

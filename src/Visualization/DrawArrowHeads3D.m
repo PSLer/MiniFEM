@@ -25,7 +25,7 @@ numArrowHead = size(coordX,1);
 
 patchX = []; patchY = []; patchZ = [];
 for ii=1:1:numArrowHead
-	[X1 Y1 Z1] = arrow3d(coordX(ii,:),coordY(ii,:),coordZ(ii,:),head_frac,radii,radii2);
+	[X1, Y1, Z1] = arrow3d(coordX(ii,:),coordY(ii,:),coordZ(ii,:),head_frac,radii,radii2);
 	dim1 = size(X1);
 	patchX(end+1:end+dim1(1),:) = X1;
 	patchY(end+1:end+dim1(1),:) = Y1;

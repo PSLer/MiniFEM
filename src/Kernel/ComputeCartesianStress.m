@@ -2,7 +2,6 @@ function ComputeCartesianStress()
 	%% sigma_x, sigma_y, sigma_z, tadisyz, tadiszx, tadisxy (solid)
 	%%NOTE: Outer Interpolate the stress at Gauss Points to Nodes by Element Stress Interpolation Matrix --- Ns
 	%% stress_GaussPoints = Ns * stress_Nodes -> stress_Nodes = inv(Ns) * stress_GaussPoints
-	global cachePach_;
 	global eleType_;
 	global meshType_;
 	global numEles_; 

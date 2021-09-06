@@ -3,7 +3,7 @@ function GetDirVec()
 	global nodeCoords_;
 	global boundaryNodes_;
 	global pickedNodeCache_;
-	if size(pickedNodeCache_, 1) < 2, 
+	if size(pickedNodeCache_, 1) < 2
 		warning('There MUST be at lease TWO Picked Nodes Available!'); return;
 	end
 	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')

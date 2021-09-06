@@ -10,7 +10,6 @@ function AssembleStiffnessMatrix()
 	global detJ_;
 	global invJ_;
 	global deShapeFuncs_;
-	global cachePach_;
 	
 	global K_;	
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
@@ -18,8 +17,6 @@ function AssembleStiffnessMatrix()
 	K_ = sparse(numDOFs_,numDOFs_);
 	switch eleType_.eleName
 		case 'Plane133'
-			nEN = eleType_.nEleNodes;
-			nEND = eleType_.nEleNodeDOFs;
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 	
@@ -72,8 +69,6 @@ function AssembleStiffnessMatrix()
 				error('Un-supported Material Property!');			
 			end
 		case 'Plane144'
-			nEN = eleType_.nEleNodes;
-			nEND = eleType_.nEleNodeDOFs;
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			
@@ -144,8 +139,6 @@ function AssembleStiffnessMatrix()
 		case 'Solid144'
 		
 		case 'Solid188'
-			nEN = eleType_.nEleNodes;
-			nEND = eleType_.nEleNodeDOFs;
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 		
@@ -168,8 +161,7 @@ function AssembleStiffnessMatrix()
 						tmpK = tmpK + tmpK' - diag(diag(tmpK));
 						K_ = K_ + tmpK;					
 					end					
-				else
-timeList = zeros(1,4);				
+                else			
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 						sK = zeros(24*(24+1)/2, length(rangeIndex)); %%Ke = 24-by-24

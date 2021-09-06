@@ -3,9 +3,7 @@ function CreateFromExternalQuadSurfMesh_meshFormat(fileName)
 	global boundingBox_;
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
-	global boundaryNodes_;
 	global numNodsAroundEleVec_;
-	global nodState_; global eleState_;
 	if ~strcmp(eleType_.eleName, 'Shell144')
 		error('Only Works with Shell144 Element!');
 	end

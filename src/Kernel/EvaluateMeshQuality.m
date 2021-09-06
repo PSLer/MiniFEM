@@ -12,9 +12,7 @@ function EvaluateMeshQuality()
 	meshQualityJacobianRatio_ = ones(numEles_,1);
 	switch eleType_.eleName
 		case 'Plane133'
-			nEN = eleType_.nEleNodes;
 			nEND = eleType_.nEleNodeDOFs;
-			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			deShapeFuncs_ = DeShapeFunction(gaussIPs);					
@@ -34,9 +32,7 @@ function EvaluateMeshQuality()
 				meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
 			end
 		case 'Plane144'
-			nEN = eleType_.nEleNodes;
 			nEND = eleType_.nEleNodeDOFs;
-			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			deShapeFuncs_ = DeShapeFunction(gaussIPs);			
@@ -72,9 +68,7 @@ function EvaluateMeshQuality()
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;		
 		case 'Solid188'
-			nEN = eleType_.nEleNodes;
 			nEND = eleType_.nEleNodeDOFs;
-			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			deShapeFuncs_ = DeShapeFunction(gaussIPs);			

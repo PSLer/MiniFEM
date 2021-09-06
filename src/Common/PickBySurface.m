@@ -22,8 +22,7 @@ function PickBySurface(constantDir, opt, varargin)
 		boundaryNodeCoords = nodeCoords_;
 	else
 		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
-	end
-	numPickedNode = size(pickedNodeCache_,1);
+    end
 	hold on; 
 	if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 	switch constantDir

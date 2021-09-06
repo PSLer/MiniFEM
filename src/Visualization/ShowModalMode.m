@@ -12,7 +12,7 @@ function ShowModalMode(modalOrder, varargin)
 	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		srcField = vecnorm(reshape(U_, 2, numNodes_)',2,2);
 	else
-		tmp = reshape(U_, 6, numNodes_)'
+		tmp = reshape(U_, 6, numNodes_)';
 		srcField = vecnorm(tmp(:,1:3),2,2);			
 	end
 	if 1==nargin
