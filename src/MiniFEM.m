@@ -41,7 +41,7 @@ switch ModelingOpt
 		CreateFromWrappedHexFEAmodel_vtkFormat('D:/MyDataSets/FEA_Models_vtk/bunny2_hexa_FEA.vtk');
 	case 7
 		SetElement('Solid188'); %% 'Solid188'
-		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/holes10_hexa.vtk'); 
+		CreateFromExternalHexMesh_vtkFormat('D:/MyDataSets/HexMesh_vtk/airplane1_hexa.vtk'); 
 	case 8
 		SetElement('Solid188'); %% 'Solid188'
 		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/Bearing.mesh');
