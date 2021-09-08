@@ -24,9 +24,7 @@ function CreateCartesianHexMeshFromTriFaceMesh_plyFormat(fileName, resCtrl)
 	eNodMatTriPly = eNodMatTriPly' + 1;	
 	fclose(fid);
 	
-	minX = min(nodeCoordsTriPly(:,1)); minY = min(nodeCoordsTriPly(:,2)); minZ = min(nodeCoordsTriPly(:,3));
-	maxX = max(nodeCoordsTriPly(:,1)); maxY = max(nodeCoordsTriPly(:,2)); maxZ = max(nodeCoordsTriPly(:,3));	
-	boundingBox_ = [minX minY minZ; maxX maxY maxZ];
+	boundingBox_ = [min(nodeCoordsTriPly, [], 1); max(nodeCoordsTriPly, [], 1)];	
 	maxDimensions = boundingBox_(2,:) - boundingBox_(1,:);
 	dimensionResolutions = round(resCtrl*(maxDimensions/max(maxDimensions)));
 	nelx_ = dimensionResolutions(1);

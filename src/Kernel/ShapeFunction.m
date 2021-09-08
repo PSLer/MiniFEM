@@ -60,9 +60,18 @@ function N = ShapeFunction(paraCoords)
 			N(:,8) = 0.125*(1-s).*(1+t).*(1+p);				
 		case 'Shell133'
 			s = paraCoords(:,1);
-			t = paraCoords(:,2);			
+			t = paraCoords(:,2);
+			N = zeros(length(s), 3);
+			N(:,1) = s;
+			N(:,2) = t;
+			N(:,3) = 1-s-t;				
 		case 'Shell144'
 			s = paraCoords(:,1);
-			t = paraCoords(:,2);	
+			t = paraCoords(:,2);
+			N = zeros(length(s), 4);
+			N(:,1) = 0.25*(1-s).*(1-t);
+			N(:,2) = 0.25*(1+s).*(1-t);
+			N(:,3) = 0.25*(1+s).*(1+t);
+			N(:,4) = 0.25*(1-s).*(1+t);			
 	end	
 end
