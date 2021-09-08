@@ -5,18 +5,12 @@ function SetElement(et)
 	%%3D: 'Solid144', 'Solid188'
 	global eleType_;
 	switch et
-		case 'Plane133'
-			eleType_ = Plane133();
-		case 'Plane144'
-			eleType_ = Plane144();
-		case 'Shell133'
-			eleType_ = Shell133();
-		case 'Shell144'
-			eleType_ = Shell144();
-		case 'Solid144'
-			eleType_ = Solid144();
-		case 'Solid188'
-			eleType_ = Solid188();
+		case 'Plane133', eleType_ = Plane133();
+		case 'Plane144', eleType_ = Plane144();
+		case 'Shell133', eleType_ = Shell133();
+		case 'Shell144', eleType_ = Shell144();
+		case 'Solid144', eleType_ = Solid144();
+		case 'Solid188', eleType_ = Solid188();
 		otherwise
 			error('Undefined Element Type!');
 	end
@@ -123,14 +117,14 @@ function val = Solid144()
 	val.nEleNodeDOFs = 3;
 	val.nEleStressComponents = 6;
 	val.nEleGaussIntegralPoints = 4;
-	s1 = 0.58541020;
-	t1 = 0.13819660;
+	alp = 0.58541020;
+	bet = 0.13819660;
 	w = 0.25;
 	val.GaussIntegralPointsNaturalSpace = [
-		s1		t1		t1		t1
-		t1		s1		t1		t1
-		t1		t1		s1		t1
-		t1		t1		t1		s1
+		alp		bet		bet		bet
+		bet		alp		bet		bet
+		bet		bet		alp		bet
+		bet		bet		bet		alp
 		w		w		w		w
 	];
 end

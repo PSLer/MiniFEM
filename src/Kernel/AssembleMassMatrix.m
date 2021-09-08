@@ -118,7 +118,49 @@ function AssembleMassMatrix()
 				error('Un-supported Material Property!');
 			end
 		case 'Solid144'
-		
+			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
+			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
+			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
+			shapeFuncs_ = ElementShapeFunctionMatrix(ShapeFunction(gaussIPs));
+			if 1==length(material_.density)
+				for jj=1:size(blockIndex,1)
+					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
+					sM = zeros(30, length(rangeIndex)); %%30 is based on the feature of element mass matrix of 'Solid144'
+					index = 0;
+					for ii=rangeIndex(1):rangeIndex(end)
+						index = index + 1;
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density);
+						semiMe = tril(Me); 
+						[eMi, eMj, eMs] = find(semiMe);				
+						sM(:,index) = eMs;				
+					end
+					iM = eDofMat_(rangeIndex,eMi)';
+					jM = eDofMat_(rangeIndex,eMj)';
+					tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
+					tmpM = tmpM + tmpM' - diag(diag(tmpM));
+					M_ = M_ + tmpM;
+				end
+			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+				for jj=1:size(blockIndex,1)
+					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
+					sM = zeros(30, length(rangeIndex)); %%30 is based on the feature of element mass matrix of 'Solid144'
+					index = 0;
+					for ii=rangeIndex(1):rangeIndex(end)
+						index = index + 1;
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density(ii));				
+						semiMe = tril(Me); 
+						[eMi, eMj, eMs] = find(semiMe);				
+						sM(:,index) = eMs;				
+					end
+					iM = eDofMat_(rangeIndex,eMi)';
+					jM = eDofMat_(rangeIndex,eMj)';
+					tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
+					tmpM = tmpM + tmpM' - diag(diag(tmpM));
+					M_ = M_ + tmpM;
+				end					
+			else
+				error('Un-supported Material Property!');			
+			end	
 		case 'Solid188'
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';

@@ -21,6 +21,19 @@ function Ns = GetElementStressInterpolationMatrix()
 		case 'Solid144'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			N = ShapeFunction(gaussIPs);
+			Ns = sparse(24,24);
+			ii = 6*(1:4);
+			Ns(1,ii-5) = N(1,:); Ns(2,ii-4) = N(1,:); Ns(3,ii-3) = N(1,:);
+			Ns(4,ii-2) = N(1,:); Ns(5,ii-1) = N(1,:); Ns(6,ii) = N(1,:);
+			
+			Ns(7,ii-5) = N(2,:); Ns(8,ii-4) = N(2,:); Ns(9,ii-3) = N(2,:);
+			Ns(10,ii-2) = N(2,:); Ns(11,ii-1) = N(2,:); Ns(12,ii) = N(2,:);
+
+			Ns(13,ii-5) = N(3,:); Ns(14,ii-4) = N(3,:); Ns(15,ii-3) = N(3,:);
+			Ns(16,ii-2) = N(3,:); Ns(17,ii-1) = N(3,:); Ns(18,ii) = N(3,:);	
+
+			Ns(19,ii-5) = N(4,:); Ns(20,ii-4) = N(4,:); Ns(21,ii-3) = N(4,:);
+			Ns(22,ii-2) = N(4,:); Ns(23,ii-1) = N(4,:); Ns(24,ii) = N(4,:);					
 		case 'Solid188'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			N = ShapeFunction(gaussIPs);

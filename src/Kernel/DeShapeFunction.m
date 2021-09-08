@@ -9,8 +9,7 @@ function dN = DeShapeFunction(paraCoords)
 		case 'Plane133'
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);
-			numVars = length(s);
-			tmp = ones(numVars,1);
+			numVars = length(s); tmp = ones(numVars,1);
 			
 			dN1ds = 1*tmp; dN2ds = 0*tmp; dN3ds = -1*tmp;
 			dN1dt = 0*tmp; dN2dt = 1*tmp; dN3dt = -1*tmp;
@@ -30,6 +29,16 @@ function dN = DeShapeFunction(paraCoords)
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);
 			p = paraCoords(:,3);
+			numVars = length(s); tmp = ones(numVars,1);
+			
+			dN1ds = -1*tmp; dN2ds = 1*tmp; dN3ds = 0*tmp; dN4ds = 0*tmp;
+			dN1dt = -1*tmp; dN2dt = 0*tmp; dN3dt = 1*tmp; dN4dt = 0*tmp;	
+			dN1dp = -1*tmp; dN2dp = 0*tmp; dN3dp = 0*tmp; dN4dp = 1*tmp;
+
+			dN = zeros(3*length(s), 4);
+			dN(1:3:end,:) = [dN1ds dN2ds dN3ds dN4ds];
+			dN(2:3:end,:) = [dN1dt dN2dt dN3dt dN4dt];
+			dN(3:3:end,:) = [dN1dp dN2dp dN3dp dN4dp];				
 		case 'Solid188'
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);

@@ -57,7 +57,37 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B41 B42 B43 B44
 			];	
 		case 'Solid144'
+			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);	dNdp1 = derivatives(3,:);
+			dNds2 = derivatives(4,:);	dNdt2 = derivatives(5,:);	dNdp2 = derivatives(6,:);
+			dNds3 = derivatives(7,:);	dNdt3 = derivatives(8,:);	dNdp3 = derivatives(9,:);	
+			dNds4 = derivatives(10,:);	dNdt4 = derivatives(11,:);	dNdp4 = derivatives(12,:);	
+			
+			B1_1 = [dNds1(1) 0 0; 0 dNdt1(1) 0; 0 0 dNdp1(1); 0 dNdp1(1) dNdt1(1); dNdp1(1) 0 dNds1(1); dNdt1(1) dNds1(1) 0];			
+			B1_2 = [dNds1(2) 0 0; 0 dNdt1(2) 0; 0 0 dNdp1(2); 0 dNdp1(2) dNdt1(2); dNdp1(2) 0 dNds1(2); dNdt1(2) dNds1(2) 0];			
+			B1_3 = [dNds1(3) 0 0; 0 dNdt1(3) 0; 0 0 dNdp1(3); 0 dNdp1(3) dNdt1(3); dNdp1(3) 0 dNds1(3); dNdt1(3) dNds1(3) 0];			
+			B1_4 = [dNds1(4) 0 0; 0 dNdt1(4) 0; 0 0 dNdp1(4); 0 dNdp1(4) dNdt1(4); dNdp1(4) 0 dNds1(4); dNdt1(4) dNds1(4) 0];		
+		
+			B2_1 = [dNds2(1) 0 0; 0 dNdt2(1) 0; 0 0 dNdp2(1); 0 dNdp2(1) dNdt2(1); dNdp2(1) 0 dNds2(1); dNdt2(1) dNds2(1) 0];			
+			B2_2 = [dNds2(2) 0 0; 0 dNdt2(2) 0; 0 0 dNdp2(2); 0 dNdp2(2) dNdt2(2); dNdp2(2) 0 dNds2(2); dNdt2(2) dNds2(2) 0];			
+			B2_3 = [dNds2(3) 0 0; 0 dNdt2(3) 0; 0 0 dNdp2(3); 0 dNdp2(3) dNdt2(3); dNdp2(3) 0 dNds2(3); dNdt2(3) dNds2(3) 0];			
+			B2_4 = [dNds2(4) 0 0; 0 dNdt2(4) 0; 0 0 dNdp2(4); 0 dNdp2(4) dNdt2(4); dNdp2(4) 0 dNds2(4); dNdt2(4) dNds2(4) 0];			
+		
+			B3_1 = [dNds3(1) 0 0; 0 dNdt3(1) 0; 0 0 dNdp3(1); 0 dNdp3(1) dNdt3(1); dNdp3(1) 0 dNds3(1); dNdt3(1) dNds3(1) 0];			
+			B3_2 = [dNds3(2) 0 0; 0 dNdt3(2) 0; 0 0 dNdp3(2); 0 dNdp3(2) dNdt3(2); dNdp3(2) 0 dNds3(2); dNdt3(2) dNds3(2) 0];			
+			B3_3 = [dNds3(3) 0 0; 0 dNdt3(3) 0; 0 0 dNdp3(3); 0 dNdp3(3) dNdt3(3); dNdp3(3) 0 dNds3(3); dNdt3(3) dNds3(3) 0];			
+			B3_4 = [dNds3(4) 0 0; 0 dNdt3(4) 0; 0 0 dNdp3(4); 0 dNdp3(4) dNdt3(4); dNdp3(4) 0 dNds3(4); dNdt3(4) dNds3(4) 0];
+		
+			B4_1 = [dNds4(1) 0 0; 0 dNdt4(1) 0; 0 0 dNdp4(1); 0 dNdp4(1) dNdt4(1); dNdp4(1) 0 dNds4(1); dNdt4(1) dNds4(1) 0];			
+			B4_2 = [dNds4(2) 0 0; 0 dNdt4(2) 0; 0 0 dNdp4(2); 0 dNdp4(2) dNdt4(2); dNdp4(2) 0 dNds4(2); dNdt4(2) dNds4(2) 0];			
+			B4_3 = [dNds4(3) 0 0; 0 dNdt4(3) 0; 0 0 dNdp4(3); 0 dNdp4(3) dNdt4(3); dNdp4(3) 0 dNds4(3); dNdt4(3) dNds4(3) 0];			                                                                                                      
+			B4_4 = [dNds4(4) 0 0; 0 dNdt4(4) 0; 0 0 dNdp4(4); 0 dNdp4(4) dNdt4(4); dNdp4(4) 0 dNds4(4); dNdt4(4) dNds4(4) 0];
 
+			B = [
+				B1_1 B1_2 B1_3 B1_4
+				B2_1 B2_2 B2_3 B2_4
+				B3_1 B3_2 B3_3 B3_4
+				B4_1 B4_2 B4_3 B4_4	
+			];
 		case 'Solid188'
 			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);	dNdp1 = derivatives(3,:);
 			dNds2 = derivatives(4,:);	dNdt2 = derivatives(5,:);	dNdp2 = derivatives(6,:);
