@@ -114,8 +114,42 @@ function EvaluateMeshQuality()
 				end				
 			end
 		case 'Shell133'
-		
+			nEGIP = eleType_.nEleGaussIntegralPoints;
+			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
+			deShapeFuncs_ = DeShapeFunction(gaussIPs);					
+			iInvJ = struct('arr', sparse(3*nEGIP,3*nEGIP));
+			invJ_ = repmat(iInvJ, numEles_, 1);
+			iDetJ = zeros(nEGIP,1);
+			detJ_ = repmat(iDetJ,1,numEles_);
+			for ii=1:numEles_
+				probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
+				for kk=1:nEGIP
+					Jac = deShapeFuncs_(3*(kk-1)+1:3*kk,:)*probeEleNods;
+					iInvJ.arr(3*(kk-1)+1:3*kk, 3*(kk-1)+1:3*kk) = inv(Jac);
+					iDetJ(kk) = det(Jac);	
+				end
+				invJ_(ii) = iInvJ;
+				detJ_(:,ii) = iDetJ;
+				meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
+			end		
 		case 'Shell144'
-		
+			nEGIP = eleType_.nEleGaussIntegralPoints;
+			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
+			deShapeFuncs_ = DeShapeFunction(gaussIPs);			
+			iInvJ = struct('arr', sparse(3*nEGIP,3*nEGIP));
+			iDetJ = zeros(nEGIP,1);
+			invJ_ = repmat(iInvJ, numEles_, 1);
+			detJ_ = repmat(iDetJ,1,numEles_);
+			for ii=1:numEles_
+				probeEleNods = nodeCoords_(eNodMat_(ii,:)',:);
+				for kk=1:nEGIP
+					Jac = deShapeFuncs_(3*(kk-1)+1:3*kk,:)*probeEleNods;
+					iInvJ.arr(3*(kk-1)+1:3*kk, 3*(kk-1)+1:3*kk) = inv(Jac);
+					iDetJ(kk) = det(Jac);	
+				end
+				invJ_(ii) = iInvJ;
+				detJ_(:,ii) = iDetJ;
+				meshQualityJacobianRatio_(ii) = min(iDetJ)/max(iDetJ);
+			end		
 	end
 end

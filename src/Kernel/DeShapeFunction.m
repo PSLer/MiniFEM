@@ -65,10 +65,21 @@ function dN = DeShapeFunction(paraCoords)
 		case 'Shell133'
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);
+			numVars = length(s); tmp = ones(numVars,1);
 			
+			dN1ds = 1*tmp; dN2ds = 0*tmp; dN3ds = -1*tmp;
+			dN1dt = 0*tmp; dN2dt = 1*tmp; dN3dt = -1*tmp;
+			dN = zeros(2*numVars, 3);
+			dN(1:2:end,:) = [dN1ds dN2ds dN3ds];
+			dN(2:2:end,:) = [dN1dt dN2dt dN3dt];				
 		case 'Shell144'
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);
+			dN1ds = -(1-t); dN2ds = 1-t; 	dN3ds = 1+t; dN4ds = -(1+t);
+			dN1dt = -(1-s); dN2dt = -(1+s); dN3dt = 1+s; dN4dt = 1-s;
 			
+			dN = zeros(2*length(s), 4);
+			dN(1:2:end,:) = 0.25*[dN1ds dN2ds dN3ds dN4ds];
+			dN(2:2:end,:) = 0.25*[dN1dt dN2dt dN3dt dN4dt];				
 	end
 end
