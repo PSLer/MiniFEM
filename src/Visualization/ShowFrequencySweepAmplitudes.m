@@ -1,4 +1,5 @@
-function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
+function ShowFrequencySweepAmplitudes(scalingFac, style, outPutType, varargin)
+	%% an improfessional but possibly interesting function
 	global eleType_;
 	global M_;
 	global nodeCoords_;
@@ -10,11 +11,7 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 	global outPath_;
 	
 	if isempty(M_), warning('The cyclical vibration does not exist!'); return; end
-	if isempty(scalingFac)
-		minFeaterSize = min(boundingBox_(2,:)-boundingBox_(1,:)); selfFac = 10;
-		scalingFac = minFeaterSize/selfFac/max(abs(amp));		
-	end
-	if 5==nargin, cameraZoomScaling = varargin{1}; else, cameraZoomScaling = 1; end
+	if 4==nargin, cameraZoomScaling = varargin{1}; else, cameraZoomScaling = 1; end
 	if strcmp(outPutType, 'Animation')
 		fileName = strcat(outPath_, 'CyclicalVibration.gif');
 	elseif strcmp(outPutType, 'Video')
@@ -25,8 +22,9 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 		open(v);		
 	else
 		warning('Wrong Input!'); return;
-	end	
-	nFrame = 36;
+	end
+	freqList = load(strcat(outPath_, 'frequencyList.dat'));
+	numFreq = length(freqList);
 	hF = figure; axis equal; axis tight; axis off; 
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		camproj('perspective');	
@@ -42,14 +40,24 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 		tmp = nodState_(patchIndices); tmp = sum(tmp,1);
 		boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
 		amp = reshape(amp, 3, numNodes_)';
-		for ii=1:nFrame
-			disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
-			srcField = real(amp*exp(1i*2*pi*ii/nFrame));
-			deformedMeshCoords = nodeCoords_+scalingFac*srcField;
+		for ii=1:numFreq
+			iFreq = freqList(ii);
+			disp([' Freq.: ' sprintf('%12.3f',iFreq) ' Progress.: ' sprintf('%6i',ii) ' | Total.: ' sprintf('%6i',numFreq)]);
+
+			iFileName = sprintf(strcat(outPath_, 'frequencyResponse-step-%d.mat'), ii);
+			resp = load(iFileName);
+			amp = resp.U_;
+			if isempty(scalingFac)
+				minFeaterSize = min(boundingBox_(2,:)-boundingBox_(1,:)); selfFac = 10;
+				scalingFac = minFeaterSize/selfFac/max(abs(amp));		
+			end			
+			amp = reshape(amp, 3, numNodes_)';
+			
+			deformedMeshCoords = nodeCoords_+scalingFac*amp;
 			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(boundaryEleFaces);
 			yPatchs = deformedMeshCoords(:,2); yPatchs = yPatchs(boundaryEleFaces);
 			zPatchs = deformedMeshCoords(:,3); zPatchs = zPatchs(boundaryEleFaces);
-			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(boundaryEleFaces);
+			cPatchs = vecnorm(amp,2,2); cPatchs = cPatchs(boundaryEleFaces);
 			
 			hGlyph = patch(xPatchs, yPatchs, zPatchs, cPatchs);	
 			if 1==style
@@ -84,15 +92,23 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 			set(hGlyph, 'visible', 'off');
 			set(hdLight,'visible','off');
 		end
-	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		amp = reshape(amp, 2, numNodes_)';
-		for ii=1:nFrame
-			disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
-			srcField = real(amp*exp(1i*2*pi*ii/nFrame));
-			deformedMeshCoords = nodeCoords_+scalingFac*srcField;
+	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')		
+		for ii=1:numFreq
+			iFreq = freqList(ii);
+			disp([' Freq.: ' sprintf('%12.3f',iFreq) ' Progress.: ' sprintf('%6i',ii) ' | Total.: ' sprintf('%6i',numFreq)]);
+			iFileName = sprintf(strcat(outPath_, 'frequencyResponse-step-%d.mat'), ii);
+			resp = load(iFileName);
+			amp = resp.U_;
+			if isempty(scalingFac)
+				minFeaterSize = min(boundingBox_(2,:)-boundingBox_(1,:)); selfFac = 10;
+				scalingFac = minFeaterSize/selfFac/max(abs(amp));		
+			end	
+			amp = reshape(amp, 2, numNodes_)';
+
+			deformedMeshCoords = nodeCoords_+scalingFac*amp;
 			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(eNodMat_');
 			yPatchs = deformedMeshCoords(:,2); yPatchs = yPatchs(eNodMat_');				
-			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(eNodMat_');
+			cPatchs = vecnorm(amp,2,2); cPatchs = cPatchs(eNodMat_');
 			
 			hGlyph = patch(xPatchs, yPatchs, cPatchs);
 			if 1==style

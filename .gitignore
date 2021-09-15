@@ -5,6 +5,7 @@
 *.fig
 *.mat
 *.png
+*.dat
 out/dataset_TSV.vtk
 out/wrappedHexFEAmodel.vtk
 out/wrappedVoxelFEAmodel.txt
