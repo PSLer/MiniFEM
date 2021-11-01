@@ -15,7 +15,7 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
+SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
@@ -29,7 +29,7 @@ switch ModelingOpt
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/bumpy_torus2D_512_512.txt', 1);	
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten2D_R512.txt');	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/bridge3D_4.topopti', 0.5);
