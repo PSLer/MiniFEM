@@ -2,7 +2,7 @@ eleNodCoordListX = nodeCoords_(:,1); eleNodCoordListX = eleNodCoordListX(eNodMat
 eleNodCoordListX = sum(eleNodCoordListX,2);
 eleNodCoordListY = nodeCoords_(:,2); eleNodCoordListY = eleNodCoordListY(eNodMat_);
 eleNodCoordListY = sum(eleNodCoordListY,2);
-eleCentroidList_ = [eleNodCoordListX eleNodCoordListY]/eleType_.numNode;
+eleCentroidList_ = [eleNodCoordListX eleNodCoordListY]/eleType_.nEleNodes;
 
 ctr1 = [nelx_/2 nely_/2]; rad1 = nely_/10;
 eles2beDiscard1 = find(vecnorm(ctr1-eleCentroidList_,2,2)<=rad1);
