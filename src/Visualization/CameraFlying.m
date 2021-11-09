@@ -23,7 +23,7 @@ function CameraFlying(varargin)
 			filename = strcat(outPath_, 'rotatingObject3D.gif');
 			for ii=1:nFrame
 				disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
-				hdLight = camlight(az, el);
+				hdLight = camlight('headlight','infinite'); 
 				material dull; %% dull, shiny, metal
 				f = getframe(gcf);
 				im = frame2im(f);
@@ -46,7 +46,7 @@ function CameraFlying(varargin)
 			open(v);
 			for ii=1:nFrame
 				disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
-				hdLight = camlight(az, el);
+				hdLight = camlight('headlight','infinite'); 
 				material dull; %% dull, shiny, metal
 				f = getframe(gcf);
 				writeVideo(v,f);
