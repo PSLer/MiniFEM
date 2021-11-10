@@ -56,4 +56,5 @@ function CameraFlying(varargin)
 			end
 			close(v);
 	end
+	camlight('headlight','infinite');
 end
