@@ -7,28 +7,30 @@ function ShowLoadingCondition(varargin)
 		loadingCondToBeShow = loadingCond_;
 	else
 		loadingCondToBeShow = varargin{1};
-	end	
+    end
+    if isempty(loadingCondToBeShow), return; end
+    lB = 0.2;
+    uB = 1.0;
+    amps = vecnorm(loadingCondToBeShow(:,2:end),2,2);
+    maxAmp = max(amps);
+    minAmp = min(amps);
+    if minAmp==maxAmp
+        scalingFac = 1;
+    else
+        scalingFac = lB + (uB-lB)*(amps-minAmp)/(maxAmp-minAmp);
+    end   
+    loadingDirVec = loadingCondToBeShow(:,2:end)./amps.*scalingFac;
+    coordLoadedNodes = nodeCoords_(loadingCondToBeShow(:,1),:);
+    amplitudesF = mean(boundingBox_(2,:)-boundingBox_(1,:))/5 * loadingDirVec;
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
-		if size(loadingCondToBeShow,1)>0
-			coordLoadedNodes = nodeCoords_(loadingCondToBeShow(:,1),:);
-			amplitudesF = mean(boundingBox_(2,:)-boundingBox_(1,:))/5 * loadingCondToBeShow(:,2:4)./vecnorm(loadingCondToBeShow(:,2:4), 2, 2);
-			hold on; hd2 = quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), amplitudesF(:,1), ...
-				amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 		
-		end	
+		hold on; quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), amplitudesF(:,1), ...
+			amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 	
 	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		if size(loadingCondToBeShow,1)>0
-			coordLoadedNodes = nodeCoords_(loadingCondToBeShow(:,1),:);
-			amplitudesF = mean(boundingBox_(2,:)-boundingBox_(1,:))/5 * loadingCondToBeShow(:,2:3)./vecnorm(loadingCondToBeShow(:,2:3), 2, 2);
-			hold on; hd2 = quiver(coordLoadedNodes(:,1), coordLoadedNodes(:,2), amplitudesF(:,1), ...
-				amplitudesF(:,2), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 		
-		end	
+		hold on; quiver(coordLoadedNodes(:,1), coordLoadedNodes(:,2), amplitudesF(:,1), ...
+			amplitudesF(:,2), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 	
 	else
 		%% Need to figure out a way to show torque
-		if size(loadingCondToBeShow,1)>0
-			coordLoadedNodes = nodeCoords_(loadingCondToBeShow(:,1),:);
-			amplitudesF = mean(boundingBox_(2,:)-boundingBox_(1,:))/5 * loadingCondToBeShow(:,2:4)./vecnorm(loadingCondToBeShow(:,2:4), 2, 2);
-			hold on; hd2 = quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), amplitudesF(:,1), ...
-				amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 		
-		end			
+		hold on; quiver3(coordLoadedNodes(:,1), coordLoadedNodes(:,2), coordLoadedNodes(:,3), amplitudesF(:,1), ...
+			amplitudesF(:,2), amplitudesF(:,3), 0, 'Color', [255 127 0.0]/255, 'LineWidth', 2, 'MaxHeadSize', 1, 'MaxHeadSize', 1); 			
 	end
 end
