@@ -14,7 +14,7 @@ function ShowLoadingCondition(varargin)
     amps = vecnorm(loadingCondToBeShow(:,2:end),2,2);
     maxAmp = max(amps);
     minAmp = min(amps);
-    if minAmp==maxAmp
+    if abs(minAmp-maxAmp)/(minAmp+maxAmp)<1.0e-6
         scalingFac = 1;
     else
         scalingFac = lB + (uB-lB)*(amps-minAmp)/(maxAmp-minAmp);
