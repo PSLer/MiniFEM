@@ -29,7 +29,7 @@ switch ModelingOpt
 		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten2D_R512.txt');	
+		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten2D_R700.txt');	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/bridge3D_4.topopti', 0.5);
