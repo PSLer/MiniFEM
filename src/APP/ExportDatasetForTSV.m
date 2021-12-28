@@ -220,6 +220,7 @@ function ExportDataSimulatedOnUnstructuredMesh_mesh(fileName)
 		fprintf(fid, '%d \n', numEles_);
 		fprintf(fid, '%d %d %d %d %d\n', [eNodMat_ zeros(numEles_,1)]');
 		fprintf(fid, '%s', 'End');
+        fprintf(fid, '\n');
 		%%1.4 Cartesian Stress
 		fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 		fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
@@ -243,6 +244,7 @@ function ExportDataSimulatedOnUnstructuredMesh_mesh(fileName)
 		fprintf(fid, '%d \n', numEles_);
 		fprintf(fid, '%d %d %d %d %d %d %d %d %d\n', [eNodMat_ zeros(numEles_,1)]');
 		fprintf(fid, '%s', 'End');
+        fprintf(fid, '\n');
 		%%1.4 Cartesian Stress
 		fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 		fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
