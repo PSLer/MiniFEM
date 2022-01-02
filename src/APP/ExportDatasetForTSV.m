@@ -26,6 +26,9 @@ function ExportDatasetForTSV(varargin)
 			case 'mesh'
 				fileName = strcat(outPath_, 'dataset_TSV.mesh');
 				ExportDataSimulatedOnUnstructuredMesh_mesh(fileName);
+			case 'stress'
+				fileName = strcat(outPath_, 'dataset_TSV.stress');
+				ExportDataSimulatedOnUnstructuredMesh_stress(fileName);				
 			otherwise
 				error('Wrong Input!');
 		end
@@ -225,11 +228,11 @@ function ExportDataSimulatedOnUnstructuredMesh_mesh(fileName)
 		fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 		fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 		if ~isempty(loadingCond_)
-			fprintf(fid, '%d %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
+			fprintf(fid, '%d %.6f %.6f\n', loadingCond_');
 		end        
 		fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 		if ~isempty(fixingCond_)
-			fprintf(fid, '%d\n', fixingCond_(:,1)-1);
+			fprintf(fid, '%d\n', fixingCond_(:,1));
 		end								
 		fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);		
 		fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');			
@@ -249,13 +252,75 @@ function ExportDataSimulatedOnUnstructuredMesh_mesh(fileName)
 		fprintf(fid, '%s %s %s %s ', 'Number of Stress Fields:'); fprintf(fid, '%d\n', 1);
 		fprintf(fid, '%s %s ', 'Node Forces:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 		if ~isempty(loadingCond_)
-			fprintf(fid, '%d %.6f %.6f %.6f\n', [loadingCond_(:,1)-1 loadingCond_(:,2:end)]');
+			fprintf(fid, '%d %.6f %.6f %.6f\n', loadingCond_');
 		end
 		fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 		if ~isempty(fixingCond_)
-			fprintf(fid, '%d\n', fixingCond_(:,1)-1);						
+			fprintf(fid, '%d\n', fixingCond_(:,1));						
 		end
 		fprintf(fid, '%s %s', 'Cartesian Stress:'); fprintf(fid, '%d\n', numNodes_);
+		fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');			
+	end	
+	fclose(fid);	
+end
+
+function ExportDataSimulatedOnUnstructuredMesh_stress(fileName)
+	global eleType_;
+	global numEles_; 
+	global eNodMat_; 
+	global numNodes_; 
+	global nodeCoords_;	
+	global fixingCond_; 
+	global loadingCond_;
+	global cartesianStressField_;
+	
+	fid = fopen(fileName, 'w');
+	%%write in self-defined stress style	
+	%%1.1 file header
+	if strcmp(eleType_.eleName, 'Plane144')
+		%%1.2 node coordinates
+		fprintf(fid, '%s ', 'Vertices:');
+		fprintf(fid, '%d\n', numNodes_);		
+		fprintf(fid, '%.6e %.6e\n', nodeCoords_');
+		%%1.3 Cells
+		fprintf(fid, '%s ', 'Elements:');
+		fprintf(fid, '%d \n', numEles_);
+		fprintf(fid, '%d %d %d %d\n', eNodMat_');
+		%%1.4 Cartesian Stress
+		fprintf(fid, '%s %s ', 'Node Forces:'); 
+		fprintf(fid, '%d\n', size(loadingCond_,1));
+		if ~isempty(loadingCond_)
+			fprintf(fid, '%d %.6f %.6f\n', loadingCond_');
+		end        
+		fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
+		fprintf(fid, '%d\n', size(fixingCond_,1));
+		if ~isempty(fixingCond_)
+			fprintf(fid, '%d\n', fixingCond_(:,1));
+		end								
+		fprintf(fid, '%s %s', 'Cartesian Stress:'); 
+		fprintf(fid, '%d\n', numNodes_);		
+		fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');			
+	else
+		%%1.2 node coordinates
+		fprintf(fid, '%s ', 'Vertices:');
+		fprintf(fid, '%d\n', numNodes_);		
+		fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
+		%%1.3 Cells
+		fprintf(fid, '%s ', 'Elements:');
+		fprintf(fid, '%d \n', numEles_);
+		fprintf(fid, '%d %d %d %d %d %d %d %d\n', eNodMat_');
+		%%1.4 Cartesian Stress
+		fprintf(fid, '%s %s ', 'Node Forces:'); 
+		fprintf(fid, '%d\n', size(loadingCond_,1));
+		if ~isempty(loadingCond_)
+			fprintf(fid, '%d %.6f %.6f %.6f\n', loadingCond_');
+		end
+		fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
+		if ~isempty(fixingCond_)
+			fprintf(fid, '%d\n', fixingCond_(:,1));						
+		end
+		fprintf(fid, '%s %s', 'Cartesian Stress:'); 
+		fprintf(fid, '%d\n', numNodes_);
 		fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');			
 	end	
 	fclose(fid);	
