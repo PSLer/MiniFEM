@@ -10,7 +10,7 @@ function AssembleStiffnessMatrix()
 	global detJ_;
 	global invJ_;
 	global deShapeFuncs_;
-	
+	global Ke_;
 	global K_;	
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
 	tStart = tic;
@@ -89,6 +89,7 @@ function AssembleStiffnessMatrix()
 						tmpK = tmpK + tmpK' - diag(diag(tmpK));
 						K_ = K_ + tmpK;					
 					end
+					Ke_ = Ke;					
 				else
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
@@ -202,7 +203,8 @@ function AssembleStiffnessMatrix()
 						tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);					
 						tmpK = tmpK + tmpK' - diag(diag(tmpK));
 						K_ = K_ + tmpK;					
-					end					
+					end
+					Ke_ = Ke;					
                 else			
 					for jj=1:size(blockIndex,1)
 						rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
