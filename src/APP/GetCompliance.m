@@ -47,15 +47,15 @@ function c = GetCompliance(varargin)
 			xPatchs = nodeCoords_(:,1); xPatchs = xPatchs(eNodMat_');
 			yPatchs = nodeCoords_(:,2); yPatchs = yPatchs(eNodMat_');
 			cPatchs = ce(:)';
-			if 0
+			if 1
 				cPatchs = log(cPatchs);
 			else
 				cPatchs = cPatchs.^(1/4);
 			end
 			cPatchs = repmat(cPatchs, 4, 1);
 			figure;
-			colormap(flip(gray));
-			% colormap(gray);
+			% colormap(flip(gray));
+			colormap('jet');
 			hd = patch(xPatchs, yPatchs, cPatchs); hold on;
 			set(hd, 'FaceColor', 'Interp', 'FaceAlpha', 1, 'EdgeColor', 'None');
 			axis equal; axis tight; axis off;
