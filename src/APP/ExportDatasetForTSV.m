@@ -49,7 +49,72 @@ function ExportDataSimulatedOnCartesianMesh_carti(fileName)
 	global carNodMapBack_; 	
 	global fixingCond_; global loadingCond_;
 	global cartesianStressField_;
-
+	global outPath_;
+if 0 %%new
+	[~,expName,~] = fileparts(fileName);
+	fid = fopen(fileName, 'w');
+	fprintf(fid, '%s %s', 'DATASET CARTESIAN_GRID');
+	if strcmp(eleType_.eleName, 'Plane144')
+		%%Mesh Description
+		fprintf(fid, '%s', '2D');
+		fprintf(fid, '\n');
+		fprintf(fid, '%s ', 'Resolution:');
+		fprintf(fid, '%d %d\n', [nelx_ nely_]);
+		fprintf(fid, '%s ', 'LowerBound:');
+		fprintf(fid, '%.6f %.6f\n', boundingBox_(1,:));
+		fprintf(fid, '%s ', 'UpperBound:');
+		fprintf(fid, '%.6f %.6f\n', boundingBox_(2,:));	
+		fprintf(fid, '%s ', '#ELEMENTS:');
+		fprintf(fid, '%d\n', numEles_);
+		%%Cartesian Stress
+		fprintf(fid, '%s %s ', 'Node Forces:'); 
+		fprintf(fid, '%d\n', size(loadingCond_,1));
+		if ~isempty(loadingCond_)
+			fprintf(fid, '%d %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
+		end
+		fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
+		if ~isempty(fixingCond_)
+			fprintf(fid, '%d\n', carNodMapBack_(fixingCond_(:,1))-1);
+		end		
+	else
+		%%Mesh Description
+		fprintf(fid, '%s', '3D');
+		fprintf(fid, '\n');
+		fprintf(fid, '%s ', 'Resolution:');
+		fprintf(fid, '%d %d %d\n', [nelx_ nely_ nelz_]);
+		fprintf(fid, '%s ', 'LowerBound:');
+		fprintf(fid, '%.6f %.6f %.6f\n', boundingBox_(1,:));
+		fprintf(fid, '%s ', 'UpperBound:');
+		fprintf(fid, '%.6f %.6f %.6f\n', boundingBox_(2,:));	
+		fprintf(fid, '%s ', '#ELEMENTS:');
+		fprintf(fid, '%d\n', numEles_);
+		%%Cartesian Stress
+		fprintf(fid, '%s %s ', 'Node Forces:'); 
+		fprintf(fid, '%d\n', size(loadingCond_,1));
+		if ~isempty(loadingCond_)
+			fprintf(fid, '%d %.6f %.6f\n', [double(carNodMapBack_(loadingCond_(:,1)))-1 loadingCond_(:,2:end)]');
+		end
+		fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
+		fprintf(fid, '%d\n', size(fixingCond_,1));
+		if ~isempty(fixingCond_)
+			fprintf(fid, '%d\n', carNodMapBack_(fixingCond_(:,1))-1);
+		end		
+	end
+	fprintf(fid, '%s %s %s %s ', 'File for Valid Elements:');
+	expNameEles = strcat(expName, '_eles');
+	fprintf(fid, '%s', expNameEles); fprintf(fid, '\n');
+	expNameStress = strcat(expName, '_stress');
+	fprintf(fid, '%s %s %s %s ', 'File for Stress Field:');
+	fprintf(fid, '%s', expNameStress); fprintf(fid, '\n');
+	fclose(fid);
+	
+	validElements = carEleMapBack_-1;
+	fileName = strcat(outPath_, expNameEles, '.mat');
+	save(fileName, 'validElements');
+	stressField = cartesianStressField_;
+	fileName = strcat(outPath_, expNameStress, '.mat');
+	save(fileName, 'stressField');	
+else
 	fid = fopen(fileName, 'w');
 	fprintf(fid, '%s %s', 'DATASET CARTESIAN_GRID'); 
 	fprintf(fid, '\n');
@@ -106,6 +171,8 @@ function ExportDataSimulatedOnCartesianMesh_carti(fileName)
 		fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', cartesianStressField_');				
 	end	
 	fclose(fid);
+end
+
 end
 
 function ExportDataSimulatedOnUnstructuredMesh_vtk(fileName)

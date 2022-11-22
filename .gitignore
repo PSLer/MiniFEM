@@ -11,3 +11,4 @@ out/wrappedHexFEAmodel.vtk
 out/wrappedVoxelFEAmodel.txt
 out/dataset_TSV.mesh
 *.mp4
+*.carti
