@@ -28,7 +28,7 @@ function WrapHexFEAmodel()
 	fprintf(fid, ' %s \n', 'double');
 	
 	%%1.2 node coordinates
-	fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
+	fprintf(fid, '%16.6e %16.6e %16.6e\n', nodeCoords_');
 	%%1.3 Cells
 	fprintf(fid, '%s', 'CELLS');
 	fprintf(fid, ' %d %d\n', [numEles_ 9*numEles_]);
@@ -51,7 +51,7 @@ function WrapHexFEAmodel()
 	end
 	fprintf(fid, '%s %s ', 'loading condition:'); fprintf(fid, '%d\n', size(loadingCond_,1));
 	if ~isempty(loadingCond_)
-		fprintf(fid, '%d %.6f %.6f %.6f\n', loadingCond_');
+		fprintf(fid, '%10d %16.6e %16.6e %16.6e\n', loadingCond_');
 	end	
 	fclose(fid);
 end

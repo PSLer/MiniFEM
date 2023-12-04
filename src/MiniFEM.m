@@ -26,7 +26,7 @@ switch ModelingOpt
 		CreateRectangle([100, 50], [0 0; 1 0.5]);
 	case 2
 		SetElement('Solid188'); %% 'Solid188'
-		CreateCuboid([100, 50, 50], [0 0 0; 1 0.5 0.5]);
+		CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
 		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten2D_R700.txt');	
@@ -47,14 +47,17 @@ switch ModelingOpt
 		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/Bearing.mesh');
 	case 9
 		SetElement('Solid144'); %% 'Solid144'
-		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/airplane1_output_tet.mesh');		
-	case 10 %%unavailable yet
-		SetElement('Shell133'); %% 'Shell133'
-		CreateFromExternalTriSurfMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply');
+		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/cantilever2.mesh');
+	case 10
+		SetElement('Solid144'); %% 'Solid144'
+		CreateFromWrappedTetFEAmodel_meshFormat('D:\MyDataSets\FEA_Models_Tet_mesh\cantilever2.mesh');		
 	case 11 %%unavailable yet
 		SetElement('Shell133'); %% 'Shell133'
-		CreateFromExternalTriSurfMesh_objFormat('D:/MyDataSets/TriPolyGraph_obj/58009_sf.obj');
+		CreateFromExternalTriSurfMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply');
 	case 12 %%unavailable yet
+		SetElement('Shell133'); %% 'Shell133'
+		CreateFromExternalTriSurfMesh_objFormat('D:/MyDataSets/TriPolyGraph_obj/58009_sf.obj');
+	case 13 %%unavailable yet
 		SetElement('Shell144'); %% 'Shell144'
 		CreateFromExternalQuadSurfMesh_meshFormat('D:/MyDataSets/QuadSurfMesh_mesh/3_octa-flower.mesh');
 	otherwise

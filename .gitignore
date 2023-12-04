@@ -13,3 +13,4 @@ out/dataset_TSV.mesh
 *.mp4
 *.carti
 *.stress
+*.mesh

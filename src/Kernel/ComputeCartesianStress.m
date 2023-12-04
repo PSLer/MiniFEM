@@ -81,7 +81,16 @@ function ComputeCartesianStress()
 			end			
 		case 'Solid144'
 			cartesianStressField_ = zeros(numNodes_, 6);
-			Ns = GetElementStressInterpolationMatrix(); OTP = inv(Ns);			
+			Ns = GetElementStressInterpolationMatrix(); OTP = inv(Ns);
+			iMatrixD = matrixD_.arr;
+			for ii=1:numEles_
+				iEleU = U_(eDofMat_(ii,:),1);
+				iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
+				stressGaussPoints = iMatrixD * (iMatrixB*iEleU);
+				stressNodes = OTP*stressGaussPoints;
+				iNodes = eNodMat_(ii,:);
+				cartesianStressField_(iNodes,:) = reshape(stressNodes, 6, 4)' + cartesianStressField_(iNodes,:);
+			end			
 		case 'Solid188'
 			cartesianStressField_ = zeros(numNodes_, 6);
 			Ns = GetElementStressInterpolationMatrix(); OTP = inv(Ns);
