@@ -19,7 +19,7 @@ SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 3;
+ModelingOpt = 1;
 switch ModelingOpt
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
@@ -29,7 +29,7 @@ switch ModelingOpt
 		CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 	case 3
 		SetElement('Plane144'); %% 'Plane144' or 'Solid188'
-		CreateFromWrappedVoxelFEAmodel('D:/MyDataSets/FEA_Models_voxel/kitten2D_R700.txt');	
+		CreateFromWrappedVoxelFEAmodel('D:\MyDataSets\FEA_Models_voxel\cantilever2D/cantilever2D_iLoad5_R500.txt', 1);	
 	case 4
 		SetElement('Solid188'); %% 'Plane144' or 'Solid188'
 		CreateModelFromTopOpti('D:/MyDataSets/FEA_Models_topOpti/bridge3D_4.topopti', 0.5);
@@ -47,10 +47,10 @@ switch ModelingOpt
 		CreateFromExternalHexMesh_meshFormat('D:/MyDataSets/HexMesh_mesh/Bearing.mesh');
 	case 9
 		SetElement('Solid144'); %% 'Solid144'
-		CreateFromExternalTetMesh_meshFormat('D:/MyDataSets/TetMesh_mesh/cantilever2.mesh');
+		CreateFromExternalTetMesh_meshFormat('D:\wSpace\MeshStructDesign\data\spot_Dennis/spot_Dennis.mesh');
 	case 10
 		SetElement('Solid144'); %% 'Solid144'
-		CreateFromWrappedTetFEAmodel_meshFormat('D:\MyDataSets\FEA_Models_Tet_mesh\cantilever2.mesh');		
+		CreateFromWrappedTetFEAmodel_meshFormat('D:\wSpace\MeshStructDesign\data\femurHigh_Dennis\wrappedTetFEAmodel.mesh');		
 	case 11 %%unavailable yet
 		SetElement('Shell133'); %% 'Shell133'
 		CreateFromExternalTriSurfMesh_plyFormat('D:/MyDataSets/TriPolyMesh_ply/chineseLion.ply');

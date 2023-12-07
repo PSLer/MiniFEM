@@ -13,7 +13,6 @@ function WrapTetFEAmodel()
 	
 	fileName = strcat(outPath_, 'wrappedTetFEAmodel.mesh');
 	fid = fopen(fileName, 'w');	
-	fid = fopen(fileName, 'w');
 	fprintf(fid, '%s ', 'MeshVersionFormatted'); fprintf(fid, '%d\n', 1);
 	fprintf(fid, '%s ', 'Dimension'); fprintf(fid, '%d\n', 3);
 	fprintf(fid, '%s ', 'Vertices'); fprintf(fid, '%d\n', numNodes_);

@@ -4,6 +4,7 @@ function CreateFromExternalTetMesh_meshFormat(fileName)
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
 	global boundaryNodes_;
+	global boundaryFaceNodMat_;
 	global numNodsAroundEleVec_;
 	global nodState_; global eleState_;
 	% global eleVolumes_;
@@ -32,21 +33,7 @@ function CreateFromExternalTetMesh_meshFormat(fileName)
 	%FitExternalHexMesh4FEA();
 	
 	%%5. Initialize Additional Mesh Info
-	%% Extract Boundary Mesh
-	patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])';
-	patchIndices = reshape(patchIndices(:), 3, 4*numEles_);	
-	tmp = sort(patchIndices',2);
-	[~, ia, ic] = unique(tmp, 'rows');
-	numRawPatchs = 4*numEles_;
-	patchState = zeros(length(ia),1);
-	for ii=1:numRawPatchs
-		patchState(ic(ii)) = patchState(ic(ii)) + 1;
-	end
-	patchIndexOnBoundary = ia(1==patchState);
-	boundaryPatchs = patchIndices(:,patchIndexOnBoundary');
-	boundaryNodes_ = int32(unique(boundaryPatchs));
-	nodState_ = zeros(numNodes_,1,'int32'); nodState_(boundaryNodes_) = 1;
-	eleState_ = 4*ones(numEles_,1,'int32');	
+	[boundaryFaceNodMat_, nodState_, eleState_, boundaryNodes_] = ExtractBoundaryInfoFromSolidMesh();
 	
 	numDOFs_ = 3*numNodes_;
 	boundingBox_ = [min(nodeCoords_, [], 1); max(nodeCoords_, [], 1)];

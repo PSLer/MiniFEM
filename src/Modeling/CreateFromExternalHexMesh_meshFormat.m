@@ -4,6 +4,7 @@ function CreateFromExternalHexMesh_meshFormat(fileName)
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
 	global boundaryNodes_;
+	global boundaryFaceNodMat_;
 	global eleState_; global nodState_;
 	global numNodsAroundEleVec_;
 	if ~strcmp(eleType_.eleName, 'Solid188')
@@ -32,20 +33,21 @@ function CreateFromExternalHexMesh_meshFormat(fileName)
 	
 	%%7. Initialize Additional Mesh Info
 	%% Extract Boundary Mesh
-	patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
-	patchIndices = reshape(patchIndices(:), 4, 6*numEles_);	
-	tmp = sort(patchIndices',2);
-	[~, ia, ic] = unique(tmp, 'rows');
-	numRawPatchs = 6*numEles_;
-	patchState = zeros(length(ia),1);
-	for ii=1:numRawPatchs
-		patchState(ic(ii)) = patchState(ic(ii)) + 1;
-	end
-	patchIndexOnBoundary = ia(1==patchState);
-	boundaryPatchs = patchIndices(:,patchIndexOnBoundary');
-	boundaryNodes_ = int32(unique(boundaryPatchs));
-	nodState_ = zeros(numNodes_,1,'int32'); nodState_(boundaryNodes_) = 1;
-	eleState_ = 12*ones(numEles_,1,'int32');
+	% patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
+	% patchIndices = reshape(patchIndices(:), 4, 6*numEles_);	
+	% tmp = sort(patchIndices',2);
+	% [~, ia, ic] = unique(tmp, 'rows');
+	% numRawPatchs = 6*numEles_;
+	% patchState = zeros(length(ia),1);
+	% for ii=1:numRawPatchs
+		% patchState(ic(ii)) = patchState(ic(ii)) + 1;
+	% end
+	% patchIndexOnBoundary = ia(1==patchState);
+	% boundaryPatchs = patchIndices(:,patchIndexOnBoundary');
+	% boundaryNodes_ = int32(unique(boundaryPatchs));
+	% nodState_ = zeros(numNodes_,1,'int32'); nodState_(boundaryNodes_) = 1;
+	% eleState_ = 12*ones(numEles_,1,'int32');
+	[boundaryFaceNodMat_, nodState_, eleState_, boundaryNodes_] = ExtractBoundaryInfoFromSolidMesh();
 	
 	numDOFs_ = 3*numNodes_;
 	boundingBox_ = [min(nodeCoords_, [], 1); max(nodeCoords_, [], 1)];

@@ -2,7 +2,8 @@ function DrawStressTensorViaArrows(locationList, cartesianStressList)
 	global eleType_;
 	global boundingBox_;
 	global numNodes_;
-	global nodeCoords_;	
+	global nodeCoords_;
+	global boundaryFaceNodMat_;
 	global numEles_;	
 	global eNodMat_;
 	global boundaryNodes_;	
@@ -76,20 +77,25 @@ function DrawStressTensorViaArrows(locationList, cartesianStressList)
 	sphere_patchZ = ctrZ + sphere_patchZ;
 	
 	%%4. Initialize Silhouette
-	if strcmp(eleType_.eleName, 'Solid144')
-		patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified
-		patchIndices = reshape(patchIndices(:), 3, 4*numEles_);		
-		numNodsEleFace = 3;
-	else
-		patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
-		patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
-		numNodsEleFace = 4;
-	end
-	tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
-	tmp = tmp(patchIndices); tmp = sum(tmp,1);
-	boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
+	% if strcmp(eleType_.eleName, 'Solid144')
+		% % patchIndices = eNodMat_(:, [1 2 3  4 2 1  4 3 2  4 1 3])'; %% need to be verified
+		% % patchIndices = reshape(patchIndices(:), 3, 4*numEles_);		
+		% % numNodsEleFace = 3;
+		% [triFaces, ~, ~, ~] = ExtractBoundaryInfoFromSolidMesh();
+		% silhouettePatch.vertices = triVertices;
+		% silhouettePatch.faces = triFaces;		
+	% else
+		% patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
+		% patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
+		% numNodsEleFace = 4;
+		% tmp = zeros(numNodes_,1); tmp(boundaryNodes_) = 1;
+		% tmp = tmp(patchIndices); tmp = sum(tmp,1);
+		% boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
+		% silhouettePatch.vertices = nodeCoords_;
+		% silhouettePatch.faces = boundaryEleFaces';				
+	% end
 	silhouettePatch.vertices = nodeCoords_;
-	silhouettePatch.faces = boundaryEleFaces';		
+	silhouettePatch.faces = boundaryFaceNodMat_;		
 
 	%%5. Draw
 	hArrowHeadMajor = DrawArrowHeads3D(arrowsMajor_X, arrowsMajor_Y, arrowsMajor_Z, head_frac, radii, radii2); hold('on');

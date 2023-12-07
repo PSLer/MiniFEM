@@ -11,6 +11,8 @@ global numNodes_; global numDOFs_; global nodeCoords_;
 global carEleMapBack_; global carEleMapForward_;
 global carNodMapBack_; global carNodMapForward_;
 global boundaryNodes_;
+global boundaryFaceNodMat_;
+global boundaryEdgeNodMat_;
 global fixingCond_; global loadingCond_;
 global meshQualityJacobianRatio_;
 global freeDOFs_; freeDOFs_ = [];

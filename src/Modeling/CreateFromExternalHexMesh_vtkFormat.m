@@ -4,6 +4,7 @@ function CreateFromExternalHexMesh_vtkFormat(fileName)
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
 	global boundaryNodes_;
+	global boundaryFaceNodMat_;
 	global eleState_; global nodState_;
 	global numNodsAroundEleVec_;
 	if ~strcmp(eleType_.eleName, 'Solid188')
@@ -47,6 +48,7 @@ function CreateFromExternalHexMesh_vtkFormat(fileName)
 	numDOFs_ = 3*numNodes_;
 	boundaryNodes_ = find(1==nodState_); boundaryNodes_ = int32(boundaryNodes_);
 	boundingBox_ = [min(nodeCoords_, [], 1); max(nodeCoords_, [], 1)];
+	[boundaryFaceNodMat_, ~, ~, ~] = ExtractBoundaryInfoFromSolidMesh();
 	numNodsAroundEleVec_ = zeros(numNodes_,1);
 	for ii=1:numEles_
 		iEleNodes = eNodMat_(ii,:);

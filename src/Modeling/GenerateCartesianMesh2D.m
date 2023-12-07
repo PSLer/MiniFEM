@@ -8,6 +8,7 @@ function GenerateCartesianMesh2D(voxelizedModel)
 	global carNodMapBack_; global carNodMapForward_;
 	global numNodsAroundEleVec_;
 	global boundaryNodes_;
+	global boundaryEdgeNodMat_;
 	
 	carEleMapBack_ = int32(find(1==voxelizedModel));
 	numEles_ = length(carEleMapBack_);
@@ -57,5 +58,6 @@ function GenerateCartesianMesh2D(voxelizedModel)
 		iEleNodes = eNodMat_(ii,:);
 		numNodsAroundEleVec_(iEleNodes,1) = numNodsAroundEleVec_(iEleNodes,1) + 1;
 	end
-	boundaryNodes_ = find(numNodsAroundEleVec_<numAdjacentNodes2Ele);	
+	boundaryNodes_ = find(numNodsAroundEleVec_<numAdjacentNodes2Ele);
+	[boundaryEdgeNodMat_, ~, ~, ~] = ExtractBoundaryInfoFromPlaneMesh();
 end

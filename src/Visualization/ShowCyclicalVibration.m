@@ -3,10 +3,9 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 	global M_;
 	global nodeCoords_;
 	global numNodes_;
-	global numEles_;
 	global eNodMat_;
 	global boundingBox_;
-	global nodState_;
+	global boundaryFaceNodMat_;
 	global outPath_;
 	
 	if isempty(M_), warning('The cyclical vibration does not exist!'); return; end
@@ -30,26 +29,15 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 	hF = figure; axis equal; axis tight; axis off; 
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		camproj('perspective');	
-		if strcmp(eleType_.eleName, 'Solid144')
-			patchIndices = eNodMat_(:, [1 2 3  1 2 4  2 3 4  3 1 4])'; %% need to be verified
-			patchIndices = reshape(patchIndices(:), 3, 4*numEles_);		
-			numNodsEleFace = 3;
-		else
-			patchIndices = eNodMat_(:, [4 3 2 1  5 6 7 8  1 2 6 5  8 7 3 4  5 8 4 1  2 3 7 6])';
-			patchIndices = reshape(patchIndices(:), 4, 6*numEles_);
-			numNodsEleFace = 4;
-		end
-		tmp = nodState_(patchIndices); tmp = sum(tmp,1);
-		boundaryEleFaces = patchIndices(:,find(numNodsEleFace==tmp));
 		amp = reshape(amp, 3, numNodes_)';
 		for ii=1:nFrame
 			disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
 			srcField = real(amp*exp(1i*2*pi*ii/nFrame));
 			deformedMeshCoords = nodeCoords_+scalingFac*srcField;
-			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(boundaryEleFaces);
-			yPatchs = deformedMeshCoords(:,2); yPatchs = yPatchs(boundaryEleFaces);
-			zPatchs = deformedMeshCoords(:,3); zPatchs = zPatchs(boundaryEleFaces);
-			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(boundaryEleFaces);
+			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(boundaryFaceNodMat_');
+			yPatchs = deformedMeshCoords(:,2); yPatchs = yPatchs(boundaryFaceNodMat_');
+			zPatchs = deformedMeshCoords(:,3); zPatchs = zPatchs(boundaryFaceNodMat_');
+			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(boundaryFaceNodMat_');
 			
 			hGlyph = patch(xPatchs, yPatchs, zPatchs, cPatchs);	
 			if 1==style

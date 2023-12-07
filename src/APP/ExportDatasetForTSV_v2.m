@@ -17,7 +17,7 @@ function ExportDatasetForTSV_v2()
 		warning('No Cartesian Stress Available!'); return;
 	end
 	
-	fileName = strcat(outPath_, 'dataset_TSV.stress');
+	fileName = strcat(outPath_, 'dataset_TSV_v2.stress');
 	fid = fopen(fileName, 'w');
 	fprintf(fid, '%s ', 'Version');
 	fprintf(fid, '%.1f\n', 2.0);
@@ -37,7 +37,7 @@ function ExportDatasetForTSV_v2()
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %.6f\n', loadingCond_');
+				fprintf(fid, '%d %.6e %.6e\n', loadingCond_');
 			end        
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
 			fprintf(fid, '%d\n', size(fixingCond_,1));
@@ -48,6 +48,20 @@ function ExportDatasetForTSV_v2()
 			fprintf(fid, '%d\n', numNodes_);		
 			fprintf(fid, '%.6e %.6e %.6e\n', cartesianStressField_');			
 		case 'Plane144'
+if 0 %% Temp Test
+			fprintf(fid, '%s %s ', 'Plane Tri');
+			fprintf(fid, '%d\n', 1);
+
+			fprintf(fid, '%s ', 'Vertices:');
+			fprintf(fid, '%d\n', numNodes_);		
+			fprintf(fid, '%.6e %.6e\n', nodeCoords_');
+
+			fprintf(fid, '%s ', 'Elements:');
+			fprintf(fid, '%d \n', 2*numEles_);
+			tmp_eNodMat = eNodMat_(:, [1 2 3  3 4 1])';
+			tmp_eNodMat = reshape(tmp_eNodMat(:), 3, 2*numEles_)';
+			fprintf(fid, '%d %d %d\n', tmp_eNodMat');			
+else		
 			fprintf(fid, '%s %s ', 'Plane Quad');
 			fprintf(fid, '%d\n', 1);
 			
@@ -58,11 +72,11 @@ function ExportDatasetForTSV_v2()
 			fprintf(fid, '%s ', 'Elements:');
 			fprintf(fid, '%d \n', numEles_);
 			fprintf(fid, '%d %d %d %d\n', eNodMat_');
-
+end
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
 			if ~isempty(loadingCond_)
-				fprintf(fid, '%d %.6f %.6f\n', loadingCond_');
+				fprintf(fid, '%d %.6e %.6e\n', loadingCond_');
 			end        
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
 			fprintf(fid, '%d\n', size(fixingCond_,1));
