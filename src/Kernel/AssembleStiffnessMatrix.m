@@ -136,7 +136,6 @@ function AssembleStiffnessMatrix()
 		case 'Solid144'
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
-		
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
 			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)

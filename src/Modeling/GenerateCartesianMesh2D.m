@@ -32,8 +32,16 @@ function GenerateCartesianMesh2D(voxelizedModel)
 	nodeCoords_ = zeros(numNodes_,2);
 
 	xSeed = boundingBox_(1,1):(boundingBox_(2,1)-boundingBox_(1,1))/nelx_:boundingBox_(2,1);
-	ySeed = boundingBox_(2,2):(boundingBox_(1,2)-boundingBox_(2,2))/nely_:boundingBox_(1,2);		
+	ySeed = boundingBox_(2,2):(boundingBox_(1,2)-boundingBox_(2,2))/nely_:boundingBox_(1,2);
+if 0 %Temp Test
+	tmp = repmat(xSeed, nely_+1, 1);
+	shiftVec = linspace((boundingBox_(2,2)-boundingBox_(1,2))/10,0, nely_+1)';
+	for ii=1:nelx_+1
+		tmp(:,ii) = tmp(:,ii) - shiftVec;
+	end
+else
 	tmp = reshape(repmat(xSeed, nely_+1, 1), (nelx_+1)*(nely_+1), 1);
+end	
 	nodeCoords_(:,1) = tmp(carNodMapBack_);
 	tmp = repmat(ySeed, 1, nelx_+1)';
 	nodeCoords_(:,2) = tmp(carNodMapBack_);

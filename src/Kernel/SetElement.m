@@ -111,6 +111,11 @@ end
 function val = Solid144()
 	%% 3D problem
 	%% 1st-order Tetrahedral solid element (4 nodes and 4 Gaussian integral points)
+	%    z											
+	%    |__ x  (physical coordinate system)	
+	%   / 
+	%  y  
+
 	val = ElementDescription();
 	val.eleName = 'Solid144';
 	val.nEleNodes = 4;
@@ -118,10 +123,9 @@ function val = Solid144()
 	val.nEleStressComponents = 6;
 	val.nEleGaussIntegralPoints = 4;
 	alp = 0.58541020;
-	bet = 0.13819660;
-	w = 0.25;
+	bet = 0.13819660;	
+	w = 1/6/4;
 	val.GaussIntegralPointsNaturalSpace = [
-		alp		bet		bet		bet
 		bet		alp		bet		bet
 		bet		bet		alp		bet
 		bet		bet		bet		alp
