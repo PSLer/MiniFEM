@@ -45,8 +45,8 @@ function val = Plane133()
 	val.nEleStressComponents = 3;
 	val.nEleGaussIntegralPoints = 3;
 	val.GaussIntegralPointsNaturalSpace = [
-		2/3		1/6		1/6
 		1/6		2/3		1/6
+		1/6		1/6		2/3
 		1/6		1/6		1/6
 	];
 end

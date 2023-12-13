@@ -10,9 +10,9 @@ function N = ShapeFunction(paraCoords)
 			s = paraCoords(:,1);
 			t = paraCoords(:,2);
 			N = zeros(length(s), 3);
-			N(:,1) = s;
-			N(:,2) = t;
-			N(:,3) = 1-s-t;		
+			N(:,1) = 1-s-t;
+			N(:,2) = s;
+			N(:,3) = t;		
 		case 'Plane144'
 			%				   	   __s (parametric coordinate system)
 			%				  	 /-t
