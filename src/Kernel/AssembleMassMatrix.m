@@ -221,9 +221,17 @@ function AssembleMassMatrix()
 				error('Un-supported Material Property!');			
 			end
 		case 'Shell133'
-		
+			error('Not supported yet!');
 		case 'Shell144'
-		
+			error('Not supported yet!');
+		case 'Truss122'
+			error('Not supported yet!');
+		case 'Truss123'
+			error('Not supported yet!');
+		case 'Beam122'
+			error('Not supported yet!');
+		case 'Beam123'
+			error('Not supported yet!');
 	end
 	M_ = M_(freeDOFs_, freeDOFs_);
 	disp(['Assemble Mass Matrix Costs: ' sprintf('%10.3g',toc(tStart)) 's']);

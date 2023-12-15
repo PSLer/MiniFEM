@@ -27,7 +27,7 @@ function ShowDeformation(dir, varargin)
 			otherwise
 				warning('Undefined Deformation Direction!'); return;				
 		end
-	else
+	elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
 		switch dir
 			case 'X'
 				srcField = U_(1:6:end,1);
@@ -46,7 +46,61 @@ function ShowDeformation(dir, varargin)
 				srcField = U_(6:6:end,1);
 			otherwise
 				warning('Undefined Deformation Direction!'); return;				
+		end
+	elseif strcmp(eleType_.eleName, 'Truss122')
+		switch dir
+			case 'X'
+				srcField = U_(1:2:end,1);
+			case 'Y'
+				srcField = U_(2:2:end,1);
+			case 'T'
+				srcField = vecnorm(reshape(U_, 2, numNodes_)',2,2);
+			otherwise
+				warning('Undefined Deformation Direction!'); return;				
 		end		
+	elseif strcmp(eleType_.eleName, 'Truss123')
+		switch dir
+			case 'X'
+				srcField = U_(1:3:end,1);
+			case 'Y'
+				srcField = U_(2:3:end,1);
+			case 'Z'
+				srcField = U_(3:3:end,1);
+			case 'T'
+				srcField = vecnorm(reshape(U_, 3, numNodes_)',2,2);
+			otherwise
+				warning('Undefined Deformation Direction!'); return;				
+		end	
+	elseif strcmp(eleType_.eleName, 'Beam122')
+		switch dir
+			case 'X'
+				srcField = U_(1:3:end,1);
+			case 'Y'
+				srcField = U_(2:3:end,1);
+			case 'T'
+				tmp = reshape(U_, 3, numNodes_)';
+				srcField = vecnorm(tmp(:,1:2),2,2);
+			case 'XY'
+				srcField = U_(3:3:end,1);
+		end	
+	elseif strcmp(eleType_.eleName, 'Beam123')
+		switch dir
+			case 'X'
+				srcField = U_(1:6:end,1);
+			case 'Y'
+				srcField = U_(2:6:end,1);
+			case 'Z'			
+				srcField = U_(3:6:end,1);
+			case 'T'
+				tmp = reshape(U_, 6, numNodes_)';
+				srcField = vecnorm(tmp(:,1:3),2,2);
+			case 'YZ'
+				srcField = U_(4:6:end,1);
+			case 'ZX'
+				srcField = U_(5:6:end,1);
+			case 'XY'
+				srcField = U_(6:6:end,1);
+		end
 	end
 	if 1==nargin
 		VisualizeScalarFieldViaColorMap(srcField);

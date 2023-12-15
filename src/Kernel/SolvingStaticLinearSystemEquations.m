@@ -14,6 +14,8 @@ function X = SolvingStaticLinearSystemEquations(varargin)
 			climactericDOF = 5.0e5;
 		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell133')
 			climactericDOF = 1.0e6;
+		else
+			climactericDOF = 1.0e6;
 		end
 		if numDOFs_>climactericDOF
 			solverType = 'ITERATIVE';

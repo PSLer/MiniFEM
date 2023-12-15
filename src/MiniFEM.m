@@ -22,7 +22,7 @@ tStart = tic;
 ModelingOpt = 0;
 switch ModelingOpt
 	case 0 %%Unified Mesh Format (.stress v2) for arbitrary mesh (Quad, Tri, Hex, Tet)
-		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\MeshStructDesign\data\femur_hexa\dataset_TSV_v2.stress');
+		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\MeshStructDesign\data\femurHigh_tet_Dennis\dataset_TSV_v2.stress');
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
 		CreateRectangle([40, 20], [0 0; 1 0.5]);
@@ -62,6 +62,9 @@ switch ModelingOpt
 	case 13 %%unavailable yet
 		SetElement('Shell144'); %% 'Shell144'
 		CreateFromExternalQuadSurfMesh_meshFormat('D:/MyDataSets/QuadSurfMesh_mesh/3_octa-flower.mesh');
+	case 14 
+% 		SetElement('Truss123'); %% 'Truss122', 'Truss123', 'Beam122', 'Beam123'
+		CreateFrameFromExternalArbitraryMesh('D:\MyDataSets\frame_data\Beam_test.frame', 50);		
 	otherwise
 		error('Unsupported Modeling Option!');
 end

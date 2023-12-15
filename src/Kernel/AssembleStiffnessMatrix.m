@@ -6,12 +6,17 @@ function AssembleStiffnessMatrix()
 	global numDOFs_;
 	global freeDOFs_;
 	global eDofMat_;
+	global eNodMat_;
+	global nodeCoords_;
 	global matrixD_;
 	global detJ_;
 	global invJ_;
 	global deShapeFuncs_;
+	global diameterList_;
+	global eleCrossSecAreaList_;
+	global eleLengthList_;
 	global Ke_;
-	global K_;	
+	global K_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
 	tStart = tic;
 	K_ = sparse(numDOFs_,numDOFs_);
@@ -251,6 +256,70 @@ function AssembleStiffnessMatrix()
 		
 		case 'Shell144'
 		
+		case 'Truss122'
+		
+		case 'Truss123'
+			lx = (nodeCoords_(eNodMat_(:,2),1)-nodeCoords_(eNodMat_(:,1),1)) ./ eleLengthList_;
+			ly = (nodeCoords_(eNodMat_(:,2),2)-nodeCoords_(eNodMat_(:,1),2)) ./ eleLengthList_;
+			lz = (nodeCoords_(eNodMat_(:,2),3)-nodeCoords_(eNodMat_(:,1),3)) ./ eleLengthList_;
+			sK = zeros(numEntries, numEles_);
+			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+				for ii=1:numEles_
+					iD = [	lx(ii)*lx(ii), lx(ii)*ly(ii), lx(ii)*lz(ii); 
+							ly(ii)*lx(ii), ly(ii)*ly(ii), ly(ii)*lz(ii);
+							lz(ii)*lx(ii), lz(ii)*ly(ii), lz(ii)*lz(ii)];
+					iD = material_.modulus*eleCrossSecAreaList_(ii)/eleLengthList_(ii) * iD;
+					Ke = [iD -iD; -iD iD];
+					eKs = Ke(eKk);
+					sK(:,ii) = eKs;
+				end				
+			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+				for ii=1:numEles_
+					iD = [	lx(ii)*lx(ii), lx(ii)*ly(ii), lx(ii)*lz(ii); 
+							ly(ii)*lx(ii), ly(ii)*ly(ii), ly(ii)*lz(ii);
+							lz(ii)*lx(ii), lz(ii)*ly(ii), lz(ii)*lz(ii)];
+					iD = material_.modulus(ii)*eleCrossSecAreaList_(ii)/eleLengthList_(ii) * iD;
+					Ke = [iD -iD; -iD iD];
+					eKs = Ke(eKk);
+					sK(:,ii) = eKs;
+				end
+			end
+			iK = eDofMat_(:,eKi)';
+			jK = eDofMat_(:,eKj)';
+			K_ = sparse(iK, jK, sK, numDOFs_, numDOFs_);
+			K_ = K_ + K_' - diag(diag(K_));	
+		case 'Beam122'
+			
+		case 'Beam123'
+			sK = zeros(numEntries, numEles_);
+			Izz = pi/4 * diameterList_.^4;
+			Iyy = Izz;
+			J = pi/32 * diameterList_.^4;
+			beta_ang = zeros(size(J));
+			x_axis = (nodeCoords_(eNodMat_(:,2),:)'-nodeCoords_(eNodMat_(:,1),:)')'./([eleLengthList_(:,1),eleLengthList_(:,1),eleLengthList_(:,1)]);
+			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+				for ii=1:numEles_
+					iKeLocal = ElementStiffMatrix_Beam(eleCrossSecAreaList_(ii),Izz(ii),Iyy(ii),J(ii), ...
+						material_.modulus,material_.poissonRatio,eleLengthList_(ii));
+					iKeTrans = ElementTransformationMatrix_Beam(beta_ang(ii),x_axis(ii,:)');
+					iKeGlobal = (reshape(iKeTrans,12,12))'*(reshape(iKeLocal,12,12))*(reshape(iKeTrans,12,12));
+					eKs = iKeGlobal(eKk);
+					sK(:,ii) = eKs;					
+				end
+			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+				for ii=1:numEles_
+					iKeLocal = ElementStiffMatrix_Beam(eleCrossSecAreaList_(ii),Izz(ii),Iyy(ii),J(ii), ...
+						material_.modulus(ii),material_.poissonRatio(ii),eleLengthList_(ii));
+					iKeTrans = ElementTransformationMatrix_Beam(beta_ang(ii),x_axis(ii,:)');
+					iKeGlobal = (reshape(iKeTrans,12,12))'*(reshape(iKeLocal,12,12))*(reshape(iKeTrans,12,12));
+					eKs = iKeGlobal(eKk);
+					sK(:,ii) = eKs;
+				end			
+			end
+			iK = eDofMat_(:,eKi)';
+			jK = eDofMat_(:,eKj)';
+			K_ = sparse(iK, jK, sK, numDOFs_, numDOFs_);
+			K_ = K_ + K_' - diag(diag(K_));			
 	end
 	K_ = K_(freeDOFs_, freeDOFs_);
 	disp(['Assemble Stiffness Matrix Costs: ' sprintf('%10.3g',toc(tStart)) 's']);

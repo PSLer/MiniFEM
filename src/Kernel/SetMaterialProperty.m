@@ -14,6 +14,10 @@ function SetMaterialProperty(mp)
 		case 'Aluminium'
 			material_.modulus = 7.0e10;
 			material_.poissonRatio = 0.3;
+			material_.density = 2700;
+		case '4FrameComparison'
+			material_.modulus = 68950;
+			material_.poissonRatio = 0.3;
 			material_.density = 2700;			
 		otherwise
 			error('Undefined Material!');

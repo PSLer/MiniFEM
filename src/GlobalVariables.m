@@ -14,6 +14,7 @@ global boundaryNodes_;
 global boundaryFaceNodMat_;
 global boundaryEdgeNodMat_;
 global fixingCond_; global loadingCond_;
+global diameterList_;
 global meshQualityJacobianRatio_;
 global freeDOFs_; freeDOFs_ = [];
 global K_;

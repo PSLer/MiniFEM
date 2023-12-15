@@ -11,6 +11,10 @@ function SetElement(et)
 		case 'Shell144', eleType_ = Shell144();
 		case 'Solid144', eleType_ = Solid144();
 		case 'Solid188', eleType_ = Solid188();
+		case 'Truss122', eleType_ = Truss122();
+		case 'Truss123', eleType_ = Truss123();
+		case 'Beam122', eleType_ = Beam122();
+		case 'Beam123', eleType_ = Beam123();
 		otherwise
 			error('Undefined Element Type!');
 	end
@@ -163,5 +167,37 @@ function val = Solid188()
 		-sqrt33		-sqrt33		-sqrt33		-sqrt33		sqrt33		sqrt33		sqrt33		sqrt33
 		1			1			1			1			1			1			1			1	
 	];
+end
+
+function val = Truss122()
+	%% 2D Frame problem, components are assumed to be Trusses
+	val = ElementDescription();
+	val.eleName = 'Truss122';
+	val.nEleNodes = 2;
+	val.nEleNodeDOFs = 2;
+end
+
+function val = Truss123()
+	%% 3D Frame problem, components are assumed to be Trusses
+	val = ElementDescription();
+	val.eleName = 'Truss123';
+	val.nEleNodes = 2;
+	val.nEleNodeDOFs = 3;
+end
+
+function val = Beam122()
+	%% 2D Frame problem, components are assumed to be Beams
+	val = ElementDescription();
+	val.eleName = 'Beam122';
+	val.nEleNodes = 2;
+	val.nEleNodeDOFs = 3;
+end
+
+function val = Beam123()
+	%% 2D Frame problem, components are assumed to be Beams
+	val = ElementDescription();
+	val.eleName = 'Beam123';
+	val.nEleNodes = 2;
+	val.nEleNodeDOFs = 6;
 end
 

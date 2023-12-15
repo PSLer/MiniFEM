@@ -17,6 +17,16 @@ function ApplyBoundaryCondition()
 		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
 			tmp = 6*fixingCond_(:,1);
 			fixedDOFs = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
+		elseif strcmp(eleType_.eleName, 'Truss122')
+			error('Not supported yet!');
+		elseif strcmp(eleType_.eleName, 'Truss123')
+			tmp = 3*fixingCond_(:,1);
+			fixedDOFs = [tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);
+		elseif strcmp(eleType_.eleName, 'Beam122')
+			error('Not supported yet!');			
+		elseif strcmp(eleType_.eleName, 'Beam123')
+			tmp = 6*fixingCond_(:,1);
+			fixedDOFs = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; fixedDOFs = fixedDOFs(:);						
 		end
 		fixingState = fixingCond_(:,2:end)';
 		realFixedDOFs = fixedDOFs(find(1==fixingState(:)));
@@ -37,6 +47,18 @@ function ApplyBoundaryCondition()
 			tmp = 6*loadingCond_(:,1);
 			loadedDOFs_ = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; loadedDOFs_ = loadedDOFs_(:);
 			loadingVec = loadingCond_(:,2:7)'; loadingVec = loadingVec(:);
+		elseif strcmp(eleType_.eleName, 'Truss122')
+			error('Not supported yet!');
+		elseif strcmp(eleType_.eleName, 'Truss123')
+			tmp = 3*loadingCond_(:,1);
+			loadedDOFs_ = [tmp-2 tmp-1 tmp]'; loadedDOFs_ = loadedDOFs_(:);
+			loadingVec = loadingCond_(:,2:4)'; loadingVec = loadingVec(:);
+		elseif strcmp(eleType_.eleName, 'Beam122')
+			error('Not supported yet!');			
+		elseif strcmp(eleType_.eleName, 'Beam123')
+			tmp = 6*loadingCond_(:,1);
+			loadedDOFs_ = [tmp-5 tmp-4 tmp-3 tmp-2 tmp-1 tmp]'; loadedDOFs_ = loadedDOFs_(:);
+			loadingVec = loadingCond_(:,2:7)'; loadingVec = loadingVec(:);			
 		end
 		F_(loadedDOFs_) = loadingVec;
 	end
