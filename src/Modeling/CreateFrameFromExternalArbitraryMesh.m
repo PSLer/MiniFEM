@@ -211,9 +211,17 @@ function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
 	refDiameter = max(boundingBox_(2,:) - boundingBox_(1,:))/scalingEdgeThickness;
 	diameterList_ = repmat(refDiameter, numEles_, 1);
 	eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
-if 0 %% For Test	
-	eleCrossSecAreaList_ = 100*ones(numEles_,1);
-	diameterList_ = 2*(2*eleCrossSecAreaList_/pi).^(1/2);
-end
+	if 0 %% For Test	
+		eleCrossSecAreaList_ = 100*ones(numEles_,1);
+		diameterList_ = 2*(2*eleCrossSecAreaList_/pi).^(1/2);
+	end
 	eleLengthList_ = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:),2,2);
+	
+	%%Evaluate Volume of Frame Structure
+	if 1 && (strcmp(eleType_.eleName, 'Truss123') || strcmp(eleType_.eleName, 'Beam123'))
+		iSphereVolume = 4/3*pi*(refDiameter/2)^3/2; 
+		%iSphereVolume = 0;
+		frameVolume = pi/4 * (eleLengthList_(:)' * diameterList_.^2) - (sum(numNodsAroundEleVec_)-numNodes_)*iSphereVolume;
+		disp(['Frame Volume: ', sprintf('%.6f', frameVolume)]);
+	end
 end

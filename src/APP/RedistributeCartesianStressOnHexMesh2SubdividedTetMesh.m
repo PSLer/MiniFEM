@@ -105,7 +105,6 @@ function RedistributeCartesianStressOnHexMesh2SubdividedTetMesh_Div12()
 	numTetNodes = numNodes_ + numEles_;
 	numTetEles = 12*numEles_;
 	hex_to_tet_nodeCoords = [nodeCoords_; eleCentroidList];
-	hex_to_tet_eNodMat = [];
 	newNodeIndices = (1:numEles_)' + numNodes_;
 	
 	hex_to_tet_eNodMat = zeros(numEles_, 48);
