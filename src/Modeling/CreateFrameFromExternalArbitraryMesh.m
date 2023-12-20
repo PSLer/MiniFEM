@@ -211,7 +211,7 @@ function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
 	refDiameter = max(boundingBox_(2,:) - boundingBox_(1,:))/scalingEdgeThickness;
 	diameterList_ = repmat(refDiameter, numEles_, 1);
 	eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
-	if 0 %% For Test	
+	if 1 %% For Test	
 		eleCrossSecAreaList_ = 100*ones(numEles_,1);
 		diameterList_ = 2*(2*eleCrossSecAreaList_/pi).^(1/2);
 	end

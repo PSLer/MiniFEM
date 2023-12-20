@@ -296,12 +296,13 @@ function AssembleStiffnessMatrix()
 			Iyy = Izz;
 			J = pi/32 * diameterList_.^4;
 			beta_ang = zeros(size(J));
-			x_axis = (nodeCoords_(eNodMat_(:,2),:)'-nodeCoords_(eNodMat_(:,1),:)')'./([eleLengthList_(:,1),eleLengthList_(:,1),eleLengthList_(:,1)]);
+			x_axis = (nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:))./eleLengthList_;
+			x_axis = x_axis ./ vecnorm(x_axis,2,2);
 			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
 				for ii=1:numEles_
 					iKeLocal = ElementStiffMatrix_Beam(eleCrossSecAreaList_(ii),Izz(ii),Iyy(ii),J(ii), ...
 						material_.modulus,material_.poissonRatio,eleLengthList_(ii));
-					iKeTrans = ElementTransformationMatrix_Beam(beta_ang(ii),x_axis(ii,:)');
+					iKeTrans = ElementTransformationMatrix_Beam(beta_ang(ii),x_axis(ii,:));
 					iKeGlobal = (reshape(iKeTrans,12,12))'*(reshape(iKeLocal,12,12))*(reshape(iKeTrans,12,12));
 					eKs = iKeGlobal(eKk);
 					sK(:,ii) = eKs;					
