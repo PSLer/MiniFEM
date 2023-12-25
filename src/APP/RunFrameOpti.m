@@ -43,8 +43,18 @@ function RunFrameOpti(MaxIt)
 	
 	%%Opti.
 	CostFunction = @ComputeObjectiveFunc;
+	[c0, vol0] = CostFunction(zeros(3*numNodes_,1));
+	lb = -0.25;
+	ub = 0.25;
+if 0 % Annealing
 	tStart = tic;
-	varRangePosition = [-0.25 0.25];
+	[optimizedVars, fval] = ...
+		simulannealbnd(CostFunction,zeros(3*numNodes_,1),lb,ub);	
+	disp(['Running Optimization Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
+	[cOpti, volOpti] = CostFunction(optimizedVars);
+else %%MMA
+	tStart = tic;
+	varRangePosition = [lb ub];
 	[objOptiHist_, designVarOptiHist, BestSol_] = ...
 		Optimizer_CMAES(CostFunction, 3*numNodes_, varRangePosition, MaxIt);
 	disp(['Running Optimization Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
@@ -58,11 +68,11 @@ function RunFrameOpti(MaxIt)
 		tmpNodeCoord(loadingCond_(:,1),:) = iniNodeCoords_(loadingCond_(:,1),:);	
 		optiNodeHist_(:,:,ii+1) = tmpNodeCoord;
 	end
-	[c0, vol0] = ComputeObjectiveFunc(zeros(size(BestSol_.Position)));
-	[cOpti, volOpti] = ComputeObjectiveFunc(BestSol_.Position);
+	[cOpti, volOpti] = CostFunction(BestSol_.Position);
 	objOptiHist_ = [[c0, vol0]; objOptiHist_];
-	disp(['Before Optimization------C: ', sprintf('%.6f', c0), '; V: ', sprintf('%.6f', vol0)]);
-	disp(['After Optimization------C: ', sprintf('%.6f', cOpti), '; V: ', sprintf('%.6f', volOpti)]);
+end
+	disp(['Before Optimization------C: ', sprintf('%.4f', c0), '; V: ', sprintf('%.4f', vol0), '; M: ', sprintf('%.4f', c0*vol0)]);
+	disp(['After Optimization------C: ', sprintf('%.4f', cOpti), '; V: ', sprintf('%.4f', volOpti), '; M: ', sprintf('%.4f', cOpti*volOpti)]);
 	ShowBoundaryCondition(); 
 end
 
@@ -84,6 +94,8 @@ function [c, vol] = ComputeObjectiveFunc(updatedNodePositions)
 	global eNodMat_;
 	global freeDOFs_;
 	
+	updatedNodePositions = max(updatedNodePositions,-0.25);
+	updatedNodePositions = min(updatedNodePositions,0.25);
 	nodeCoords_ = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(updatedNodePositions, 3, numNodes_)';
 	nodeCoords_(fixingCond_(:,1),:) = iniNodeCoords_(fixingCond_(:,1),:);
 	nodeCoords_(loadingCond_(:,1),:) = iniNodeCoords_(loadingCond_(:,1),:);
@@ -105,10 +117,6 @@ function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, n
 	% VarMax= 10;             % Upper Bound of Decision Variables
 	
 	%% CMA-ES Settings
-	
-	% Maximum Number of Iterations
-	%MaxIt=300;
-	
 	% Population Size (and Number of Offsprings)
 	lambda=(4+round(3*log(nVar)))*10;
 	
@@ -136,7 +144,6 @@ function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, n
 	hth=(1.4+2/(nVar+1))*ENN;
 
 	%% Initialization
-	
 	ps=cell(MaxIt,1);
 	pc=cell(MaxIt,1);
 	C=cell(MaxIt,1);
@@ -159,11 +166,11 @@ function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, n
 	
 	%% CMA-ES Main Loop
 	for g=1:MaxIt
-		if 1==g
-			%disp(['Iteration ' num2str(0) ': Best Cost = ' num2str(BestSol.Cost * BestSol.vol)]);
-			disp(['Iteration ' sprintf('%d', 0) ': C = ' sprintf('%.6f', BestSol.Cost), '; V = ', ...
-				sprintf('%.6f', BestSol.vol), '; M = ', sprintf('%.6f', BestSol.Cost*BestSol.vol)]);
-		end
+		% if 1==g
+			% %disp(['Iteration ' num2str(0) ': Best Cost = ' num2str(BestSol.Cost * BestSol.vol)]);
+			% disp(['Iteration ' sprintf('%d', 0) ': C = ' sprintf('%.6f', BestSol.Cost), '; V = ', ...
+				% sprintf('%.6f', BestSol.vol), '; M = ', sprintf('%.6f', BestSol.Cost*BestSol.vol)]);
+		% end
 		% Generate Samples
 		pop=repmat(empty_individual,lambda,1);
 		for ii=1:lambda
