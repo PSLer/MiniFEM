@@ -1,12 +1,11 @@
-function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
+function CreateFrameFromExternalArbitraryMesh(fileName, varargin)
 	global eleType_;
 	global boundingBox_;
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
 	global boundaryNodes_;
-	global boundaryFaceNodMat_;
 	global numNodsAroundEleVec_;
-	global nodState_; global eleState_;
+	global nodState_;
 	global fixingCond_;
 	global loadingCond_;
 	global diameterList_;
@@ -37,7 +36,9 @@ function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
 		startReadingElements = fscanf(fid, '%s', 1);
 		if ~strcmp(startReadingElements, 'Elements:'), warning('Un-supported Data!'); return; end
 		numEles_ = fscanf(fid, '%d', 1);
-		eNodMat_ = fscanf(fid, '%d %d', [2, numEles_])';
+		edgeInfo = fscanf(fid, '%d %d %e', [3, numEles_])';
+		eNodMat_ = edgeInfo(:,[1 2]);
+		diameterList_ = edgeInfo(:,3);
 		%%4. read node state (identifying boundary nodes)
 		startReadingNodeState = fscanf(fid, '%s %s', 2);
 		if ~strcmp(startReadingNodeState, 'NodeState:'), warning('Un-supported Data!'); return; end
@@ -173,7 +174,7 @@ function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
 			fixingCond_ = []; 
 		end
 		[eNodMat_, nodState_, boundaryNodes_] = ConvertInputMesh2Frames(domainType, meshType);
-		numEles_ = size(eNodMat_,1);
+		numEles_ = size(eNodMat_,1);	
 	end
 	fclose(fid);
 
@@ -203,23 +204,26 @@ function CreateFrameFromArbitraryMesh_unifiedStressFormat(fileName, varargin)
 			eDofMat_ = eDofMat_(:,[1 3 5 7 9 11 2 4 6 8 10 12]);	
 	end
 	
-	if 1==nargin
-		scalingEdgeThickness = 200;
-	else
-		scalingEdgeThickness = varargin{1};
+	if ~strcmp(domainType, 'Frame')
+		if 1==nargin
+			scalingEdgeThickness = 200;
+		else
+			scalingEdgeThickness = varargin{1};
+		end
+		refDiameter = max(boundingBox_(2,:) - boundingBox_(1,:))/scalingEdgeThickness;
+		diameterList_ = repmat(refDiameter, numEles_, 1);		
 	end
-	refDiameter = max(boundingBox_(2,:) - boundingBox_(1,:))/scalingEdgeThickness;
-	diameterList_ = repmat(refDiameter, numEles_, 1);
-	eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
-	if 1 %% For Test	
+	
+	if 0 %% For Test	
 		eleCrossSecAreaList_ = 100*ones(numEles_,1);
 		diameterList_ = 2*(2*eleCrossSecAreaList_/pi).^(1/2);
 	end
+	eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
 	eleLengthList_ = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:),2,2);
 	
 	%%Evaluate Volume of Frame Structure
 	if 1 && (strcmp(eleType_.eleName, 'Truss123') || strcmp(eleType_.eleName, 'Beam123'))
-		iSphereVolume = 4/3*pi*(refDiameter/2)^3/2; 
+		iSphereVolume = 4/3*pi*(sum(diameterList_)/numEles_/2)^3/2; 
 		%iSphereVolume = 0;
 		frameVolume = pi/4 * (eleLengthList_(:)' * diameterList_.^2) - (sum(numNodsAroundEleVec_)-numNodes_)*iSphereVolume;
 		disp(['Frame Volume: ', sprintf('%.6f', frameVolume)]);

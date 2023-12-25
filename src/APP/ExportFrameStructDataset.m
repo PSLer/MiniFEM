@@ -8,6 +8,7 @@ function ExportFrameStructDataset()
 	global fixingCond_; 
 	global loadingCond_;
 	global nodState_;
+	global diameterList_;
 	
 	if ~(strcmp(eleType_.eleName, 'Truss122') || strcmp(eleType_.eleName, 'Truss123') || ...
 			strcmp(eleType_.eleName, 'Beam122') || strcmp(eleType_.eleName, 'Beam123'))
@@ -48,7 +49,7 @@ function ExportFrameStructDataset()
 	end
 	fprintf(fid, '%s ', 'Elements:');
 	fprintf(fid, '%d \n', numEles_);
-	fprintf(fid, '%d %d\n', eNodMat_');	
+	fprintf(fid, '%d %d %.6e\n', [double(eNodMat_) diameterList_]');	
 	
 	fprintf(fid, '%s %s ', 'Node State: ');
 	fprintf(fid, '%d\n', numel(nodState_));

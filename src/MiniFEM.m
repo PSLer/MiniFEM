@@ -5,7 +5,7 @@
 %% Update date:	23.04.2021
 %% E-mail: junpeng.wang@tum.de
 
-clear all; clc
+clear all; clc;
 addpath('./APP');
 addpath('./Common');
 addpath('./Modeling');
@@ -63,8 +63,8 @@ switch ModelingOpt
 		SetElement('Shell144'); %% 'Shell144'
 		CreateFromExternalQuadSurfMesh_meshFormat('D:/MyDataSets/QuadSurfMesh_mesh/3_octa-flower.mesh');
 	case 14 
-% 		SetElement('Truss123'); %% 'Truss122', 'Truss123', 'Beam122', 'Beam123'
-		CreateFrameFromExternalArbitraryMesh('D:\MyDataSets\frame_data\Beam_test.frame', 50);		
+% 		SetElement('Beam123'); %% 'Truss122', 'Truss123', 'Beam122', 'Beam123'
+		CreateFrameFromExternalArbitraryMesh('D:\BaiduSyncdisk\MyDataSets\frame_data\cantilever_3_beam.frame');		
 	otherwise
 		error('Unsupported Modeling Option!');
 end

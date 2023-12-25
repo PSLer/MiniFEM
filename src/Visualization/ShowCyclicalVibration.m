@@ -26,12 +26,12 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 		warning('Wrong Input!'); return;
 	end	
 	nFrame = 36;
-	hF = figure; axis equal; axis tight; axis off; 
+	hF = figure; axis('equal'); axis('tight'); axis('off'); 
 	if strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 		camproj('perspective');	
 		amp = reshape(amp, 3, numNodes_)';
 		for ii=1:nFrame
-			disp([' Progress.: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
+			disp(['Progress: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
 			srcField = real(amp*exp(1i*2*pi*ii/nFrame));
 			deformedMeshCoords = nodeCoords_+scalingFac*srcField;
 			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(boundaryFaceNodMat_');
@@ -53,8 +53,8 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 				disp('Adjust the Posture of the Object for better Presentation!');
 				pause;
             end		
-			lighting gouraud;
-			material dull;			
+			lighting('gouraud');
+			material('dull');			
 			hdLight = camlight('headlight','infinite');
 			f = getframe(1);
 			
