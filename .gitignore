@@ -14,3 +14,4 @@ out/dataset_TSV.mesh
 *.carti
 *.stress
 *.mesh
+*.frame

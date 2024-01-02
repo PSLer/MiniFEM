@@ -1,6 +1,7 @@
 function VisTrussOptiHistory(varargin)
 	global outPath_;
 	global optiNodeHist_;
+	global optiDiametersHist_;
 	global eNodMat_; 
 	global diameterList_;
 	global objOptiHist_;
@@ -30,7 +31,7 @@ function VisTrussOptiHistory(varargin)
 	hF = figure; 
 	for ii=1:MaxIt
 		disp(['Iteration: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',MaxIt)]);
-		[gridX, gridY, gridZ, gridC] = Extend3DMeshEdges2Tubes(optiNodeHist_(:,:,ii), eNodMat_, diameterList_);
+		[gridX, gridY, gridZ, gridC] = Extend3DMeshEdges2Tubes(optiNodeHist_(:,:,ii), eNodMat_, optiDiametersHist_(:,ii));
 		hd = surf(gridX, gridY, gridZ, gridC);
 		if ii>1, view(az, el); end
 		axis('equal'); axis('tight'); axis('off');

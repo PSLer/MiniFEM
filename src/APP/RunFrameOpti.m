@@ -19,12 +19,14 @@ function RunFrameOpti(MaxIt)
 	global eNodMat_;
 	global objOptiHist_;
 	global optiNodeHist_;
+	global optiDiametersHist_;
 	global BestSol_;
-	
+	global diameterScalingFac_;
+
 	if isempty(fixingCond_), error('No Constraint!'); end
 	if isempty(loadingCond_), error('No Loads!'); end
 	if isempty(F_), ApplyBoundaryCondition(); end
-
+	diameterScalingFac_ = 5;
 	iniNodeCoords_ = nodeCoords_;
 	iniDiameterList_ = diameterList_;
 	iniEleCrossSecAreaList_ = eleCrossSecAreaList_;
@@ -43,7 +45,7 @@ function RunFrameOpti(MaxIt)
 	
 	%%Opti.
 	CostFunction = @ComputeObjectiveFunc;
-	[c0, vol0] = CostFunction(zeros(3*numNodes_,1));
+	[c0, vol0] = CostFunction(zeros(3*numNodes_+numEles_,1));
 	lb = -0.25;
 	ub = 0.25;
 if 0 % Annealing
@@ -56,17 +58,23 @@ else %%MMA
 	tStart = tic;
 	varRangePosition = [lb ub];
 	[objOptiHist_, designVarOptiHist, BestSol_] = ...
-		Optimizer_CMAES(CostFunction, 3*numNodes_, varRangePosition, MaxIt);
+		Optimizer_CMAES(CostFunction, 3*numNodes_+numEles_, varRangePosition, MaxIt);
 	disp(['Running Optimization Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 	
 	%%Post-process
 	optiNodeHist_ = zeros(numNodes_,3,MaxIt+1);
 	optiNodeHist_(:,:,1) = iniNodeCoords_;
+	optiDiametersHist_ = zeros(numEles_,MaxIt+1);
+	optiDiametersHist_(:,1) = iniDiameterList_;
 	for ii=1:MaxIt
-		tmpNodeCoord = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(designVarOptiHist(:,ii), 3, numNodes_)';		
+		optiNodePosParas = designVarOptiHist(1:3*numNodes_,ii);
+		tmpNodeCoord = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(optiNodePosParas, 3, numNodes_)';		
 		tmpNodeCoord(fixingCond_(:,1),:) = iniNodeCoords_(fixingCond_(:,1),:);
 		tmpNodeCoord(loadingCond_(:,1),:) = iniNodeCoords_(loadingCond_(:,1),:);	
 		optiNodeHist_(:,:,ii+1) = tmpNodeCoord;
+		optiDiameterParas = designVarOptiHist(3*numNodes_+1:end,ii);
+		tmpBeamDiameters = iniDiameterList_ + iniDiameterList_ .* optiDiameterParas;
+		optiDiametersHist_(:,ii+1) = tmpBeamDiameters;
 	end
 	[cOpti, volOpti] = CostFunction(BestSol_.Position);
 	objOptiHist_ = [[c0, vol0]; objOptiHist_];
@@ -76,7 +84,7 @@ end
 	ShowBoundaryCondition(); 
 end
 
-function [c, vol] = ComputeObjectiveFunc(updatedNodePositions)
+function [c, vol] = ComputeObjectiveFunc(designVariables)
 	global iniNodeCoords_;
 	global iniDiameterList_;
 	global iniEleCrossSecAreaList_;
@@ -93,12 +101,18 @@ function [c, vol] = ComputeObjectiveFunc(updatedNodePositions)
 	global numNodes_;
 	global eNodMat_;
 	global freeDOFs_;
+	global diameterScalingFac_;
 	
+	updatedNodePositions = designVariables(1:3*numNodes_); updatedNodePositions = updatedNodePositions(:);
 	updatedNodePositions = max(updatedNodePositions,-0.25);
 	updatedNodePositions = min(updatedNodePositions,0.25);
-	nodeCoords_ = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(updatedNodePositions, 3, numNodes_)';
+	updatedBeamDiameters = designVariables(3*numNodes_+1:end); updatedBeamDiameters = updatedBeamDiameters(:);
+	updatedBeamDiameters = max(updatedBeamDiameters,-0.25*diameterScalingFac_);
+	updatedBeamDiameters = min(updatedBeamDiameters,0.25*diameterScalingFac_);
+	nodeCoords_ = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(updatedNodePositions(1:3*numNodes_), 3, numNodes_)';
 	nodeCoords_(fixingCond_(:,1),:) = iniNodeCoords_(fixingCond_(:,1),:);
 	nodeCoords_(loadingCond_(:,1),:) = iniNodeCoords_(loadingCond_(:,1),:);
+	diameterList_ = iniDiameterList_ + iniDiameterList_ .* updatedBeamDiameters;
 	eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
 	eleLengthList_ = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:),2,2);	
 	AssembleStiffnessMatrix();
