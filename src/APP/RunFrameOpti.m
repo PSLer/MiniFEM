@@ -26,7 +26,7 @@ function RunFrameOpti(MaxIt)
 	if isempty(fixingCond_), error('No Constraint!'); end
 	if isempty(loadingCond_), error('No Loads!'); end
 	if isempty(F_), ApplyBoundaryCondition(); end
-	diameterScalingFac_ = 5;
+	diameterScalingFac_ = 4;
 	iniNodeCoords_ = nodeCoords_;
 	iniDiameterList_ = diameterList_;
 	iniEleCrossSecAreaList_ = eleCrossSecAreaList_;
@@ -101,14 +101,14 @@ function [c, vol] = ComputeObjectiveFunc(designVariables)
 	global numNodes_;
 	global eNodMat_;
 	global freeDOFs_;
-	global diameterScalingFac_;
+	% global diameterScalingFac_;
 	
 	updatedNodePositions = designVariables(1:3*numNodes_); updatedNodePositions = updatedNodePositions(:);
-	updatedNodePositions = max(updatedNodePositions,-0.25);
-	updatedNodePositions = min(updatedNodePositions,0.25);
+	% updatedNodePositions = max(updatedNodePositions,-0.25);
+	% updatedNodePositions = min(updatedNodePositions,0.25);
 	updatedBeamDiameters = designVariables(3*numNodes_+1:end); updatedBeamDiameters = updatedBeamDiameters(:);
-	updatedBeamDiameters = max(updatedBeamDiameters,-0.25*diameterScalingFac_);
-	updatedBeamDiameters = min(updatedBeamDiameters,0.25*diameterScalingFac_);
+	% updatedBeamDiameters = max(updatedBeamDiameters,-0.25*diameterScalingFac_);
+	% updatedBeamDiameters = min(updatedBeamDiameters,0.25*diameterScalingFac_);
 	nodeCoords_ = iniNodeCoords_ + nodeAssociatedEdgeLength_ .* reshape(updatedNodePositions(1:3*numNodes_), 3, numNodes_)';
 	nodeCoords_(fixingCond_(:,1),:) = iniNodeCoords_(fixingCond_(:,1),:);
 	nodeCoords_(loadingCond_(:,1),:) = iniNodeCoords_(loadingCond_(:,1),:);
@@ -122,6 +122,8 @@ function [c, vol] = ComputeObjectiveFunc(designVariables)
 end
 
 function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, nVar, VarRange, MaxIt)	
+	global diameterScalingFac_;
+	global numNodes_;
 	objFuncList = zeros(MaxIt,2);
 	designVarList = zeros(nVar,MaxIt);
 	
@@ -172,6 +174,7 @@ function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, n
 	
 	M=repmat(empty_individual,MaxIt,1);
 	M(1).Position=unifrnd(VarRange(1),VarRange(2),VarSize);
+	M(1).Position(3*numNodes_+1:end) = diameterScalingFac_*M(1).Position(3*numNodes_+1:end);
 	M(1).Step=zeros(VarSize);
 	[objVal, objVolume] = CostFunction(M(1).Position);
 	M(1).Cost = objVal;
@@ -180,18 +183,15 @@ function [objFuncList, designVarList, BestSol] = Optimizer_CMAES(CostFunction, n
 	
 	%% CMA-ES Main Loop
 	for g=1:MaxIt
-		% if 1==g
-			% %disp(['Iteration ' num2str(0) ': Best Cost = ' num2str(BestSol.Cost * BestSol.vol)]);
-			% disp(['Iteration ' sprintf('%d', 0) ': C = ' sprintf('%.6f', BestSol.Cost), '; V = ', ...
-				% sprintf('%.6f', BestSol.vol), '; M = ', sprintf('%.6f', BestSol.Cost*BestSol.vol)]);
-		% end
 		% Generate Samples
 		pop=repmat(empty_individual,lambda,1);
 		for ii=1:lambda
 			pop(ii).Step=mvnrnd(zeros(VarSize),C{g});
 			pop(ii).Position=M(g).Position+sigma{g}*pop(ii).Step;
-			pop(ii).Position = max(pop(ii).Position, VarRange(1)); %%regularization
-			pop(ii).Position = min(pop(ii).Position, VarRange(2));
+			pop(ii).Position(1:3*numNodes_) = max(pop(ii).Position(1:3*numNodes_), VarRange(1)); %%regularization
+			pop(ii).Position(1:3*numNodes_) = min(pop(ii).Position(1:3*numNodes_), VarRange(2));
+			pop(ii).Position(3*numNodes_+1:end) = max(pop(ii).Position(3*numNodes_+1:end), max(diameterScalingFac_*VarRange(1),-0.75));
+			pop(ii).Position(3*numNodes_+1:end) = min(pop(ii).Position(3*numNodes_+1:end), diameterScalingFac_*VarRange(2));
 			[objVal, objVolume] = CostFunction(pop(ii).Position);
 			% if 1==objOpt, pop(ii).Cost = objVal; else, opt = 0; return; end			
 			% Update Best Solution Ever Found			
