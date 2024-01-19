@@ -33,6 +33,10 @@ global vonMisesStressField_; vonMisesStressField_ = [];
 global principalStressField_; principalStressField_ = [];
 global naturalFrequencyList_; naturalFrequencyList_ = [];
 global modeSpace_; modeSpace_ = [];
+global displacmentHistory_; displacmentHistory_ = [];
+global velocityHistory_; velocityHistory_ = [];	
+global accelerationHistory_; accelerationHistory_ = [];	
+global timeAxis_; timeAxis_ = [];
 
 %% Interaction
 global outPath_;

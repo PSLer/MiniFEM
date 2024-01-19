@@ -15,17 +15,17 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
+SetMaterialProperty('Aluminium'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
 ModelingOpt = 0;
 switch ModelingOpt
 	case 0 %%Unified Mesh Format (.stress v2) for arbitrary mesh (Quad, Tri, Hex, Tet)
-		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\MeshStructDesign\data\femurHigh_tet_Dennis\dataset_TSV_v2.stress');
+		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\TransientStructOpti\data\femur_Hex.stress');
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
-		CreateRectangle([40, 20], [0 0; 1 0.5]);
+		CreateRectangle([60, 30], [0 0; 1 0.5]);
 	case 2
 		SetElement('Solid188'); %% 'Solid188'
 		CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
