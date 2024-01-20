@@ -1,6 +1,6 @@
-function X = SolvingDynamicLinearSystemEquations(stepSize, numTimeStep, varargin)
+function X = SolvingTransientSystemEquations(stepSize, numTimeStep, varargin)
 	global eleType_;
-	global K_; global M_; global T_;
+	global K_; global M_;
 	global F_;
 	global freeDOFs_; global numDOFs_;
 	global displacmentHistory_;
@@ -8,8 +8,6 @@ function X = SolvingDynamicLinearSystemEquations(stepSize, numTimeStep, varargin
 	global accelerationHistory_;
 	global timeAxis_;
 	global preconditionerL_; global preconditionerU_;
-	global GPU_;
-	global gpuT_;
 	%%Newmark
 	
 	if 2==nargin

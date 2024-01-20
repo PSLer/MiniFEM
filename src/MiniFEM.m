@@ -22,7 +22,7 @@ tStart = tic;
 ModelingOpt = 0;
 switch ModelingOpt
 	case 0 %%Unified Mesh Format (.stress v2) for arbitrary mesh (Quad, Tri, Hex, Tet)
-		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\TransientStructOpti\data\femur_Hex.stress');
+		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\TransientStructOpti\data\cantilever_iLoad3_Quad.stress');
 	case 1	
 		SetElement('Plane144'); %% 'Plane133' or 'Plane144'
 		CreateRectangle([60, 30], [0 0; 1 0.5]);
