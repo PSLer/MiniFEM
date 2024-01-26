@@ -1,10 +1,14 @@
-function x = myCG(ATX, Preconditioning, b, printP)
+function x = myCG(ATX, Preconditioning, b, printP, varargin)
 	global tol_; global maxIT_;
 	tol = tol_; maxIT = maxIT_;
 	n = length(b);
 	normB = norm(b);
 	its = 0;
-	x = zeros(n,1);
+	if 5==nargin
+		x = varargin{1};
+	else
+		x = zeros(n,1);
+	end
 	r1 = b - ATX(x);
 	z1 = zeros(n,1);
 

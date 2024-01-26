@@ -10,7 +10,7 @@ function hd = ShowMesh()
 		patchs2show.vertices = nodeCoords_;
 		patchs2show.faces = boundaryFaceNodMat_;
 		hd = patch(patchs2show); hold('on');
-		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 1, 'EdgeColor', 'k');
+		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 0.8, 'EdgeColor', 'k');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		view(3); 
 		camproj('perspective');

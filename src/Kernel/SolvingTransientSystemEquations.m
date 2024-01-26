@@ -20,18 +20,19 @@ function X = SolvingTransientSystemEquations(stepSize, numTimeStep, varargin)
 	accelerationHistory_ = displacmentHistory_;
 	timeAxis_ = (0:1:numTimeStep) * stepSize;
 	diagM = diag(M_);
-
+	condensedMvec = sum(M_,2);
+	condensedMmat = diag(condensedMvec);
 	switch solvingScheme
 		case 'Explicit'
 			for ii=1:numel(timeAxis_)
 				% disp(['Integration: ' sprintf('%6i',ii-1) ' Total.: ' sprintf('%6i',numel(timeAxis_)-1)]);
 				disp(['Time: ' sprintf('%.6e',timeAxis_(ii)) ' of ' sprintf('%.6e',timeAxis_(end))]);
 				if 1==ii
-					accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./diagM) + F_./diagM;
+					accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./condensedMvec) + F_./condensedMvec;
 				else
 					iRHS = F_ - K_*(displacmentHistory_(freeDOFs_,ii-1) + stepSize*velocityHistory_(freeDOFs_,ii-1) + ...
 						1/2*stepSize^2*accelerationHistory_(freeDOFs_,ii-1));
-					accelerationHistory_(freeDOFs_,ii) = iRHS ./ diagM;
+					accelerationHistory_(freeDOFs_,ii) = iRHS ./ condensedMvec;
 					displacmentHistory_(freeDOFs_,ii) = displacmentHistory_(freeDOFs_,ii-1) + stepSize^2*velocityHistory_(freeDOFs_,ii-1) .* ...
 						accelerationHistory_(freeDOFs_,ii-1);
 					velocityHistory_(freeDOFs_,ii) = velocityHistory_(freeDOFs_,ii-1) + stepSize*accelerationHistory_(freeDOFs_,ii-1);					
@@ -51,7 +52,7 @@ function X = SolvingTransientSystemEquations(stepSize, numTimeStep, varargin)
 				solverType = 'DIRECT';
 			end
 			beta1 = 1/2; beta2 = 1/2;
-			Tmat = M_ + 1/2 * stepSize^2 * beta2*K_;
+			Tmat = condensedMmat + 1/2 * stepSize^2 * beta2*K_;
 			switch solverType
 				case 'DIRECT'
 					[Lfac_, Ufac_, Pfac_, Qfac_, Rfac_] = lu(Tmat);	
@@ -59,7 +60,7 @@ function X = SolvingTransientSystemEquations(stepSize, numTimeStep, varargin)
 						% disp(['Integration: ' sprintf('%6i',ii-1) ' Total.: ' sprintf('%6i',numel(timeAxis_)-1)]);
 						disp(['Time: ' sprintf('%.6e',timeAxis_(ii)) ' of ' sprintf('%.6e',timeAxis_(end))]);
 						if 1==ii
-							accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./diagM) + F_./diagM;
+							accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./condensedMvec) + F_./condensedMvec;
 						else
 							iRHS = F_ - K_*(displacmentHistory_(freeDOFs_,ii-1) + stepSize*velocityHistory_(freeDOFs_,ii-1) + ...
 								1/2*stepSize^2*(1-beta2)*accelerationHistory_(freeDOFs_,ii-1));
@@ -78,12 +79,12 @@ function X = SolvingTransientSystemEquations(stepSize, numTimeStep, varargin)
 						% disp(['Integration: ' sprintf('%6i',ii-1) ' Total.: ' sprintf('%6i',numel(timeAxis_)-1)]);
 						disp(['Time: ' sprintf('%.6e',timeAxis_(ii)) ' of ' sprintf('%.6e',timeAxis_(end))]);
 						if 1==ii
-							accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./diagM) + F_./diagM;
+							accelerationHistory_(freeDOFs_,ii) = -((K_*displacmentHistory_(freeDOFs_,ii))./condensedMvec) + F_./condensedMvec;
 						else
 							iRHS = F_ - K_*(displacmentHistory_(freeDOFs_,ii-1) + stepSize*velocityHistory_(freeDOFs_,ii-1) + ...
 								1/2*stepSize^2*(1-beta2)*accelerationHistory_(freeDOFs_,ii-1));
 							% accelerationHistory_(freeDOFs_,ii) = myGMRES(ATX, Preconditioning, iRHS, 'printP_OFF');
-							accelerationHistory_(freeDOFs_,ii) = myCG(ATX, Preconditioning, iRHS, 'printP_OFF');								
+							accelerationHistory_(freeDOFs_,ii) = myCG(ATX, Preconditioning, iRHS, 'printP_OFF');							
 							displacmentHistory_(freeDOFs_,ii) = displacmentHistory_(freeDOFs_,ii-1) + stepSize^2*velocityHistory_(freeDOFs_,ii-1) .* ...
 								((1-beta2)*accelerationHistory_(freeDOFs_,ii-1) + beta2*accelerationHistory_(freeDOFs_,ii));
 							velocityHistory_(freeDOFs_,ii) = velocityHistory_(freeDOFs_,ii-1) + stepSize* ...
