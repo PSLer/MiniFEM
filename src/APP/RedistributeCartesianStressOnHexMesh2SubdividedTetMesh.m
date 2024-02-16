@@ -92,6 +92,8 @@ function RedistributeCartesianStressOnHexMesh2SubdividedTetMesh_Div12()
 	global numEles_;
 	global eNodMat_;
 	global cartesianStressField_;
+	global fixingCond_;
+	global loadingCond_;
 	global outPath_;
 	
 	shapeFuncsAtCentroid = ShapeFunction([0.0, 0.0, 0.0]);
@@ -137,30 +139,58 @@ function RedistributeCartesianStressOnHexMesh2SubdividedTetMesh_Div12()
 	% figure; VisSubdividedElements(hex_to_tet_nodeCoords, hex_to_tet_eNodMat([1 3 5 7 9 11],:));
 	
 	%% Write
+	fileName = strcat(outPath_, 'hex2tet_sim.stress');
+	fid = fopen(fileName, 'w');
+	fprintf(fid, '%s ', 'Version');
+	fprintf(fid, '%.1f\n', 2.0);	
+	fprintf(fid, '%s %s ', 'Solid Tet');
+	fprintf(fid, '%d\n', 1);
+	
+	fprintf(fid, '%s ', 'Vertices:');
+	fprintf(fid, '%d\n', numTetNodes);		
+	fprintf(fid, '%.6e %.6e %.6e\n', hex_to_tet_nodeCoords');
+
+	fprintf(fid, '%s ', 'Elements:');
+	fprintf(fid, '%d \n', numTetEles);
+	fprintf(fid, '%d %d %d %d\n', hex_to_tet_eNodMat');
+
+	fprintf(fid, '%s %s ', 'Node Forces:'); 
+	fprintf(fid, '%d\n', size(loadingCond_,1));
+	if ~isempty(loadingCond_)
+		fprintf(fid, '%d %.6e %.6e %.6e\n', loadingCond_');
+	end
+	fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
+	if ~isempty(fixingCond_)
+		fprintf(fid, '%d\n', fixingCond_(:,1));						
+	end
+	fprintf(fid, '%s %s', 'Cartesian Stress:'); 
+	fprintf(fid, '%d\n', numTetNodes);
+	fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', hex_to_tet_cartesianStress');		
+	
 	%% Output tet-mesh
-	fileName = strcat(outPath_, 'tet_sim.mesh');
-	fid = fopen(fileName, 'w');
-	fprintf(fid, '%s ', 'MeshVersionFormatted'); fprintf(fid, '%d\n', 1);
-	fprintf(fid, '%s ', 'Dimension'); fprintf(fid, '%d\n', 3);
-	fprintf(fid, '%s ', 'Vertices'); fprintf(fid, '%d\n', numTetNodes);
-	fprintf(fid, '%16.6e %16.6e %16.6e %16.6e\n', [hex_to_tet_nodeCoords zeros(numTetNodes, 1)]');
-	fprintf(fid, '%s ', 'Tetrahedra'); fprintf(fid, '%d\n', 4*numTetEles);
-	fprintf(fid, '%10d %10d %10d %10d %10d\n', [hex_to_tet_eNodMat zeros(numTetEles, 1)]');
-	fprintf(fid, '%s', 'End'); fprintf(fid, '\n');
+	% fileName = strcat(outPath_, 'tet_sim.mesh');
+	% fid = fopen(fileName, 'w');
+	% fprintf(fid, '%s ', 'MeshVersionFormatted'); fprintf(fid, '%d\n', 1);
+	% fprintf(fid, '%s ', 'Dimension'); fprintf(fid, '%d\n', 3);
+	% fprintf(fid, '%s ', 'Vertices'); fprintf(fid, '%d\n', numTetNodes);
+	% fprintf(fid, '%16.6e %16.6e %16.6e %16.6e\n', [hex_to_tet_nodeCoords zeros(numTetNodes, 1)]');
+	% fprintf(fid, '%s ', 'Tetrahedra'); fprintf(fid, '%d\n', 4*numTetEles);
+	% fprintf(fid, '%10d %10d %10d %10d %10d\n', [hex_to_tet_eNodMat zeros(numTetEles, 1)]');
+	% fprintf(fid, '%s', 'End'); fprintf(fid, '\n');
+	% fclose(fid);
+	
+	% %% sigma_xx, sigma_yy, sigma_zz, tadis_yz, tadis_zx, tadis_xy (solid)
+	% fileName = strcat(outPath_, 'tet_Cartesian_stress.dat');
+	% fid = fopen(fileName, 'w');
+	% fprintf(fid, '%s %s ', 'Cartesian Stress'); fprintf(fid, '%d\n', numTetNodes);
+	% fprintf(fid, '%16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', hex_to_tet_cartesianStress');
 	fclose(fid);
 	
-	%% sigma_xx, sigma_yy, sigma_zz, tadis_yz, tadis_zx, tadis_xy (solid)
-	fileName = strcat(outPath_, 'tet_Cartesian_stress.dat');
-	fid = fopen(fileName, 'w');
-	fprintf(fid, '%s %s ', 'Cartesian Stress'); fprintf(fid, '%d\n', numTetNodes);
-	fprintf(fid, '%16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', hex_to_tet_cartesianStress');
-	fclose(fid);
-	
-	fileName = strcat(outPath_, 'tet_principal_stress.dat');
-	fid = fopen(fileName, 'w');
-	fprintf(fid, '%s %s ', 'Principal Stress'); fprintf(fid, '%d\n', numTetNodes);
-	fprintf(fid, '%16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', hex_to_tet_principalStress');
-	fclose(fid);	
+	% fileName = strcat(outPath_, 'tet_principal_stress.dat');
+	% fid = fopen(fileName, 'w');
+	% fprintf(fid, '%s %s ', 'Principal Stress'); fprintf(fid, '%d\n', numTetNodes);
+	% fprintf(fid, '%16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', hex_to_tet_principalStress');
+	% fclose(fid);	
 end
 
 function RedistributeCartesianStressOnHexMesh2SubdividedTetMesh_Div24()
