@@ -76,7 +76,8 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
 	else
 		set(hd, 'FaceColor', 'Interp', 'FaceAlpha', 1, 'EdgeColor', 'None');
 	end
-	h = colorbar; t=get(h,'Limits'); 
+	h = colorbar;%('southoutside'); 
+    t=get(h,'Limits'); 
 	colorbarIntervals = 7;
 	set(h,'Ticks',linspace(t(1),t(2),colorbarIntervals),'AxisLocation','out');	
 	L=cellfun(@(x)sprintf('%.2e',x),num2cell(linspace(t(1),t(2),colorbarIntervals)),'Un',0); 

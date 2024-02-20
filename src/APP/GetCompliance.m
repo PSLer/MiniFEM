@@ -58,8 +58,15 @@ function c = GetCompliance(varargin)
 			colormap('jet');
 			hd = patch(xPatchs, yPatchs, cPatchs); hold on;
 			set(hd, 'FaceColor', 'Interp', 'FaceAlpha', 1, 'EdgeColor', 'None');
-			axis equal; axis tight; axis off;
-			% set(gca, 'FontName', 'Times New Roman', 'FontSize', 20);				
+			axis('equal'); axis('tight'); axis('off');
+            h = colorbar;%('southoutside'); 
+            t=get(h,'Limits'); 
+            colorbarIntervals = 7;
+            set(h,'Ticks',linspace(t(1),t(2),colorbarIntervals),'AxisLocation','out');	
+            L=cellfun(@(x)sprintf('%.2e',x),num2cell(linspace(t(1),t(2),colorbarIntervals)),'Un',0); 
+            set(h,'xticklabel',L);		
+            axis('equal'); axis('tight'); axis('off');
+            set(gca, 'FontName', 'Times New Roman', 'FontSize', 20);				
 		end
 	else
 		c = U_(freeDOFs_,1)' * (K_*U_(freeDOFs_,1));
