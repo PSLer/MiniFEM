@@ -19,7 +19,31 @@ SetMaterialProperty('Unit'); %% 'Unit', 'Steel', 'Aluminium'
 
 %%2. Create Geometrical Model (Pick the desirable one from the following options)
 tStart = tic;
-ModelingOpt = 0;
+ModelingOpt = 'Mdl_Voxel';
+switch ModelingOpt
+	case 'Mdl_Voxel' %% ".txt"
+		MdlName = '';
+		CreateMdl_VoxelData(MdlName);
+	case 'Mdl_TopOpti' %% ".topopti"
+		MdlName = '';
+		extractThreshold = 0.1;
+		CreateMdl_TopOptiData(MdlName, extractThreshold);
+	case 'Mdl_Stress' %% ".stress"
+		MdlName = '';
+		CreateMdl_StressData(MdlName);
+	case 'Mdl_Unified' %% ".miniFEM"
+		MdlName = '';
+		CreateMdl_UnifiedData(MdlName);
+	case 'Mdl_Built_in'
+		eleType = 'Plane144'; %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
+		if strcmp(eleType, 'Plane144') || strcmp(eleType, 'Plane133')
+			CreateRectangle([60, 30], [0 0; 1 0.5]);
+		elseif strcmp(eleType, 'Solid188') || strcmp(eleType, 'Solid144')
+			CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
+		else
+			error('Un-suppported Input!');
+		end
+end
 switch ModelingOpt
 	case 0 %%Unified Mesh Format (.stress v2) for arbitrary mesh (Quad, Tri, Hex, Tet)
 		CreateFromArbitraryMesh_unifiedStressFormat('D:\wSpace\MeshStructDesign\log\20240214_eva2D_1stRun\femur2D\femur2D_domain_Tri.stress');
