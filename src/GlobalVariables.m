@@ -3,7 +3,7 @@
 %% FEA Model 
 global material_;
 global eleType_;
-global meshType_; meshType_ = 'Any';
+global meshType_; meshType_ = 'ARBITRARY';
 global nelx_; global nely_; global nelz_;
 global boundingBox_;
 global numEles_; global eNodMat_; global eDofMat_; 
@@ -17,6 +17,7 @@ global fixingCond_; global loadingCond_;
 global diameterList_;
 global meshQualityJacobianRatio_;
 global freeDOFs_; freeDOFs_ = [];
+global materialIndicatorField_; materialIndicatorField_ = [];
 global K_;
 global M_;
 global F_;

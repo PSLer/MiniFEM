@@ -19,17 +19,20 @@ function PickByPoint(varargin)
 	else
 		error('Wrong Input!');		
 	end
-	hold on; 
-	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
+	hold('on'); 
+	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144') || ...
+			strcmp(eleType_.eleName, 'Truss122') || strcmp(eleType_.eleName, 'Beam122')
 		hdPickedNode_(end+1) = plot(tarNode(1), tarNode(2), 'xr', 'LineWidth', 2, 'MarkerSize', 8);
 	else
 		hdPickedNode_(end+1) = plot3(tarNode(1), tarNode(2), tarNode(3), 'xr', 'LineWidth', 2, 'MarkerSize', 8);
 	end
-	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-		[~,newlyPickedNode] = min(vecnorm(tarNode-nodeCoords_,2,2));		
-	else
-		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
-		[~,newlyPickedNode] = min(vecnorm(tarNode-boundaryNodeCoords,2,2));		
-	end
+	% if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+		% [~,newlyPickedNode] = min(vecnorm(tarNode-nodeCoords_,2,2));
+	% else
+		% boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+		% [~,newlyPickedNode] = min(vecnorm(tarNode-boundaryNodeCoords,2,2));		
+	% end
+	boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+	[~,newlyPickedNode] = min(vecnorm(tarNode-boundaryNodeCoords,2,2));	
 	pickedNodeCache_(end+1,1) = newlyPickedNode;
 end

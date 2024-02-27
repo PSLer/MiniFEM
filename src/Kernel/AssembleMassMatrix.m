@@ -8,18 +8,22 @@ function AssembleMassMatrix()
 	global eDofMat_;
 	global shapeFuncs_;
 	global detJ_;
+	global materialIndicatorField_;
 	
 	global M_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
 	tStart = tic;
 	M_ = sparse(numDOFs_,numDOFs_);
+	if max(materialIndicatorField_) ~= numel(material_)
+		error('Un-matched Material Defination!');
+	end	
 	switch eleType_.eleName
 		case 'Plane133'
 			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
 			shapeFuncs_ = ElementShapeFunctionMatrix(ShapeFunction(gaussIPs));
-			if 1==length(material_.density)
+			if 1==numel(material_)
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(12, length(rangeIndex)); %%12 is based on the feature of element mass matrix of 'Plane133'
@@ -37,14 +41,14 @@ function AssembleMassMatrix()
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
 				end			
-			elseif numEles_==length(material_.density)
+			else %% Multi-Material
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(12, length(rangeIndex)); %%12 is based on the feature of element mass matrix of 'Plane133'
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
-						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density(ii));
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_(materialIndicatorField_(ii)).density);
 						semiMe = tril(Me); 
 						[eMi, eMj, eMs] = find(semiMe);				
 						sM(:,index) = eMs;				
@@ -63,7 +67,7 @@ function AssembleMassMatrix()
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
 			shapeFuncs_ = ElementShapeFunctionMatrix(ShapeFunction(gaussIPs));
-			if 1==length(material_.density)			
+			if 1==numel(material_)		
 				if strcmp(meshType_, 'Cartesian')
 					Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_, material_.density);
 					semiMe = tril(Me); 
@@ -96,14 +100,14 @@ function AssembleMassMatrix()
 						M_ = M_ + tmpM;
 					end
 				end			
-			elseif numEles_==length(material_.density)
+			else %% Multi-Material
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(20, length(rangeIndex)); %%20 is based on the feature of element mass matrix of 'Solid144'
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
-						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density(ii));
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_(materialIndicatorField_(ii)).density);
 						semiMe = tril(Me); 
 						[eMi, eMj, eMs] = find(semiMe);				
 						sM(:,index) = eMs;				
@@ -122,7 +126,7 @@ function AssembleMassMatrix()
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
 			shapeFuncs_ = ElementShapeFunctionMatrix(ShapeFunction(gaussIPs));
-			if 1==length(material_.density)
+			if 1==numel(material_)
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(30, length(rangeIndex)); %%30 is based on the feature of element mass matrix of 'Solid144'
@@ -140,14 +144,14 @@ function AssembleMassMatrix()
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
 				end
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(30, length(rangeIndex)); %%30 is based on the feature of element mass matrix of 'Solid144'
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
-						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density(ii));				
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_(materialIndicatorField_(ii)).density);				
 						semiMe = tril(Me); 
 						[eMi, eMj, eMs] = find(semiMe);				
 						sM(:,index) = eMs;				
@@ -166,7 +170,7 @@ function AssembleMassMatrix()
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:3,:)';
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
 			shapeFuncs_ = ElementShapeFunctionMatrix(ShapeFunction(gaussIPs));
-			if 1==length(material_.density)
+			if 1==numel(material_)
 				if strcmp(meshType_, 'Cartesian')
 					Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_, material_.density);
 					semiMe = tril(Me); 
@@ -199,14 +203,14 @@ function AssembleMassMatrix()
 						M_ = M_ + tmpM;
 					end
 				end
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
 					sM = zeros(108, length(rangeIndex)); %%108 is based on the feature of element mass matrix of 'Solid188'
 					index = 0;
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
-						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_.density(ii));				
+						Me = ElementMassMatrix(shapeFuncs_, wgts, detJ_(:,ii), material_(materialIndicatorField_(ii)).density);				
 						semiMe = tril(Me); 
 						[eMi, eMj, eMs] = find(semiMe);				
 						sM(:,index) = eMs;				

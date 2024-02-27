@@ -18,12 +18,13 @@ function PickBySurface(constantDir, opt, varargin)
 	end
 	tarNode = info_struct.Position;
 
-	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-		boundaryNodeCoords = nodeCoords_;
-	else
-		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
-    end
-	hold on; 
+	% if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+		% boundaryNodeCoords = nodeCoords_;
+	% else
+		% boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+    % end
+	boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+	hold('on'); 
 	if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 	switch constantDir
 		case 'X'

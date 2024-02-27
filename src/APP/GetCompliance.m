@@ -33,7 +33,7 @@ function c = GetCompliance(varargin)
 	end
 	disp(['Compute Static Deformation Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 	
-	if 1==length(material_.modulus) && 1==length(material_.poissonRatio) && strcmp(meshType_, 'Cartesian')
+	if 1==numel(material_) && strcmp(meshType_, 'Cartesian')
 		ce = zeros(numEles_,1);
 		blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 		for ii=1:size(blockIndex,1)

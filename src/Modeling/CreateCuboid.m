@@ -5,6 +5,7 @@ function CreateCuboid(resCtrl, varargin)
 	global eleType_;
 	global nelx_; global nely_; global nelz_;
 	global boundingBox_;
+	global numEles_;
 	if ~strcmp(eleType_.eleName, 'Solid188')
 		error('Only Works with 3D Solid188 Element!');
 	end
@@ -19,5 +20,6 @@ function CreateCuboid(resCtrl, varargin)
 		boundingBox_ = [0 0 0; nelx_ nely_ nelz_];
 	end
 	GenerateCartesianMesh3D(ones(nely_, nelx_, nelz_));
+	materialIndicatorField_ = ones(numEles_,1);
 	EvaluateMeshQuality();
 end

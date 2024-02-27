@@ -15,6 +15,7 @@ function AssembleStiffnessMatrix()
 	global diameterList_;
 	global eleCrossSecAreaList_;
 	global eleLengthList_;
+	global materialIndicatorField_;
 	global Ke_;
 	global K_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
@@ -22,6 +23,9 @@ function AssembleStiffnessMatrix()
 	K_ = sparse(numDOFs_,numDOFs_);
 	[eKi, eKj, eKk] = GetLowerEleStiffMatIndices();
 	numEntries = length(eKk);
+	if max(materialIndicatorField_) ~= numel(material_)
+		error('Un-matched Material Defination!');
+	end
 	switch eleType_.eleName
 		case 'Plane133'
 			nESC = eleType_.nEleStressComponents;
@@ -29,7 +33,7 @@ function AssembleStiffnessMatrix()
 	
 			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+			if 1==numel(material_)
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);	
 				for jj=1:size(blockIndex,1)
@@ -49,7 +53,7 @@ function AssembleStiffnessMatrix()
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;
 				end				
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
@@ -58,7 +62,7 @@ function AssembleStiffnessMatrix()
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						iMatrixB = ElementStrainMatrix(dShape_, invJ_(ii).arr);
-						iMatrixD = ElementElasticityMatrix(material_.modulus(ii), material_.poissonRatio(ii));	
+						iMatrixD = ElementElasticityMatrix(material_(materialIndicatorField_(ii)).modulus, material_(materialIndicatorField_(ii)).poissonRatio);	
 						matrixD_(ii).arr = iMatrixD;
 						Ke = ElementStiffMatrix(iMatrixB, iMatrixD, wgts, detJ_(:,ii));				
 						eKs = Ke(eKk);				
@@ -69,16 +73,14 @@ function AssembleStiffnessMatrix()
 					tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;
-				end				
-			else
-				error('Un-supported Material Property!');			
+				end						
 			end
 		case 'Plane144'
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;	
 			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';	
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)			
+			if 1==numel(material_)		
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);				
 				if strcmp(meshType_, 'Cartesian')
@@ -114,7 +116,7 @@ function AssembleStiffnessMatrix()
 						K_ = K_ + tmpK;
 					end
 				end			
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
@@ -123,7 +125,7 @@ function AssembleStiffnessMatrix()
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
-						iMatrixD = ElementElasticityMatrix(material_.modulus(ii), material_.poissonRatio(ii));	
+						iMatrixD = ElementElasticityMatrix(material_(materialIndicatorField_(ii)).modulus, material_(materialIndicatorField_(ii)).poissonRatio);	
 						matrixD_(ii).arr = iMatrixD;
 						Ke = ElementStiffMatrix(iMatrixB, iMatrixD, wgts, detJ_(:,ii));				
 						eKs = Ke(eKk);			
@@ -135,15 +137,13 @@ function AssembleStiffnessMatrix()
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;
 				end				
-			else
-				error('Un-supported Material Property!');
 			end
 		case 'Solid144'
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+			if 1==numel(material_)
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);	
 				for jj=1:size(blockIndex,1)
@@ -163,7 +163,7 @@ function AssembleStiffnessMatrix()
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;						
 				end
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
@@ -172,7 +172,7 @@ function AssembleStiffnessMatrix()
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
-						iMatrixD = ElementElasticityMatrix(material_.modulus(ii), material_.poissonRatio(ii));	
+						iMatrixD = ElementElasticityMatrix(material_(materialIndicatorField_(ii)).modulus, material_(materialIndicatorField_(ii)).poissonRatio);	
 						matrixD_(ii).arr = iMatrixD;
 						Ke = ElementStiffMatrix(iMatrixB, iMatrixD, wgts, detJ_(:,ii));				
 						eKs = Ke(eKk);			
@@ -183,16 +183,14 @@ function AssembleStiffnessMatrix()
 					tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;
-				end					
-			else
-				error('Un-supported Material Property!');			
+				end							
 			end			
 		case 'Solid188'
 			nESC = eleType_.nEleStressComponents;
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
 			wgts = eleType_.GaussIntegralPointsNaturalSpace(4,:)';			
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+			if 1==numel(material_)
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC));
 				matrixD_.arr = ElementElasticityMatrix(material_.modulus, material_.poissonRatio);	
 				if strcmp(meshType_, 'Cartesian')
@@ -228,7 +226,7 @@ function AssembleStiffnessMatrix()
 						K_ = K_ + tmpK;						
 					end					
 				end
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else
 				matrixD_ = struct('arr', sparse(nEGIP*nESC,nEGIP*nESC)); matrixD_ = repmat(matrixD_, 1, 1, numEles_);
 				for jj=1:size(blockIndex,1)
 					rangeIndex = (blockIndex(jj,1):blockIndex(jj,2))';
@@ -237,7 +235,7 @@ function AssembleStiffnessMatrix()
 					for ii=rangeIndex(1):rangeIndex(end)
 						index = index + 1;
 						iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
-						iMatrixD = ElementElasticityMatrix(material_.modulus(ii), material_.poissonRatio(ii));	
+						iMatrixD = ElementElasticityMatrix(material_(materialIndicatorField_(ii)).modulus, material_(materialIndicatorField_(ii)).poissonRatio);	
 						matrixD_(ii).arr = iMatrixD;
 						Ke = ElementStiffMatrix(iMatrixB, iMatrixD, wgts, detJ_(:,ii));				
 						eKs = Ke(eKk);
@@ -248,22 +246,20 @@ function AssembleStiffnessMatrix()
 					tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
 					tmpK = tmpK + tmpK' - diag(diag(tmpK));
 					K_ = K_ + tmpK;
-				end					
-			else
-				error('Un-supported Material Property!');			
+				end							
 			end
 		case 'Shell133'
 		
 		case 'Shell144'
 		
 		case 'Truss122'
-		
+
 		case 'Truss123'
 			lx = (nodeCoords_(eNodMat_(:,2),1)-nodeCoords_(eNodMat_(:,1),1)) ./ eleLengthList_;
 			ly = (nodeCoords_(eNodMat_(:,2),2)-nodeCoords_(eNodMat_(:,1),2)) ./ eleLengthList_;
 			lz = (nodeCoords_(eNodMat_(:,2),3)-nodeCoords_(eNodMat_(:,1),3)) ./ eleLengthList_;
 			sK = zeros(numEntries, numEles_);
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+			if 1==numel(material_)
 				for ii=1:numEles_
 					iD = [	lx(ii)*lx(ii), lx(ii)*ly(ii), lx(ii)*lz(ii); 
 							ly(ii)*lx(ii), ly(ii)*ly(ii), ly(ii)*lz(ii);
@@ -273,12 +269,12 @@ function AssembleStiffnessMatrix()
 					eKs = Ke(eKk);
 					sK(:,ii) = eKs;
 				end				
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				for ii=1:numEles_
 					iD = [	lx(ii)*lx(ii), lx(ii)*ly(ii), lx(ii)*lz(ii); 
 							ly(ii)*lx(ii), ly(ii)*ly(ii), ly(ii)*lz(ii);
 							lz(ii)*lx(ii), lz(ii)*ly(ii), lz(ii)*lz(ii)];
-					iD = material_.modulus(ii)*eleCrossSecAreaList_(ii)/eleLengthList_(ii) * iD;
+					iD = material_(materialIndicatorField_(ii)).modulus*eleCrossSecAreaList_(ii)/eleLengthList_(ii) * iD;
 					Ke = [iD -iD; -iD iD];
 					eKs = Ke(eKk);
 					sK(:,ii) = eKs;
@@ -289,7 +285,7 @@ function AssembleStiffnessMatrix()
 			K_ = sparse(iK, jK, sK, numDOFs_, numDOFs_);
 			K_ = K_ + K_' - diag(diag(K_));	
 		case 'Beam122'
-			
+	
 		case 'Beam123'
 			sK = zeros(numEntries, numEles_);
 			Izz = pi/4 * diameterList_.^4;
@@ -298,7 +294,7 @@ function AssembleStiffnessMatrix()
 			beta_ang = zeros(size(J));
 			x_axis = (nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:))./eleLengthList_;
 			x_axis = x_axis ./ vecnorm(x_axis,2,2);
-			if 1==length(material_.modulus) && 1==length(material_.poissonRatio)
+			if 1==numel(material_)
 				for ii=1:numEles_
 					iKeLocal = ElementStiffMatrix_Beam(eleCrossSecAreaList_(ii),Izz(ii),Iyy(ii),J(ii), ...
 						material_.modulus,material_.poissonRatio,eleLengthList_(ii));
@@ -307,10 +303,10 @@ function AssembleStiffnessMatrix()
 					eKs = iKeGlobal(eKk);
 					sK(:,ii) = eKs;					
 				end
-			elseif numEles_==length(material_.modulus) && numEles_==length(material_.poissonRatio)
+			else %% Multi-Material
 				for ii=1:numEles_
 					iKeLocal = ElementStiffMatrix_Beam(eleCrossSecAreaList_(ii),Izz(ii),Iyy(ii),J(ii), ...
-						material_.modulus(ii),material_.poissonRatio(ii),eleLengthList_(ii));
+						material_(materialIndicatorField_(ii)).modulus, material_(materialIndicatorField_(ii)).poissonRatio,eleLengthList_(ii));
 					iKeTrans = ElementTransformationMatrix_Beam(beta_ang(ii),x_axis(ii,:)');
 					iKeGlobal = (reshape(iKeTrans,12,12))'*(reshape(iKeLocal,12,12))*(reshape(iKeTrans,12,12));
 					eKs = iKeGlobal(eKk);

@@ -1,4 +1,4 @@
-function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
+function CreateMdl_TopOptiData(fileName, extractThreshold, varargin)
 	%% CreateModelFromTopOpti(fileName, extractThreshold); 
 	%% CreateModelFromTopOpti(fileName, extractThreshold, sizeScaling); 
 	global eleType_;
@@ -6,16 +6,19 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 	global fixingCond_; global loadingCond_;
 	global carNodMapBack_;
 	global carNodMapForward_;
-	if ~(strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Solid188'))
-		error('Only Works with 2D Plane144 or 3D Solid188 Element!');
-	end
+	global numEles_;
+    global materialIndicatorField_;
+	% if ~(strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Solid188'))
+		% error('Only Works with 2D Plane144 or 3D Solid188 Element!');
+	% end
 	fid = fopen(fileName, 'r');
 	fgetl(fid);
 	tmp = fscanf(fid, '%s %s', 2);
 	domainType = fscanf(fid, '%s', 1);
 	switch domainType
 		case '2D'
-			if ~strcmp(eleType_.eleName, 'Plane144'), error('Unmatched Mesh and Data Set! Please Use Plane144 Element'); end
+			%if ~strcmp(eleType_.eleName, 'Plane144'), error('Unmatched Mesh and Data Set! Please Use Plane144 Element'); end
+			SetElement('Plane144');
 			tmp = fscanf(fid, '%s', 1);
 			tmp = fscanf(fid, '%d %d', 3);
 			nelx_ = tmp(1); nely_ = tmp(2);
@@ -43,7 +46,8 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			fixingCond_(:,1) = carNodMapForward_(fixingCond_(:,1));
 			loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));
 		case '3D'
-			if ~strcmp(eleType_.eleName, 'Solid188'), error('Unmatched Mesh and Data Set! Please Use Solid188 Element'); end
+			%if ~strcmp(eleType_.eleName, 'Solid188'), error('Unmatched Mesh and Data Set! Please Use Solid188 Element'); end
+			SetElement('Solid188');
 			tmp = fscanf(fid, '%s', 1);
 			tmp = fscanf(fid, '%d %d %d', 3);
 			nelx_ = tmp(1); nely_ = tmp(2); nelz_ = tmp(3);
@@ -72,5 +76,6 @@ function CreateModelFromTopOpti(fileName, extractThreshold, varargin)
 			loadingCond_(:,1) = carNodMapForward_(loadingCond_(:,1));			
 	end
 	fclose(fid);
+	materialIndicatorField_ = ones(numEles_,1);
 	EvaluateMeshQuality();
 end

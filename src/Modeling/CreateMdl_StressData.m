@@ -1,7 +1,8 @@
-function CreateFromArbitraryMesh_unifiedStressFormat(fileName)
+function CreateMdl_StressData(fileName)
 	global boundingBox_;
 	global numEles_; global eNodMat_; global eDofMat_; 
 	global numNodes_; global numDOFs_; global nodeCoords_;
+	global materialIndicatorField_;
 	global boundaryNodes_;
 	global boundaryFaceNodMat_;
 	global numNodsAroundEleVec_;
@@ -39,13 +40,13 @@ function CreateFromArbitraryMesh_unifiedStressFormat(fileName)
 			eNodMat_ = fscanf(fid, '%d %d %d %d', [4, numEles_])'; 
 		case 'Tri'
 			SetElement('Plane133');
-			eNodMat_ = fscanf(fid, '%d %d %d', [3, numEles_])'; 
+			eNodMat_ = fscanf(fid, '%d %d %d', [3, numEles_])';		
 		case 'Hex'
 			SetElement('Solid188');
-			eNodMat_ = fscanf(fid, '%d %d %d %d %d %d %d %d', [8, numEles_])';			
+			eNodMat_ = fscanf(fid, '%d %d %d %d %d %d %d %d', [8, numEles_])';		
 		case 'Tet'
 			SetElement('Solid144');
-			eNodMat_ = fscanf(fid, '%d %d %d %d', [4, numEles_])'; 			
+			eNodMat_ = fscanf(fid, '%d %d %d %d', [4, numEles_])';		
 	end	
 	
 	%%4. Read boundary condition
@@ -77,7 +78,6 @@ function CreateFromArbitraryMesh_unifiedStressFormat(fileName)
 	else
 		fixingCond_ = []; 
 	end
-	
 	fclose(fid);
 
 	%%4. Initialize Additional Mesh Info	
@@ -86,6 +86,10 @@ function CreateFromArbitraryMesh_unifiedStressFormat(fileName)
 			[boundaryFaceNodMat_, nodState_, eleState_, boundaryNodes_] = ExtractBoundaryInfoFromPlaneMesh();
 		case 'Solid'
 			[boundaryFaceNodMat_, nodState_, eleState_, boundaryNodes_] = ExtractBoundaryInfoFromSolidMesh();
+		case 'Shell'
+			boundaryFaceNodMat_ = eNodMat_;
+			nodState_ = ones(numNodes_,1);
+			boundaryNodes_ = (1:numNodes_)';			
 	end	
 	boundingBox_ = [min(nodeCoords_, [], 1); max(nodeCoords_, [], 1)];
 	numNodsAroundEleVec_ = zeros(numNodes_,1);
@@ -107,6 +111,6 @@ function CreateFromArbitraryMesh_unifiedStressFormat(fileName)
 			tmp = 3*eNodMat_; eDofMat_ = [tmp-2 tmp-1 tmp];
 			eDofMat_ = eDofMat_(:,[1 5 9  2 6 10  3 7 11  4 8 12]);			
 	end
-
+	materialIndicatorField_ = ones(numEles_,1);
 	EvaluateMeshQuality();
 end

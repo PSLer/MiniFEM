@@ -5,6 +5,7 @@ function CreateRectangle(resCtrl, varargin)
 	global eleType_;
 	global nelx_; global nely_;
 	global boundingBox_;
+	global numEles_;
 	if ~(strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144'))
 		error('Only Works with 2D Plane133 or Plane144 Element!');
 	end
@@ -19,5 +20,6 @@ function CreateRectangle(resCtrl, varargin)
 		boundingBox_ = [0 0; nelx_ nely_];
 	end
 	GenerateCartesianMesh2D(ones(nely_, nelx_));
+	materialIndicatorField_ = ones(numEles_,1);
 	EvaluateMeshQuality();
 end

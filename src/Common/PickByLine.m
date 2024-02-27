@@ -13,12 +13,13 @@ function PickByLine(constantDir, opt, varargin)
 	end
 	
 	tarNode = info_struct.Position;
-	if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-		boundaryNodeCoords = nodeCoords_;
-	else
-		boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
-	end
-	hold on; 
+	% if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+		% boundaryNodeCoords = nodeCoords_;
+	% else
+		% boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+	% end
+	boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
+	hold('on'); 
 	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		if 1~=length(constantDir), error('Wrongly Defined Line Direction!'); end
 		if ~(1==opt || 0==opt || -1==opt), warning('Wrong Input!'); return; end

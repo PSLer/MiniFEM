@@ -8,11 +8,12 @@ function UnPickPoint()
     info_struct = getCursorInfo(dcm_obj);
     tarNode = info_struct.Position;
 	if size(pickedNodeCache_,1)>0		
-		if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-			potentialNodeList = nodeCoords_(pickedNodeCache_,:);
-		else
-			potentialNodeList = nodeCoords_(boundaryNodes_(pickedNodeCache_,1),:);
-		end
+		% if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
+			% potentialNodeList = nodeCoords_(pickedNodeCache_,:);
+		% else
+			% potentialNodeList = nodeCoords_(boundaryNodes_(pickedNodeCache_,1),:);
+		% end
+		potentialNodeList = nodeCoords_(boundaryNodes_(pickedNodeCache_,1),:);
 		[~, minValPos] = min(vecnorm(tarNode-potentialNodeList,2,2));	
 		set(hdPickedNode_, 'visible', 'off');
 		pickedNodeCache_(minValPos,:) = [];
