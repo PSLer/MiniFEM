@@ -36,10 +36,10 @@ switch ModelingOpt
 		extractThreshold = 0.1;
 		CreateMdl_TopOptiData(MdlName, extractThreshold, 20);
 	case 'Mdl_Built_in'
-		eleType = 'Plane144'; %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
-		if strcmp(eleType, 'Plane144') || strcmp(eleType, 'Plane133')
+		SetElement('Plane144'); %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
+		if strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Plane133')
 			CreateRectangle([60, 30], [0 0; 1 0.5]);
-		elseif strcmp(eleType, 'Solid188') || strcmp(eleType, 'Solid144')
+		elseif strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144')
 			CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 		else
 			error('Un-suppported Input!');
