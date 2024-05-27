@@ -1,8 +1,8 @@
 %%Convert the Hex-mesh file in standard .mesh format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = 'D:\wSpace\MeshStructDesign\log\20240219_Femur3D\Dennis\femurHigher_Hexas10.mesh';
-oFileName = 'D:\wSpace\MeshStructDesign\log\20240219_Femur3D\Dennis\femurHigher_Hexas10.MiniFEM';
+ifileName = 'D:\wSpace\2024_pp_Summary3D\figs\teaser\HexMesh\femur_hexa.mesh';
+oFileName = 'D:\wSpace\2024_pp_Summary3D\figs\teaser\HexMesh\Data4MiniFEM.MiniFEM';
 
 %% Read
 fid = fopen(ifileName, 'r');

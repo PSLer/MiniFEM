@@ -16,25 +16,25 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty(["Concrete", "Steel"]); %% "Unit", "Steel", "Aluminium", "Concrete"
+SetMaterialProperty("Unit"); %% "Unit", "Steel", "Aluminium", "Concrete"
 
 %%2. Create Geometrical Model
 tStart = tic;
 ModelingOpt = 'Mdl_Exclusive';
 switch ModelingOpt
 	case 'Mdl_Exclusive' %% ".miniFEM"
-		MdlName = 'D:\wSpace\ReinforcedConcreteStruct\log\20240226_forExchange\testBeam2\DeHomo\Data4MiniFEM.MiniFEM';
+		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\teaser\JunXifeng\ar1\graphByXifeng.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
 	case 'Mdl_Stress' %% ".stress"
 		MdlName = 'D:\wSpace\MeshStructDesign\log\20240219_Femur3D\femurHigher_Junpeng.stress';
 		CreateMdl_StressData(MdlName);		
 	case 'Mdl_Voxel' %% ".txt"
-		MdlName = 'D:\BaiduSyncdisk\MyDataSets\FEA_Models_voxel\femur3D\femur_R184.txt';
+		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\2D\femur\femurHigh2D_R1168_B.txt';
 		CreateMdl_VoxelData(MdlName, 1);
 	case 'Mdl_TopOpti' %% ".topopti"
-		MdlName = 'D:\wSpace\ReinforcedConcreteStruct\log\20240226_forExchange\testBeam2\G\optimizedModel.topopti';
+		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\Chair\PSLsGuided\optimizedModel.topopti';
 		extractThreshold = 0.1;
-		CreateMdl_TopOptiData(MdlName, extractThreshold, 20);
+		CreateMdl_TopOptiData(MdlName, extractThreshold);
 	case 'Mdl_Built_in'
 		SetElement('Plane144'); %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
 		if strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Plane133')

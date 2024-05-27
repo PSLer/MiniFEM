@@ -11,6 +11,7 @@ function ChangeFrameThickness(scalingCurrentDiameter)
 	
 	if strcmp(eleType_.eleName, 'Truss123') || strcmp(eleType_.eleName, 'Beam123')
 		diameterList_ = scalingCurrentDiameter * diameterList_;
+        diameterList_ = repmat(min(boundingBox_(2,:) - boundingBox_(1,:))/150, numEles_, 1);
 		eleLengthList_ = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:),2,2);
 		eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;
 		iSphereVolume = 4/3*pi*(sum(diameterList_)/numEles_/2)^3/2;
@@ -24,7 +25,7 @@ function ChangeFrameThickness(scalingCurrentDiameter)
 		axis('equal'); axis('tight'); axis('on');
 		set(hd, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 1, 'EdgeColor', 'None');
 		xlabel('X'); ylabel('Y'); zlabel('Z');
-		view(3); 
+		view(0,0); 
 		camproj('perspective');
 		lighting('gouraud');
 		material('dull'); %%shiny; dull; metal	

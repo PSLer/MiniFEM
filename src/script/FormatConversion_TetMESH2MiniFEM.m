@@ -1,7 +1,7 @@
 %%Convert the Tet-mesh file in standard .mesh format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = 'D:\BaiduSyncdisk\MyDataSets\TetMesh_mesh\femur_Dennis.mesh';
+ifileName = 'D:\wSpace\2024_pp_Summary3D\figs\teaser\TetMesh\femur.ply__new.mesh';
 oFileName = '..\..\out\Data4MiniFEM.MiniFEM';
 
 %% Read
