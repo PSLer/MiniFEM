@@ -18,9 +18,9 @@ function ApplyingExternalFixations(fixationFile)
 	
 	boundaryNodeCoords = nodeCoords_(boundaryNodes_,:);
 	for ii=1:size(externalFixationInfo,1)
-		iLoad = externalFixationInfo(ii,:);
-		iCoord = iLoad(1:3);
-		iFixation = iLoad(4:end);
+		iFix = externalFixationInfo(ii,:);
+		iCoord = iFix(1:3);
+		iFixation = iFix(4:end);
 		[~, tarNode] = min(vecnorm(iCoord-boundaryNodeCoords, 2, 2));
 		switch eleType_.eleName
 			case 'Beam123'

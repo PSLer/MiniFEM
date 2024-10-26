@@ -1,7 +1,7 @@
 %%Convert the Planar Tri-mesh file in standard .mesh format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = '';
+ifileName = 'D:\wSpace\2024_pp_Summary3D\figs\2D\VoronoiDiagram\triPlanarMesh.mesh';
 oFileName = '..\..\out\Data4MiniFEM.MiniFEM';
 
 %% Read
@@ -21,7 +21,9 @@ materialIndicatorField_ = ones(numEles_,1);
 
 %% Write
 fid = fopen(oFileName, 'w');
-fprintf(fid, '%s %s ', 'Plane Quad');
+fprintf(fid, '%s ', 'Version');
+fprintf(fid, '%.1f\n', 2.0);
+fprintf(fid, '%s %s ', 'Plane Tri');
 fprintf(fid, '%d\n', 1);
 
 fprintf(fid, '%s ', 'Vertices:');
