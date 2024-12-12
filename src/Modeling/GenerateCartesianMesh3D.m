@@ -44,9 +44,9 @@ function GenerateCartesianMesh3D(voxelizedModel)
 	eDofMat_ = eDofMat_(:,[1 9 17 2 10 18 3 11 19 4 12 20 5 13 21 6 14 22 7 15 23 8 16 24]);
 	
 	numNodsAroundEleVec_ = zeros(numNodes_,1);
-	for ii=1:numEles_
-		iEleNodes = eNodMat_(ii,:);
-		numNodsAroundEleVec_(iEleNodes,1) = numNodsAroundEleVec_(iEleNodes,1) + 1;
+	for jj=1:8
+		iNodes = eNodMat_(:,jj);
+		numNodsAroundEleVec_(iNodes) = numNodsAroundEleVec_(iNodes) + 1;
 	end
 	boundaryNodes_ = find(numNodsAroundEleVec_<8);
 	nodState_ = zeros(numNodes_, 1, 'int32');

@@ -35,7 +35,12 @@ function materialMode = MaterialList(optMP)
 			materialMode.name = '4FrameComparison';
 			materialMode.modulus = 68950;
 			materialMode.poissonRatio = 0.3;
-			materialMode.density = 2700;			
+			materialMode.density = 2700;
+        case 'Wood'
+			materialMode.name = 'Wood';
+			materialMode.modulus = 1.2e10;
+			materialMode.poissonRatio = 0.25;
+			materialMode.density = 2350;	            
 		otherwise
 			error('Undefined Material!');
 	end
