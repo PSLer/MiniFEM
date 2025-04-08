@@ -16,14 +16,14 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty("Wood"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
+SetMaterialProperty("Unit"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
 
 %%2. Create Geometrical Model
 tStart = tic;
-ModelingOpt = 'Mdl_TopVoxel';
+ModelingOpt = 'Mdl_Exclusive';
 switch ModelingOpt
 	case 'Mdl_Exclusive' %% ".miniFEM"
-		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\teaser\JunXifeng\ar1\graphByXifeng.MiniFEM';
+		MdlName = 'D:\MyProjects\LanguerreTO\data/Cantilever3D.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
 	case 'Mdl_Stress' %% ".stress"
 		MdlName = 'D:\MyProjects\3D-TSV-authorOnly\data\femurHigh2D.stress';
