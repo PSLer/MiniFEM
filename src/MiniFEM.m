@@ -20,7 +20,7 @@ SetMaterialProperty("Unit"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
 
 %%2. Create Geometrical Model
 tStart = tic;
-ModelingOpt = 'Mdl_Exclusive';
+ModelingOpt = 'Mdl_Built_in';
 switch ModelingOpt
 	case 'Mdl_Exclusive' %% ".miniFEM"
 		MdlName = 'D:\MyProjects\LanguerreTO\data/Cantilever3D.MiniFEM';
