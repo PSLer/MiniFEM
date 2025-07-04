@@ -20,14 +20,14 @@ SetMaterialProperty("Unit"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
 
 %%2. Create Geometrical Model
 tStart = tic;
-ModelingOpt = 'Mdl_Built_in';
+ModelingOpt = 'Mdl_TSV';
 switch ModelingOpt
 	case 'Mdl_Exclusive' %% ".miniFEM"
-		MdlName = 'D:\MyProjects\LanguerreTO\data/Cantilever3D.MiniFEM';
+		MdlName = 'D:\wSpace\Proj_2025_PersonalPage\sub_TSV\case2/bolt_PD.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
-	case 'Mdl_Stress' %% ".stress"
-		MdlName = 'D:\MyProjects\3D-TSV-authorOnly\data\femurHigh2D.stress';
-		CreateMdl_StressData(MdlName);		
+	case 'Mdl_TSV' %% ".TSV"
+		MdlName = 'D:\MyProjects\3D-TSV\data\bearing.TSV';
+		CreateMdl_TSVData(MdlName);		
 	case 'Mdl_Voxel' %% ".txt"
 		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\2D\femur\femurHigh2D_R1168_B.txt';
 		CreateMdl_VoxelData(MdlName, 1);
@@ -42,7 +42,7 @@ switch ModelingOpt
 	case 'Mdl_Built_in'
 		SetElement('Plane144'); %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
 		if strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Plane133')
-			CreateRectangle([60, 30], [0 0; 1 0.5]);
+			CreateRectangle([200, 100], [0 0; 1 0.5]);
 		elseif strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144')
 			CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 		else

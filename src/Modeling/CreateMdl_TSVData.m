@@ -13,6 +13,7 @@ function CreateMdl_StressData(fileName)
 	%%1. read file header
 	fid = fopen(fileName, 'r');
 	fgetl(fid);
+	fgetl(fid);
 	domainType = fscanf(fid, '%s', 1);
 	if ~(strcmp(domainType, 'Plane') || strcmp(domainType, 'Solid')), warning('Un-supported Data!'); return; end
 	meshType = fscanf(fid, '%s', 1);

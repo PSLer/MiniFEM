@@ -16,5 +16,7 @@
 
 *.MiniFEM
 *.stress
+*.TSV
 *.topopti
 *.msh
+*.carti
