@@ -11,12 +11,9 @@
 
 *.mesh
 *.vtk
+*.msh
 *.ply
 *.obj
 
-*.MiniFEM
-*.stress
-*.TSV
-*.topopti
-*.msh
-*.carti
+/out/
+

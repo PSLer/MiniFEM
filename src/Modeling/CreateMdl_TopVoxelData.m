@@ -8,8 +8,6 @@ function CreateMdl_TopVoxelData(fileName, extractThreshold, varargin)
 	global carNodMapForward_;
 	global numEles_;
     global materialIndicatorField_;
-
-	
 	
 	SetElement('Solid188');
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

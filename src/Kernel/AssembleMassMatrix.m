@@ -59,8 +59,6 @@ function AssembleMassMatrix()
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
 				end				
-			else
-				error('Un-supported Material Property!');
 			end			
 		case 'Plane144'
 			blockIndex = PartitionMission4CPU(numEles_, 5.0e6);
@@ -118,8 +116,6 @@ function AssembleMassMatrix()
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
 				end				
-			else
-				error('Un-supported Material Property!');
 			end
 		case 'Solid144'
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
@@ -161,9 +157,7 @@ function AssembleMassMatrix()
 					tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
-				end					
-			else
-				error('Un-supported Material Property!');			
+				end							
 			end	
 		case 'Solid188'
 			blockIndex = PartitionMission4CPU(numEles_, 1.0e6);
@@ -220,9 +214,7 @@ function AssembleMassMatrix()
 					tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
 					tmpM = tmpM + tmpM' - diag(diag(tmpM));
 					M_ = M_ + tmpM;
-				end					
-			else
-				error('Un-supported Material Property!');			
+				end						
 			end
 		case 'Shell133'
 			error('Not supported yet!');

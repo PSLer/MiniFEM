@@ -6,6 +6,7 @@ function CreateRectangle(resCtrl, varargin)
 	global nelx_; global nely_;
 	global boundingBox_;
 	global numEles_;
+	global materialIndicatorField_;
 	if ~(strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144'))
 		error('Only Works with 2D Plane133 or Plane144 Element!');
 	end

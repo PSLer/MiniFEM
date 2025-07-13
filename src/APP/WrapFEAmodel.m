@@ -171,7 +171,8 @@ function WrapFEAmodel()
 			end
 		case 'Truss123'
 			fprintf(fid, '%s %s ', 'Frame Truss3D');
-			
+			fprintf(fid, '%d\n', 1);
+            
 			fprintf(fid, '%s ', 'Vertices:');
 			fprintf(fid, '%d\n', numNodes_);		
 			fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');

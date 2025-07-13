@@ -6,6 +6,7 @@ function CreateCuboid(resCtrl, varargin)
 	global nelx_; global nely_; global nelz_;
 	global boundingBox_;
 	global numEles_;
+	global materialIndicatorField_;
 	if ~strcmp(eleType_.eleName, 'Solid188')
 		error('Only Works with 3D Solid188 Element!');
 	end

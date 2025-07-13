@@ -16,16 +16,18 @@ function CreateMdl_ExclusiveFormat(fileName)
 	%%1. read file header
 	fid = fopen(fileName, 'r');
 	fgetl(fid);
-	domainType = fscanf(fid, '%s', 1);
-	% if ~(strcmp(domainType, 'Plane') || strcmp(domainType, 'Solid')), warning('Un-supported Data!'); return; end
+	geoType = fscanf(fid, '%s', 1);
+	% if ~(strcmp(geoType, 'Plane') || strcmp(geoType, 'Solid')), warning('Un-supported Data!'); return; end
 	meshType = fscanf(fid, '%s', 1);
 	meshOrder = fscanf(fid, '%d', 1);
-	if 1~=meshOrder, warning('Un-supported Mesh!'); return; end
+	
+	
+	if 1~=meshOrder, error('Un-supported Mesh!'); end
 	startReadingVertices = fscanf(fid, '%s', 1);
 	if ~strcmp(startReadingVertices, 'Vertices:'), warning('Un-supported Data!'); return; end	
 	%%2. read node coordinates
 	numNodes_ = fscanf(fid, '%d', 1);
-	switch domainType
+	switch geoType
 		case 'Plane'
 			numDOFs_ = 2*numNodes_;
 			nodeCoords_ = fscanf(fid, '%e %e', [2, numNodes_])'; 
@@ -55,17 +57,31 @@ function CreateMdl_ExclusiveFormat(fileName)
 	startReadingElements = fscanf(fid, '%s', 1);
 	if ~strcmp(startReadingElements, 'Elements:'), warning('Un-supported Data!'); return; end
 	numEles_ = fscanf(fid, '%d', 1);
-	if strcmp(domainType, 'Frame')
-		switch meshType
-			case 'Truss2D', SetElement('Truss122');	
-			case 'Truss3D', SetElement('Truss123');	
-			case 'Beam2D', SetElement('Beam122');		
-			case 'Beam3D', SetElement('Beam123');
-		end
-		meshInfo = fscanf(fid, '%d %d %e %d', [4, numEles_])';
-		eNodMat_ = meshInfo(:,1:2);
-		diameterList_ = meshInfo(:,3);
-		materialIndicatorField_ = meshInfo(:,end);
+	if strcmp(geoType, 'Frame')
+        switch meshType
+			case 'Truss2D'
+                SetElement('Truss122');	
+                error('Un-supported Data!');
+			case 'Truss3D'
+                SetElement('Truss123');
+                meshInfo = fscanf(fid, '%d %d %e %d', [4, numEles_])';
+                eNodMat_ = meshInfo(:,1:2);
+                diameterList_ = meshInfo(:,3);
+                materialIndicatorField_ = meshInfo(:,end);
+                % meshInfo = fscanf(fid, '%d %d', [2, numEles_])';
+                % eNodMat_ = meshInfo(:,1:2);
+                % diameterList_ = 0.01*ones(size(eNodMat_,1),1);
+                % materialIndicatorField_ = ones(size(eNodMat_,1),1);                
+			case 'Beam2D'
+                SetElement('Beam122');	
+            	error('Un-supported Data!');
+			case 'Beam3D'
+                SetElement('Beam123');
+                meshInfo = fscanf(fid, '%d %d %e %d', [4, numEles_])';
+                eNodMat_ = meshInfo(:,1:2);
+                diameterList_ = meshInfo(:,3);
+                materialIndicatorField_ = meshInfo(:,end);
+        end		
 		startReadingBoundaryNodes = fscanf(fid, '%s %s', 2);
 		numNodesAgain = fscanf(fid, '%d', 1);
 		nodState_ = fscanf(fid, '%d', [1 numNodesAgain]); nodState_ = nodState_(:);
@@ -100,7 +116,7 @@ function CreateMdl_ExclusiveFormat(fileName)
 	if ~strcmp(startReadingLoads, 'NodeForces:'), warning('Un-supported Data!'); return; end
 	numLoadedNodes = fscanf(fid, '%d', 1);
 	if numLoadedNodes>0	
-		switch domainType
+		switch geoType
 			case 'Plane'
 				loadingCond_ = fscanf(fid, '%d %e %e', [3, numLoadedNodes])'; 
 			case 'Solid'
@@ -127,7 +143,7 @@ function CreateMdl_ExclusiveFormat(fileName)
     if ~strcmp(startReadingFixations, 'FixedNodes:'), warning('Un-supported Data!'); return; end
 	numFixedNodes = fscanf(fid, '%d', 1);
 	if numFixedNodes>0
-		switch domainType
+		switch geoType
 			case 'Plane'
 				fixingCond_ = fscanf(fid, '%d %d %d', [3, numFixedNodes])'; 
 			case 'Solid'
@@ -153,7 +169,7 @@ function CreateMdl_ExclusiveFormat(fileName)
 	fclose(fid);
 
 	%%4. Initialize Additional Mesh Info	
-	switch domainType
+	switch geoType
 		case 'Plane'
 			[boundaryFaceNodMat_, nodState_, eleState_, boundaryNodes_] = ExtractBoundaryInfoFromPlaneMesh();
 		case 'Solid'
@@ -196,7 +212,7 @@ function CreateMdl_ExclusiveFormat(fileName)
 			eDofMat_ = eDofMat_(:,[1 3 5 7 9 11 2 4 6 8 10 12]);		
 	end
 	
-	if strcmp(domainType, 'Frame')
+	if strcmp(geoType, 'Frame')
 		eleLengthList_ = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,1),:),2,2);
 		if strcmp(meshType, 'Truss3D') || strcmp(meshType, 'Beam3D')
 			eleCrossSecAreaList_ = pi/2 * (diameterList_/2).^2;

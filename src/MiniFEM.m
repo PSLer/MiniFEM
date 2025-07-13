@@ -16,33 +16,26 @@ GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
 %%1. Set Material Properties
-SetMaterialProperty("Unit"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
+SetMaterialProperty("Aluminium"); %% "Unit", "Steel", "Aluminium", "Concrete", "Wood"
 
 %%2. Create Geometrical Model
 tStart = tic;
-ModelingOpt = 'Mdl_TSV';
+ModelingOpt = 'Mdl_TopVoxel';
 switch ModelingOpt
-	case 'Mdl_Exclusive' %% ".miniFEM"
-		MdlName = 'D:\wSpace\Proj_2025_PersonalPage\sub_TSV\case2/bolt_PD.MiniFEM';
+	case 'Mdl_MiniFEM' %% Exclusive Data Format
+		MdlName = '../data/Demo_Frame3D_Truss.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
-	case 'Mdl_TSV' %% ".TSV"
-		MdlName = 'D:\MyProjects\3D-TSV\data\bearing.TSV';
+    case 'Mdl_TSV' %% This is to re-do simuation of FEM models used for 3D-TSV
+		MdlName = '../data/Demo_2D.TSV';
 		CreateMdl_TSVData(MdlName);		
-	case 'Mdl_Voxel' %% ".txt"
-		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\2D\femur\femurHigh2D_R1168_B.txt';
-		CreateMdl_VoxelData(MdlName, 1);
-	case 'Mdl_TopOpti' %% ".topopti"
-		MdlName = 'D:\wSpace\2024_pp_Summary3D\figs\Chair\PSLsGuided\optimizedModel.topopti';
+    case 'Mdl_TopVoxel' %% This is for conprehensive evaluation of topology-optimized shapes from SGLDBench (low resolution)
+		MdlName = '../data/Demo_TopOpt_3D.TopVoxel';
 		extractThreshold = 0.1;
-		CreateMdl_TopOptiData(MdlName, extractThreshold);
-	case 'Mdl_TopVoxel'
-		MdlName = 'D:\wSpace\coAarhus\SGLDBench\data\timber_panel_2.TopVoxel';
-		extractThreshold = 0.1;
-		CreateMdl_TopVoxelData(MdlName, extractThreshold, 3);		
+		CreateMdl_TopVoxelData(MdlName, extractThreshold, 1);		
 	case 'Mdl_Built_in'
 		SetElement('Plane144'); %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
 		if strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Plane133')
-			CreateRectangle([200, 100], [0 0; 1 0.5]);
+			CreateRectangle([100, 50], [0 0; 1 0.5]);
 		elseif strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144')
 			CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 		else
