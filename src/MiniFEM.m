@@ -1,8 +1,9 @@
 %% ----MiniFEM----
 %% Author: Junpeng Wang  
 %% Copyright (c) All rights reserved.
-%% Create date:	24.07.2019
-%% Update date:	23.04.2021
+%% Create date:		24.07.2019
+%% Update date:		23.04.2021
+%% Release date:	13.07.2025
 %% E-mail: junpeng.wang@tum.de
 
 clear all; clc;
@@ -11,7 +12,6 @@ addpath('./Common');
 addpath('./Modeling');
 addpath('./Kernel');
 addpath('./Visualization');
-addpath('./TempTest');
 GlobalVariables;
 outPath_ = 'D:/MyProjects/MiniFEM/out/'; if ~exist(outPath_, 'dir'), mkdir(outPath_); end
 
@@ -20,10 +20,10 @@ SetMaterialProperty("Aluminium"); %% "Unit", "Steel", "Aluminium", "Concrete", "
 
 %%2. Create Geometrical Model
 tStart = tic;
-ModelingOpt = 'Mdl_TopVoxel';
+ModelingOpt = 'Mdl_MiniFEM';
 switch ModelingOpt
 	case 'Mdl_MiniFEM' %% Exclusive Data Format
-		MdlName = '../data/Demo_Frame3D_Truss.MiniFEM';
+		MdlName = '../data/Demo_Planar_Tri.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
     case 'Mdl_TSV' %% This is to re-do simuation of FEM models used for 3D-TSV
 		MdlName = '../data/Demo_2D.TSV';
