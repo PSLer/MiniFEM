@@ -23,7 +23,7 @@ tStart = tic;
 ModelingOpt = 'Mdl_MiniFEM';
 switch ModelingOpt
 	case 'Mdl_MiniFEM' %% Exclusive Data Format
-		MdlName = '../data/Demo_Planar_Tri.MiniFEM';
+		MdlName = '../data/Demo_Solid_Hex.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
     case 'Mdl_TSV' %% This is to re-do simuation of FEM models used for 3D-TSV
 		MdlName = '../data/Demo_2D.TSV';
