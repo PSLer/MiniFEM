@@ -1,13 +1,13 @@
 %%Convert the Surface Tri-mesh file in standard .ply format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = 'D:\BaiduSyncdisk\MyDataSets\TriSurfMesh_ply\3002.ply';
+ifileName = 'D:\BaiduSyncdisk\MyDataSets\TriSurfMesh_ply\femur.ply';
 oFileName = '..\..\out\Data4MiniFEM.MiniFEM';
 
 %% Read
 fid = fopen(ifileName, 'r');
 text_ply = fscanf(fid, '%s', 1);
-text_formatascii1.0 = fscanf(fid, '%s %s %s', 3); 
+text_formatascii = fscanf(fid, '%s %s %s', 3); 
 text_elementvertex = fscanf(fid, '%s %s', 2);
 numNodes_ = fscanf(fid, '%d', 1);
 text_propertyfloatx = fscanf(fid, '%s %s %s', 3); 
@@ -26,6 +26,14 @@ numNodes_ = size(nodeCoords_,1);
 numEles_ = size(eNodMat_,1);
 materialIndicatorField_ = ones(numEles_,1);
 
+edge1 = vecnorm(nodeCoords_(eNodMat_(:,1),:)-nodeCoords_(eNodMat_(:,2),:),2,2);
+edge2 = vecnorm(nodeCoords_(eNodMat_(:,1),:)-nodeCoords_(eNodMat_(:,3),:),2,2);
+edge3 = vecnorm(nodeCoords_(eNodMat_(:,2),:)-nodeCoords_(eNodMat_(:,3),:),2,2);
+edgeLgth = [edge1 edge2 edge3];
+tVarying = sum(edgeLgth, 2)/3  / 10;
+t = min(tVarying);
+shellThicknessList_ = ones(numEles_,1) .* t;
+
 %% Write
 fid = fopen(oFileName, 'w');
 fprintf(fid, '%s ', 'Version');
@@ -39,7 +47,7 @@ fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
 
 fprintf(fid, '%s ', 'Elements:');
 fprintf(fid, '%d \n', numEles_);
-fprintf(fid, '%d %d %d %d\n', [eNodMat_ materialIndicatorField_]');
+fprintf(fid, '%10d %10d %10d %10d %16.6e\n', [eNodMat_ materialIndicatorField_ shellThicknessList_]');
 
 fprintf(fid, '%s %s ', 'Node Forces:'); 
 fprintf(fid, '%d\n',0);

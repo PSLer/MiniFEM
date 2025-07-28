@@ -89,15 +89,15 @@ function val = Shell133()
 	val.nEleStressComponents = 6;
 	val.nEleGaussIntegralPoints = 3;
 	val.GaussIntegralPointsNaturalSpace = [
-		2/3		1/6		1/6
 		1/6		2/3		1/6
+		1/6		1/6		2/3
 		1/6		1/6		1/6
 	];
 end
 
 function val = Shell144()
 	%% 2.5D problem, e.g., thin-walled structure
-	%% 1st-order Quadrilateral shell element (3 nodes and 3 Gaussian integral points)
+	%% 1st-order Quadrilateral shell element (4 nodes and 4 Gaussian integral points)
 	val = ElementDescription();
 	val.eleName = 'Shell144';
 	val.nEleNodes = 4;

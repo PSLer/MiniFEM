@@ -14,6 +14,8 @@ function stressTensorAtElementCentroids = ComputeCartesianStressAtCellCentroids(
 			shapeFuncsAtCentroid = ones(1,4)/4;
 		case 'Solid188'
 			shapeFuncsAtCentroid = ones(1,8)/8;
+		case 'Shell133'
+			shapeFuncsAtCentroid = ones(1,3)/3;			
 	end
 	for ii=1:numEles_
 		iCartesianStress = carStress(eNodMat_(ii,:), :);

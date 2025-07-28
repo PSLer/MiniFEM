@@ -8,9 +8,10 @@ function ExportDatasetForTSV(varargin)
 	global fixingCond_; 
 	global loadingCond_;
 	global cartesianStressField_;
+	global cartesianStressFieldGlobal_;
 	
 	if ~(strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144') || ...
-			strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144'))
+			strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Shell133'))
 		error('Only Works with Plane133, Plane144, Solid144 and Solid188 Elements!');
 	end
 	if isempty(cartesianStressField_)
@@ -23,10 +24,19 @@ function ExportDatasetForTSV(varargin)
 			outputNodeWise = 0;
 		end
 	end
+	
 	if outputNodeWise
-		stressField2Output = cartesianStressField_;
+		if strcmp(eleType_.eleName, 'Shell133')
+			stressField2Output = cartesianStressFieldGlobal_;
+		else
+			stressField2Output = cartesianStressField_;
+		end
 	else
-		stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressField_);
+		if strcmp(eleType_.eleName, 'Shell133')
+			stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressFieldGlobal_);
+		else
+			stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressField_);
+		end
 	end	
 	
 	fileName = strcat(outPath_, 'dataset.TSV');
@@ -111,7 +121,31 @@ function ExportDatasetForTSV(varargin)
 			end
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); 
 			fprintf(fid, '%d\n', size(stressField2Output,1));
-			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', stressField2Output');			
+			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', stressField2Output');	
+		case 'Shell133'
+			fprintf(fid, '%s %s ', 'Shell Tri');
+			fprintf(fid, '%d\n', 1);
+			
+			fprintf(fid, '%s ', 'Vertices:');
+			fprintf(fid, '%d\n', numNodes_);		
+			fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
+
+			fprintf(fid, '%s ', 'Elements:');
+			fprintf(fid, '%d \n', numEles_);
+			fprintf(fid, '%d %d %d\n', eNodMat_');
+
+			fprintf(fid, '%s %s ', 'Node Forces:'); 
+			fprintf(fid, '%d\n', size(loadingCond_,1));
+			if ~isempty(loadingCond_)
+				fprintf(fid, '%d %.6e %.6e %.6e %.6e %.6e %.6e\n', loadingCond_');
+			end
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
+			if ~isempty(fixingCond_)
+				fprintf(fid, '%d\n', fixingCond_(:,1));						
+			end
+			fprintf(fid, '%s %s', 'Cartesian Stress:'); 
+			fprintf(fid, '%d\n', size(stressField2Output,1));
+			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', stressField2Output');				
 		case 'Solid188'
 			fprintf(fid, '%s %s ', 'Solid Hex');
 			fprintf(fid, '%d\n', 1);

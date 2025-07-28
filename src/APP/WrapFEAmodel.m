@@ -8,6 +8,7 @@ function WrapFEAmodel()
 	global fixingCond_; 
 	global loadingCond_;
 	global materialIndicatorField_;
+	global shellThicknessList_;
 	global diameterList_;
 	global nodState_;
 	
@@ -112,7 +113,7 @@ function WrapFEAmodel()
 
 			fprintf(fid, '%s ', 'Elements:');
 			fprintf(fid, '%d \n', numEles_);
-			fprintf(fid, '%d %d %d %d\n', [eNodMat_ materialIndicatorField_]');
+			fprintf(fid, '%d %d %d %d %e\n', [eNodMat_ materialIndicatorField_, shellThicknessList_]');
 
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
@@ -133,7 +134,7 @@ function WrapFEAmodel()
 
 			fprintf(fid, '%s ', 'Elements:');
 			fprintf(fid, '%d \n', numEles_);
-			fprintf(fid, '%d %d %d %d %d\n', [eNodMat_ materialIndicatorField_]');
+			fprintf(fid, '%d %d %d %d %d %e\n', [eNodMat_ materialIndicatorField_, shellThicknessList_]');
 
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));

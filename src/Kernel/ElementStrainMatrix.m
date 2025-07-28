@@ -1,11 +1,11 @@
-function B = ElementStrainMatrix(dShape, invJ)
+function [B, varargout] = ElementStrainMatrix(dNdPara, invJ, varargin)
 	global eleType_;
-	derivatives = invJ * dShape;
+	dNdPhy = invJ * dNdPara;
 	switch eleType_.eleName
 		case 'Plane133'
-			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);
-			dNds2 = derivatives(3,:);	dNdt2 = derivatives(4,:);
-			dNds3 = derivatives(5,:);	dNdt3 = derivatives(6,:);
+			dNds1 = dNdPhy(1,:);	dNdt1 = dNdPhy(2,:);
+			dNds2 = dNdPhy(3,:);	dNdt2 = dNdPhy(4,:);
+			dNds3 = dNdPhy(5,:);	dNdt3 = dNdPhy(6,:);
 			
 			B11 = [dNds1(1) 0; 0 dNdt1(1); dNdt1(1) dNds1(1)];
 			B12 = [dNds1(2) 0; 0 dNdt1(2); dNdt1(2) dNds1(2)];
@@ -25,10 +25,10 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B31 B32 B33
 			];
 		case 'Plane144'
-			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);
-			dNds2 = derivatives(3,:);	dNdt2 = derivatives(4,:);
-			dNds3 = derivatives(5,:);	dNdt3 = derivatives(6,:);
-			dNds4 = derivatives(7,:);	dNdt4 = derivatives(8,:);
+			dNds1 = dNdPhy(1,:);	dNdt1 = dNdPhy(2,:);
+			dNds2 = dNdPhy(3,:);	dNdt2 = dNdPhy(4,:);
+			dNds3 = dNdPhy(5,:);	dNdt3 = dNdPhy(6,:);
+			dNds4 = dNdPhy(7,:);	dNdt4 = dNdPhy(8,:);
 			
 			B11 = [dNds1(1) 0; 0 dNdt1(1); dNdt1(1) dNds1(1)];
 			B12 = [dNds1(2) 0; 0 dNdt1(2); dNdt1(2) dNds1(2)];
@@ -57,10 +57,10 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B41 B42 B43 B44
 			];	
 		case 'Solid144'
-			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);	dNdp1 = derivatives(3,:);
-			dNds2 = derivatives(4,:);	dNdt2 = derivatives(5,:);	dNdp2 = derivatives(6,:);
-			dNds3 = derivatives(7,:);	dNdt3 = derivatives(8,:);	dNdp3 = derivatives(9,:);	
-			dNds4 = derivatives(10,:);	dNdt4 = derivatives(11,:);	dNdp4 = derivatives(12,:);	
+			dNds1 = dNdPhy(1,:);	dNdt1 = dNdPhy(2,:);	dNdp1 = dNdPhy(3,:);
+			dNds2 = dNdPhy(4,:);	dNdt2 = dNdPhy(5,:);	dNdp2 = dNdPhy(6,:);
+			dNds3 = dNdPhy(7,:);	dNdt3 = dNdPhy(8,:);	dNdp3 = dNdPhy(9,:);	
+			dNds4 = dNdPhy(10,:);	dNdt4 = dNdPhy(11,:);	dNdp4 = dNdPhy(12,:);	
 			
 			B1_1 = [dNds1(1) 0 0; 0 dNdt1(1) 0; 0 0 dNdp1(1); 0 dNdp1(1) dNdt1(1); dNdp1(1) 0 dNds1(1); dNdt1(1) dNds1(1) 0];			
 			B1_2 = [dNds1(2) 0 0; 0 dNdt1(2) 0; 0 0 dNdp1(2); 0 dNdp1(2) dNdt1(2); dNdp1(2) 0 dNds1(2); dNdt1(2) dNds1(2) 0];			
@@ -89,14 +89,14 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B4_1 B4_2 B4_3 B4_4	
 			];
 		case 'Solid188'
-			dNds1 = derivatives(1,:);	dNdt1 = derivatives(2,:);	dNdp1 = derivatives(3,:);
-			dNds2 = derivatives(4,:);	dNdt2 = derivatives(5,:);	dNdp2 = derivatives(6,:);
-			dNds3 = derivatives(7,:);	dNdt3 = derivatives(8,:);	dNdp3 = derivatives(9,:);	
-			dNds4 = derivatives(10,:);	dNdt4 = derivatives(11,:);	dNdp4 = derivatives(12,:);	
-			dNds5 = derivatives(13,:);	dNdt5 = derivatives(14,:);	dNdp5 = derivatives(15,:);	
-			dNds6 = derivatives(16,:);	dNdt6 = derivatives(17,:);	dNdp6 = derivatives(18,:);	
-			dNds7 = derivatives(19,:);	dNdt7 = derivatives(20,:);	dNdp7 = derivatives(21,:);
-			dNds8 = derivatives(22,:);	dNdt8 = derivatives(23,:);	dNdp8 = derivatives(24,:);
+			dNds1 = dNdPhy(1,:);	dNdt1 = dNdPhy(2,:);	dNdp1 = dNdPhy(3,:);
+			dNds2 = dNdPhy(4,:);	dNdt2 = dNdPhy(5,:);	dNdp2 = dNdPhy(6,:);
+			dNds3 = dNdPhy(7,:);	dNdt3 = dNdPhy(8,:);	dNdp3 = dNdPhy(9,:);	
+			dNds4 = dNdPhy(10,:);	dNdt4 = dNdPhy(11,:);	dNdp4 = dNdPhy(12,:);	
+			dNds5 = dNdPhy(13,:);	dNdt5 = dNdPhy(14,:);	dNdp5 = dNdPhy(15,:);	
+			dNds6 = dNdPhy(16,:);	dNdt6 = dNdPhy(17,:);	dNdp6 = dNdPhy(18,:);	
+			dNds7 = dNdPhy(19,:);	dNdt7 = dNdPhy(20,:);	dNdp7 = dNdPhy(21,:);
+			dNds8 = dNdPhy(22,:);	dNdt8 = dNdPhy(23,:);	dNdp8 = dNdPhy(24,:);
 			
 			B1_1 = [dNds1(1) 0 0; 0 dNdt1(1) 0; 0 0 dNdp1(1); 0 dNdp1(1) dNdt1(1); dNdp1(1) 0 dNds1(1); dNdt1(1) dNds1(1) 0];			
 			B1_2 = [dNds1(2) 0 0; 0 dNdt1(2) 0; 0 0 dNdp1(2); 0 dNdp1(2) dNdt1(2); dNdp1(2) 0 dNds1(2); dNdt1(2) dNds1(2) 0];			
@@ -181,8 +181,60 @@ function B = ElementStrainMatrix(dShape, invJ)
 				B8_1 B8_2 B8_3 B8_4 B8_5 B8_6 B8_7 B8_8		
 			];		
 		case 'Shell133'
-
+			nargout = 3;
+			% MEMBRANE B-matrix
+			Bm = zeros(9, 18);
+			nGP = 3;
+			for jj=1:3
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+				for ii = 1:nGP
+					Bi = zeros(3,6);
+					Bi(1,1) = idNdPhy(1,ii);
+					Bi(2,2) = idNdPhy(2,ii);
+					Bi(3,1) = idNdPhy(2,ii); 
+					Bi(3,2) = idNdPhy(1,ii);
+					iBm(:,(ii-1)*6+1:(ii-1)*6+6) = Bi;
+				end
+				Bm(3*(jj-1)+1:3*jj,:) = iBm;
+			end			
 			
+			% BENDING B-matrix
+			Bb = zeros(9, 18);
+			for jj=1:3
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+				for i = 1:3
+					Bi = zeros(3,6);
+					Bi(1,5) = idNdPhy(1,i);  % dθy/dx
+					Bi(2,4) = -idNdPhy(2,i); % dθx/dy
+					Bi(3,4) = -idNdPhy(1,i); % dθx/dx
+					Bi(3,5) = idNdPhy(2,i);  % dθy/dy
+					iBb(:,(i-1)*6+1:(i-1)*6+6) = Bi;
+				end
+				Bb(3*(jj-1)+1:3*jj,:) = iBb;
+			end	
+			
+			% SHEAR B-matrix
+			N = varargin{1};
+			Bs = zeros(6, 18);
+			idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+			for jj=1:3
+				iBs = zeros(2, 18);
+				iN = N(jj,:);
+				for i = 1:3
+					Bi = zeros(2,6);
+					Ni = iN(i);
+					Bi(1,3) = idNdPhy(1,i);
+					Bi(1,4) = Ni;
+					Bi(2,3) = idNdPhy(2,i);
+					Bi(2,5) = Ni;
+					iBs(:,(i-1)*6+1:(i-1)*6+6) = Bi;
+				end
+				Bs(2*(jj-1)+1:2*jj,:) = iBs;
+			end
+			
+			B = Bm;
+			varargout{1} = Bb;
+			varargout{2} = Bs;
 		case 'Shell144'
 
 			

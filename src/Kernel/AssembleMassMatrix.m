@@ -9,6 +9,9 @@ function AssembleMassMatrix()
 	global shapeFuncs_;
 	global detJ_;
 	global materialIndicatorField_;
+	global shellThicknessList_;
+	global align2GlobalFrame_;
+	global shellAreaList_;
 	
 	global M_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
@@ -217,7 +220,42 @@ function AssembleMassMatrix()
 				end						
 			end
 		case 'Shell133'
-			error('Not supported yet!');
+			dimM = 18;
+			rowMat = (1:dimM)'; rowMat = repmat(rowMat, 1, dimM);
+			colMat = (1:dimM); colMat = repmat(colMat, dimM, 1);
+			valMat = (1:dimM^2)'; valMat = reshape(valMat, dimM, dimM);
+			eMi = tril(rowMat); [~, ~, eMi] = find(eMi);
+			eMj = tril(colMat); [~, ~, eMj] = find(eMj);
+			eMm = tril(valMat); [~, ~, eMm] = find(eMm);			
+			w = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
+			gaussPts = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
+			N = ShapeFunction(gaussPts);
+			Nu = zeros(9, 18);
+			Nr = zeros(9, 18);
+			for kk = 1:3
+				for jj = 1:3
+					Ni = N(kk, jj);
+					Nu((kk-1)*3+1:kk*3,(jj-1)*6 + (1:3)) = Ni * eye(3);
+					Nr((kk-1)*3+1:kk*3,(jj-1)*6 + (4:6)) = Ni * eye(3);
+				end				
+			end
+			sM = zeros(numel(eMm), numEles_);
+			for ii=1:numEles_
+				t = shellThicknessList_(ii);
+				irho = material_(materialIndicatorField_(ii)).density;
+				wgt = w(:)*shellAreaList_(ii);
+				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', numel(wgt1), 1);
+				Me = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt1.*Nr));
+				R = align2GlobalFrame_(:,:,ii);
+				TransMap = blkdiag(R, R); % 3×3 block diagonal
+				T18 = blkdiag(TransMap, TransMap, TransMap); % 18×18
+				Me = T18' * Me * T18;			
+				sM(:,ii) = Me(eMm);										
+			end
+			iM = eDofMat_(:,eMi)';
+			jM = eDofMat_(:,eMj)';
+			tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
+			M_ = tmpM + tmpM' - diag(diag(tmpM));				
 		case 'Shell144'
 			error('Not supported yet!');
 		case 'Truss122'

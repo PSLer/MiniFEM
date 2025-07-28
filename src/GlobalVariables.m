@@ -18,6 +18,7 @@ global diameterList_;
 global meshQualityJacobianRatio_;
 global freeDOFs_; freeDOFs_ = [];
 global materialIndicatorField_; materialIndicatorField_ = [];
+global shellThicknessList_; shellThicknessList_ = [];
 global K_;
 global M_;
 global F_;
@@ -30,6 +31,7 @@ global maxIT_; maxIT_ = 20000;
 %% Output
 global U_; U_ = [];
 global cartesianStressField_; cartesianStressField_ = [];
+global cartesianStressField_ShellBend_; cartesianStressField_ShellBend_ = [];
 global vonMisesStressField_; vonMisesStressField_ = [];
 global principalStressField_; principalStressField_ = [];
 global naturalFrequencyList_; naturalFrequencyList_ = [];

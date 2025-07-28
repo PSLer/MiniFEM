@@ -106,7 +106,51 @@ function ShowCyclicalVibration(amp, scalingFac, style, outPutType, varargin)
 			set(hGlyph, 'visible', 'off');			
 		end
 	elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
-	
+		camproj('perspective');	
+		amp = reshape(amp, 6, numNodes_)';
+		amp = amp (:,1:3);
+		for ii=1:nFrame
+			disp(['Progress: ' sprintf('%6i',ii) ' Total.: ' sprintf('%6i',nFrame)]);
+			srcField = real(amp*exp(1i*2*pi*ii/nFrame));
+			deformedMeshCoords = nodeCoords_+scalingFac*srcField;
+			xPatchs = deformedMeshCoords(:,1); xPatchs = xPatchs(eNodMat_');
+			yPatchs = deformedMeshCoords(:,2); yPatchs = yPatchs(eNodMat_');
+			zPatchs = deformedMeshCoords(:,3); zPatchs = zPatchs(eNodMat_');
+			cPatchs = vecnorm(srcField,2,2); cPatchs = cPatchs(eNodMat_');
+			
+			hGlyph = patch(xPatchs, yPatchs, zPatchs, cPatchs);	
+			if 1==style
+				colormap('jet'); set(hGlyph, 'FaceColor', 'Interp', 'FaceAlpha', 1, 'EdgeColor', 'None');
+			elseif 2==style
+				set(hGlyph, 'FaceColor', DelightfulColors('Default'), 'FaceAlpha', 1, 'EdgeColor', 'None');
+			else
+				error('Wrong Input!');
+			end
+			if 1==ii
+				view(3); camzoom(cameraZoomScaling);
+				axis vis3d;
+				disp('Adjust the Posture of the Object for better Presentation!');
+				pause;
+            end		
+			lighting('gouraud');
+			material('dull');			
+			hdLight = camlight('headlight','infinite');
+			f = getframe(1);
+			
+			if strcmp(outPutType, 'Animation')
+				im = frame2im(f);
+				[imind, cm] = rgb2ind(im, 256);
+				if ii == 1
+					imwrite(imind, cm, fileName, 'gif', 'Loopcount', inf, 'DelayTime', 0.1);
+				else
+					imwrite(imind, cm, fileName, 'gif', 'writeMode', 'append', 'DelayTime', 0.1);
+				end			
+			else
+				writeVideo(v,f);
+			end
+			set(hGlyph, 'visible', 'off');
+			set(hdLight,'visible','off');
+		end	
 	end
 	close(hF);
 	if strcmp(outPutType, 'Video'), close(v); end
