@@ -245,11 +245,11 @@ function AssembleMassMatrix()
 				irho = material_(materialIndicatorField_(ii)).density;
 				wgt = w(:)*shellAreaList_(ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', numel(wgt1), 1);
-				Me = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt1.*Nr));
+				MeLocal = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt1.*Nr));
 				R = align2GlobalFrame_(:,:,ii);
 				TransMap = blkdiag(R, R); % 3×3 block diagonal
 				T18 = blkdiag(TransMap, TransMap, TransMap); % 18×18
-				Me = T18' * Me * T18;			
+				Me = T18' * MeLocal * T18;			
 				sM(:,ii) = Me(eMm);										
 			end
 			iM = eDofMat_(:,eMi)';

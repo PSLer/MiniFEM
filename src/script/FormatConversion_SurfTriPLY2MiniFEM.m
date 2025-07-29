@@ -1,7 +1,7 @@
 %%Convert the Surface Tri-mesh file in standard .ply format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = 'D:\BaiduSyncdisk\MyDataSets\TriSurfMesh_ply\femur.ply';
+ifileName = 'D:\BaiduSyncdisk\MyDataSets\TriSurfMesh_ply\vase_reconstructed.ply';
 oFileName = '..\..\out\Data4MiniFEM.MiniFEM';
 
 %% Read

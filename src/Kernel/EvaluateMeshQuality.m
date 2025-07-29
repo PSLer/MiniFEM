@@ -130,13 +130,14 @@ function EvaluateMeshQuality()
 				iEleCoords = nodeCoords_(eNodMat_(ii,:),:);
 				v1 = iEleCoords(2,:) - iEleCoords(1,:);
 				v2 = iEleCoords(3,:) - iEleCoords(1,:);
-				normal = cross(v1, v2); normal = normal / norm(normal);
+				origin = iEleCoords(1,:);
 				e1 = v1 / norm(v1);
-				e3 = normal;
+				e3 = cross(v1, v2); e3 = e3 / norm(e3);
 				e2 = cross(e3, e1);
-				R = [e1; e2; e3]; % Global to local frame
+				R = [e1(:), e2(:), e3(:)]; % use columns = basis vectors, i.e. local-to-global
 				align2GlobalFrame_(:,:,ii) = R;
-				xl = iEleCoords * R';
+				xl = R' * (iEleCoords - origin)';
+				xl = xl';
 				shellAreaList_(ii) = 0.5 * norm(cross(xl(2,:) - xl(1,:), xl(3,:) - xl(1,:)));
 				for jj=1:nEGIP
 					% Shape functions
