@@ -19,7 +19,9 @@ function AssembleStiffnessMatrix()
 	global eleLengthList_;
 	global materialIndicatorField_;
 	global shellThicknessList_;
+    global shellAreaList_;
 	global align2GlobalFrame_;
+	global Tlist_;
 	global Ke_;
 	global K_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
@@ -252,39 +254,47 @@ function AssembleStiffnessMatrix()
 					K_ = K_ + tmpK;
 				end							
 			end
-		case 'Shell133'			
+		case 'Shell133'
 			w = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
 			gaussPts = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussPts);
 			matrixD_ = struct('arr', sparse(3*3,3*3)); matrixD_ = repmat(matrixD_, 1, 1, numEles_); %%Membrane
 			matrixDb_ = struct('arr', sparse(3*3,3*3)); matrixDb_ = repmat(matrixDb_, 1, 1, numEles_); %%Bending
 			matrixDs_ = struct('arr', sparse(2*3,2*3)); matrixDs_ = repmat(matrixDs_, 1, 1, numEles_); %%Shear
+			Tlist_ = zeros(18,18,numEles_);
 			sK = zeros(numEntries, numEles_);
 			for ii=1:numEles_
+                E = material_(materialIndicatorField_(ii)).modulus;
+                nu = material_(materialIndicatorField_(ii)).poissonRatio;
 				t = shellThicknessList_(ii);
+                A = shellAreaList_(ii);
 				[iMatrixBm, iMatrixBb, iMatrixBs] = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr, N);
-				[iMatrixDm, iMatrixDb, iMatrixDs] = ElementElasticityMatrix(material_(materialIndicatorField_(ii)).modulus, ...
-					material_(materialIndicatorField_(ii)).poissonRatio, t);
+				[iMatrixDm, iMatrixDb, iMatrixDs] = ElementElasticityMatrix(E, nu, t);
 				matrixD_(ii).arr = iMatrixDm;
 				matrixDb_(ii).arr = iMatrixDb;
 				matrixDs_(ii).arr = iMatrixDs;
 				wgt = w(:).*detJ_(:,ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', 1, numel(wgt1));
 				wgt2 = repmat(wgt, 1, 2); wgt2 = reshape(wgt2', 1, numel(wgt2));
-				KeLocal = (iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm + ...
-					iMatrixBb' * (iMatrixDb.*wgt1) * iMatrixBb + ...
-						t^2 * iMatrixBs' * (iMatrixDs.*wgt2) * iMatrixBs)  * t;
+				K_mem_local = iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm* t;
+				K_ben_local = iMatrixBb' * (iMatrixDb.*wgt1) * iMatrixBb;
+				K_shear_local = iMatrixBs' * (iMatrixDs.*wgt2) * iMatrixBs;
+                alpha = 1.0e-3;
+                kdr = alpha * E * t * A;
+                K_drill_local = zeros(18,18);
+                K_drill_local(6,6) = kdr/3; K_drill_local(12,12) = kdr/3; K_drill_local(18,18) = kdr/3;
+				KeLocal = K_mem_local + K_ben_local + K_shear_local + K_drill_local;
 				R = align2GlobalFrame_(:,:,ii);
 				TransMap = blkdiag(R, R); % 3×3 block diagonal
 				T18 = blkdiag(TransMap, TransMap, TransMap); % 18×18
-				Ke = T18' * KeLocal * T18;
-				eKs = Ke(eKk);			
-				sK(:,ii) = eKs;							
+				Tlist_(:,:,ii) = T18;
+				Ke = T18 * KeLocal * T18';
+				eKs = Ke(eKk); sK(:,ii) = eKs;
 			end
 			iK = eDofMat_(:,eKi)';
 			jK = eDofMat_(:,eKj)';
 			tmpK = sparse(iK, jK, sK, numDOFs_, numDOFs_);
-			K_ = tmpK + tmpK' - diag(diag(tmpK));			
+			K_ = tmpK + tmpK' - diag(diag(tmpK));		
 		case 'Shell144'
 		
 		case 'Truss122'

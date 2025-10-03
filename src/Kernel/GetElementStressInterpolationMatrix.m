@@ -65,11 +65,19 @@ function Ns = GetElementStressInterpolationMatrix()
 		case 'Shell133'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussIPs);
+if 0 %% Local	
 			Ns = sparse(9,9);
 			ii = 3*(1:3);
 			Ns(1,ii-2) = N(1,:); Ns(2,ii-1) = N(1,:); Ns(3,ii) = N(1,:);
-			Ns(4,ii-2) = N(2,:); Ns(5,ii-1) = N(2,:);	Ns(6,ii) = N(2,:);	
-			Ns(7,ii-2) = N(3,:); Ns(8,ii-1) = N(3,:); Ns(9,ii) = N(3,:);				
+			Ns(4,ii-2) = N(2,:); Ns(5,ii-1) = N(2,:); Ns(6,ii) = N(2,:);	
+			Ns(7,ii-2) = N(3,:); Ns(8,ii-1) = N(3,:); Ns(9,ii) = N(3,:);
+else %% Global
+			Ns = sparse(18,18);
+			ii = 6*(1:3);
+			Ns(1,ii-5) = N(1,:); Ns(2,ii-4) = N(1,:); Ns(3,ii-3) = N(1,:); Ns(4,ii-2) = N(1,:); Ns(5,ii-1) = N(1,:); Ns(6,ii) = N(1,:);
+			Ns(7,ii-5) = N(2,:); Ns(8,ii-4) = N(2,:); Ns(9,ii-3) = N(2,:); Ns(10,ii-2) = N(2,:); Ns(11,ii-1) = N(2,:); Ns(12,ii) = N(2,:);
+			Ns(13,ii-5) = N(3,:); Ns(14,ii-4) = N(3,:); Ns(15,ii-3) = N(3,:); Ns(16,ii-2) = N(3,:); Ns(17,ii-1) = N(3,:); Ns(18,ii) = N(3,:);
+end			
 		case 'Shell144'
 			gaussIPs = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussIPs);

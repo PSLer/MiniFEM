@@ -204,10 +204,10 @@ function [B, varargout] = ElementStrainMatrix(dNdPara, invJ, varargin)
 				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
 				for i = 1:3
 					Bi = zeros(3,6);
-					Bi(1,5) = idNdPhy(1,i);  % dθy/dx
-					Bi(2,4) = -idNdPhy(2,i); % dθx/dy
-					Bi(3,4) = -idNdPhy(1,i); % dθx/dx
-					Bi(3,5) = idNdPhy(2,i);  % dθy/dy
+					Bi(1,4) = idNdPhy(1,i);  % dθy/dx
+					Bi(2,5) = idNdPhy(2,i); % dθx/dy
+					Bi(3,4) = idNdPhy(2,i); % dθx/dy
+					Bi(3,5) = idNdPhy(1,i);  % dθy/dx
 					iBb(:,(i-1)*6+1:(i-1)*6+6) = Bi;
 				end
 				Bb(3*(jj-1)+1:3*jj,:) = iBb;

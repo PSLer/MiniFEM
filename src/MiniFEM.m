@@ -23,7 +23,7 @@ tStart = tic;
 ModelingOpt = 'Mdl_MiniFEM';
 switch ModelingOpt
 	case 'Mdl_MiniFEM' %% Exclusive Data Format
-		MdlName = '../data/Demo_Shell_Tri2.MiniFEM';
+		MdlName = '../data/Demo_Shell_Tri.MiniFEM';
 		CreateMdl_ExclusiveFormat(MdlName);
     case 'Mdl_TSV' %% This is to re-do simuation of FEM models used for 3D-TSV
 		MdlName = '../data/Demo_2D.TSV';
@@ -35,7 +35,7 @@ switch ModelingOpt
 	case 'Mdl_Built_in'
 		SetElement('Plane144'); %% 'Plane144', 'Plane133', 'Solid188', 'Solid144'
 		if strcmp(eleType_.eleName, 'Plane144') || strcmp(eleType_.eleName, 'Plane133')
-			CreateRectangle([100, 50], [0 0; 1 0.5]);
+			CreateRectangle([100, 100], [0 0; 1 1]);
 		elseif strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144')
 			CreateCuboid([40, 20, 20], [0 0 0; 1 0.5 0.5]);
 		else

@@ -94,12 +94,14 @@ function [HLm, HLb, HLs] = HookeLaw_SHELL(E, nu, t)
 	];
 	%% Bending
 	%% t: Shell Thickness
-	HLb = E*t^2/(12*(1-nu^2))*[
+	HLb = E*t^3/(12*(1-nu^2))*[
 		1	nu	0
 		nu	1	0
 		0	0	(1 - nu)/2
 	];
 	%% Shear
 	kappa = 5/6;
-	HLs = kappa*E/(2*(1+nu))*eye(2);	
+	Gs = E/(2*(1+nu));
+	% HLs = kappa*E/(2*(1+nu))*eye(2);
+	HLs = kappa * Gs * t * eye(2);
 end

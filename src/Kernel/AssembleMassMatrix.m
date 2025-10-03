@@ -12,7 +12,7 @@ function AssembleMassMatrix()
 	global shellThicknessList_;
 	global align2GlobalFrame_;
 	global shellAreaList_;
-	
+	global Tlist_;
 	global M_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
 	tStart = tic;
@@ -231,25 +231,25 @@ function AssembleMassMatrix()
 			gaussPts = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussPts);
 			Nu = zeros(9, 18);
-			Nr = zeros(9, 18);
+			Nr = zeros(6, 18);
 			for kk = 1:3
 				for jj = 1:3
 					Ni = N(kk, jj);
 					Nu((kk-1)*3+1:kk*3,(jj-1)*6 + (1:3)) = Ni * eye(3);
-					Nr((kk-1)*3+1:kk*3,(jj-1)*6 + (4:6)) = Ni * eye(3);
+					Nr((kk-1)*2+1:kk*2,(jj-1)*6 + (4:5)) = Ni * eye(2);
 				end				
 			end
 			sM = zeros(numel(eMm), numEles_);
 			for ii=1:numEles_
 				t = shellThicknessList_(ii);
 				irho = material_(materialIndicatorField_(ii)).density;
-				wgt = w(:)*shellAreaList_(ii);
+				% wgt = w(:)*shellAreaList_(ii);
+                wgt = w(:).*detJ_(:,ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', numel(wgt1), 1);
-				MeLocal = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt1.*Nr));
-				R = align2GlobalFrame_(:,:,ii);
-				TransMap = blkdiag(R, R); % 3×3 block diagonal
-				T18 = blkdiag(TransMap, TransMap, TransMap); % 18×18
-				Me = T18' * MeLocal * T18;			
+				wgt2 = repmat(wgt, 1, 2); wgt2 = reshape(wgt2', numel(wgt2), 1);
+				MeLocal = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt2.*Nr));
+                T18 = Tlist_(:,:,ii);
+				Me = T18 * MeLocal * T18';			
 				sM(:,ii) = Me(eMm);										
 			end
 			iM = eDofMat_(:,eMi)';

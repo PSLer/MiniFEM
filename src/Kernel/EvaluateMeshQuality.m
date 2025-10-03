@@ -115,7 +115,7 @@ function EvaluateMeshQuality()
 				end				
 			end
 		case 'Shell133'
-			warning('Still under Debugging!!!');
+			% warning('Still under Debugging!!!');
 			nEGIP = eleType_.nEleGaussIntegralPoints;
 			gaussPts = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
 			N = ShapeFunction(gaussPts);
@@ -126,19 +126,28 @@ function EvaluateMeshQuality()
 			detJ_ = repmat(iDetJ,1,numEles_);
 			align2GlobalFrame_ = zeros(3,3,numEles_);
 			shellAreaList_ = zeros(numEles_,1);
+			implOld = 0;
 			for ii=1:numEles_
 				iEleCoords = nodeCoords_(eNodMat_(ii,:),:);
-				v1 = iEleCoords(2,:) - iEleCoords(1,:);
-				v2 = iEleCoords(3,:) - iEleCoords(1,:);
-				origin = iEleCoords(1,:);
-				e1 = v1 / norm(v1);
-				e3 = cross(v1, v2); e3 = e3 / norm(e3);
-				e2 = cross(e3, e1);
-				R = [e1(:), e2(:), e3(:)]; % use columns = basis vectors, i.e. local-to-global
+				if implOld
+					v1 = iEleCoords(2,:) - iEleCoords(1,:);
+					v2 = iEleCoords(3,:) - iEleCoords(1,:);
+					origin = iEleCoords(1,:);
+					e1 = v1 / norm(v1);
+					e3 = cross(v1, v2); e3 = e3 / norm(e3);
+					e2 = cross(e3, e1);
+					R = [e1(:), e2(:), e3(:)]; % use columns = basis vectors, i.e. local-to-global
+				else
+					[R, origin, t1, t2] = ComputeLocalFrameAtGivenPosition([1/3 1/3], iEleCoords);
+				end
 				align2GlobalFrame_(:,:,ii) = R;
-				xl = R' * (iEleCoords - origin)';
-				xl = xl';
-				shellAreaList_(ii) = 0.5 * norm(cross(xl(2,:) - xl(1,:), xl(3,:) - xl(1,:)));
+				if implOld
+					xl = R' * (iEleCoords - origin)';					
+				else
+					xl = GlobalFrame2Local_Coords(iEleCoords, R, origin, 1);
+				end
+				% xl = xl';
+				% shellAreaList_(ii) = 0.5 * norm(cross(xl(2,:) - xl(1,:), xl(3,:) - xl(1,:)));
 				for jj=1:nEGIP
 					% Shape functions
 					iN = N(jj,:);
@@ -148,7 +157,8 @@ function EvaluateMeshQuality()
 					J = idNdPara * xl(:,1:2);
 					detJ_(jj,ii) = det(J);
 					invJ_(ii).arr(2*(jj-1)+1:2*jj,2*(jj-1)+1:2*jj) = inv(J);
-				end
+                end
+                shellAreaList_(ii) = 0.5*detJ_(1,ii);
 			end
 			meshQualityJacobianRatio_ = ones(numEles_,1);
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,3 +202,5 @@ function EvaluateMeshQuality()
 			% end		
 	end
 end
+
+

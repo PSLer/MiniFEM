@@ -17,7 +17,7 @@ function ExportDatasetForTSV(varargin)
 	if isempty(cartesianStressField_)
 		warning('No Cartesian Stress Available!'); return;
 	end
-
+	versionID = 2.0;
 	outputNodeWise = 1;
 	if 1==nargin
 		if varargin{1} %%Element-wise Stress Field
@@ -28,12 +28,14 @@ function ExportDatasetForTSV(varargin)
 	if outputNodeWise
 		if strcmp(eleType_.eleName, 'Shell133')
 			stressField2Output = cartesianStressFieldGlobal_;
+			versionID = 3.0;
 		else
 			stressField2Output = cartesianStressField_;
 		end
 	else
 		if strcmp(eleType_.eleName, 'Shell133')
-			stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressFieldGlobal_);
+			% stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressFieldGlobal_);
+			error('Un-supported!');
 		else
 			stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressField_);
 		end
@@ -42,7 +44,7 @@ function ExportDatasetForTSV(varargin)
 	fileName = strcat(outPath_, 'dataset.TSV');
 	fid = fopen(fileName, 'w');
 	fprintf(fid, '%s ', 'Version');
-	fprintf(fid, '%.1f\n', 2.0);
+	fprintf(fid, '%.1f\n', versionID);
 	if outputNodeWise
 		fprintf(fid, '%s %s %s %s', 'Stress Data Type: NODE'); fprintf(fid, '\n');
 	else
@@ -123,8 +125,9 @@ function ExportDatasetForTSV(varargin)
 			fprintf(fid, '%d\n', size(stressField2Output,1));
 			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', stressField2Output');	
 		case 'Shell133'
-			fprintf(fid, '%s %s ', 'Shell Tri');
+			fprintf(fid, '%s %s ', 'Shell');
 			fprintf(fid, '%d\n', 1);
+			fprintf(fid, '%s %s ', 'Frame: GLOBAL'); fprintf(fid, '\n');
 			
 			fprintf(fid, '%s ', 'Vertices:');
 			fprintf(fid, '%d\n', numNodes_);		
@@ -132,7 +135,7 @@ function ExportDatasetForTSV(varargin)
 
 			fprintf(fid, '%s ', 'Elements:');
 			fprintf(fid, '%d \n', numEles_);
-			fprintf(fid, '%d %d %d\n', eNodMat_');
+			fprintf(fid, '%d %d %d %d\n', [3*ones(size(eNodMat_,1),1) eNodMat_]');
 
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));
@@ -141,7 +144,7 @@ function ExportDatasetForTSV(varargin)
 			end
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
 			if ~isempty(fixingCond_)
-				fprintf(fid, '%d\n', fixingCond_(:,1));						
+				fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');						
 			end
 			fprintf(fid, '%s %s', 'Cartesian Stress:'); 
 			fprintf(fid, '%d\n', size(stressField2Output,1));

@@ -23,6 +23,11 @@ global K_;
 global M_;
 global F_;
 
+%% Shell Ana.
+global refVec_; refVec_ = [1 0 0];
+global refVecFallback_; refVecFallback_ = [0 0 1];
+global tolRefVecFallback_; tolRefVecFallback_ = 1.0e-6;
+
 %% Solving Opt
 global GPU_; GPU_ = 'ON';				
 global tol_; tol_ = 1.0e-6;
