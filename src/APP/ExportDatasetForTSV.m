@@ -8,10 +8,10 @@ function ExportDatasetForTSV(varargin)
 	global fixingCond_; 
 	global loadingCond_;
 	global cartesianStressField_;
-	global cartesianStressFieldGlobal_;
 	
 	if ~(strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144') || ...
-			strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Shell133'))
+			strcmp(eleType_.eleName, 'Solid188') || strcmp(eleType_.eleName, 'Solid144') || ...
+				strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144'))
 		error('Only Works with Plane133, Plane144, Solid144 and Solid188 Elements!');
 	end
 	if isempty(cartesianStressField_)
@@ -26,15 +26,12 @@ function ExportDatasetForTSV(varargin)
 	end
 	
 	if outputNodeWise
-		if strcmp(eleType_.eleName, 'Shell133')
-			stressField2Output = cartesianStressFieldGlobal_;
+		stressField2Output = cartesianStressField_;
+		if strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
 			versionID = 3.0;
-		else
-			stressField2Output = cartesianStressField_;
 		end
 	else
 		if strcmp(eleType_.eleName, 'Shell133')
-			% stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressFieldGlobal_);
 			error('Un-supported!');
 		else
 			stressField2Output = ComputeCartesianStressAtCellCentroids(cartesianStressField_);
@@ -136,6 +133,31 @@ function ExportDatasetForTSV(varargin)
 			fprintf(fid, '%s ', 'Elements:');
 			fprintf(fid, '%d \n', numEles_);
 			fprintf(fid, '%d %d %d %d\n', [3*ones(size(eNodMat_,1),1) eNodMat_]');
+
+			fprintf(fid, '%s %s ', 'Node Forces:'); 
+			fprintf(fid, '%d\n', size(loadingCond_,1));
+			if ~isempty(loadingCond_)
+				fprintf(fid, '%d %.6e %.6e %.6e %.6e %.6e %.6e\n', loadingCond_');
+			end
+			fprintf(fid, '%s %s ', 'Fixed Nodes:'); fprintf(fid, '%d\n', size(fixingCond_,1));
+			if ~isempty(fixingCond_)
+				fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');						
+			end
+			fprintf(fid, '%s %s', 'Cartesian Stress:'); 
+			fprintf(fid, '%d\n', size(stressField2Output,1));
+			fprintf(fid, '%.6e %.6e %.6e %.6e %.6e %.6e\n', stressField2Output');
+		case 'Shell144'
+			fprintf(fid, '%s %s ', 'Shell');
+			fprintf(fid, '%d\n', 1);
+			fprintf(fid, '%s %s ', 'Frame: GLOBAL'); fprintf(fid, '\n');
+			
+			fprintf(fid, '%s ', 'Vertices:');
+			fprintf(fid, '%d\n', numNodes_);		
+			fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
+
+			fprintf(fid, '%s ', 'Elements:');
+			fprintf(fid, '%d \n', numEles_);
+			fprintf(fid, '%d %d %d %d %d\n', [4*ones(size(eNodMat_,1),1) eNodMat_]');
 
 			fprintf(fid, '%s %s ', 'Node Forces:'); 
 			fprintf(fid, '%d\n', size(loadingCond_,1));

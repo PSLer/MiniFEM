@@ -12,7 +12,7 @@ function flag = ModeAnalysis(numModalModes, varargin)
 			climactericDOF = 2.0e6;
 		elseif strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
 			climactericDOF = 2.0e5;
-		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell133')
+		elseif strcmp(eleType_.eleName, 'Shell133') || strcmp(eleType_.eleName, 'Shell144')
 			climactericDOF = 1.0e6;
 		end
 		if numDOFs_>climactericDOF

@@ -216,8 +216,8 @@ function [B, varargout] = ElementStrainMatrix(dNdPara, invJ, varargin)
 			% SHEAR B-matrix
 			N = varargin{1};
 			Bs = zeros(6, 18);
-			idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
 			for jj=1:3
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
 				iBs = zeros(2, 18);
 				iN = N(jj,:);
 				for i = 1:3
@@ -236,7 +236,60 @@ function [B, varargout] = ElementStrainMatrix(dNdPara, invJ, varargin)
 			varargout{1} = Bb;
 			varargout{2} = Bs;
 		case 'Shell144'
-
+			nargout = 3;
+			% MEMBRANE B-matrix
+			Bm = zeros(12, 24);
+			nNode = 4;
+			nGP = 4;
+			for jj=1:nNode
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+				for ii = 1:nGP
+					Bi = zeros(3,6);
+					Bi(1,1) = idNdPhy(1,ii);
+					Bi(2,2) = idNdPhy(2,ii);
+					Bi(3,1) = idNdPhy(2,ii); 
+					Bi(3,2) = idNdPhy(1,ii);
+					iBm(:,(ii-1)*6+1:(ii-1)*6+6) = Bi;
+				end
+				Bm(3*(jj-1)+1:3*jj,:) = iBm;
+			end			
 			
+			% BENDING B-matrix
+			Bb = zeros(12, 24);
+			for jj=1:nNode
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+				for i = 1:nGP
+					Bi = zeros(3,6);
+					Bi(1,4) = idNdPhy(1,i);  % dθy/dx
+					Bi(2,5) = idNdPhy(2,i); % dθx/dy
+					Bi(3,4) = idNdPhy(2,i); % dθx/dy
+					Bi(3,5) = idNdPhy(1,i);  % dθy/dx
+					iBb(:,(i-1)*6+1:(i-1)*6+6) = Bi;
+				end
+				Bb(3*(jj-1)+1:3*jj,:) = iBb;
+			end	
+			
+			% SHEAR B-matrix
+			N = varargin{1};
+			Bs = zeros(8, 24);
+			for jj=1:nNode
+				idNdPhy = dNdPhy(2*(jj-1)+1:2*jj,:);
+				iBs = zeros(2, 24);
+				iN = N(jj,:);
+				for i = 1:nGP
+					Bi = zeros(2,6);
+					Ni = iN(i);
+					Bi(1,3) = idNdPhy(1,i);
+					Bi(1,4) = Ni;
+					Bi(2,3) = idNdPhy(2,i);
+					Bi(2,5) = Ni;
+					iBs(:,(i-1)*6+1:(i-1)*6+6) = Bi;
+				end
+				Bs(2*(jj-1)+1:2*jj,:) = iBs;
+			end
+			
+			B = Bm;
+			varargout{1} = Bb;
+			varargout{2} = Bs;	
 	end
 end

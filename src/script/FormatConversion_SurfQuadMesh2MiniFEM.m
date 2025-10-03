@@ -1,7 +1,7 @@
 %%Convert the Surface Quad-mesh file in standard .mesh format into the tailored format .MiniFEM format
 clear all; clc;
 
-ifileName = 'D:\BaiduSyncdisk\MyDataSets\QuadSurfMesh_mesh\dragon_stand_input_tri.mesh';
+ifileName = 'D:\wSpace\Paper_2025_TSVshell\log\20251002_saddleSurface\saddleSurface_quad.mesh';
 oFileName = '..\..\out\Data4MiniFEM.MiniFEM';
 
 %% Read
@@ -18,6 +18,7 @@ eNodMat_ = eNodMat_'; eNodMat_(:,end) = [];
 fclose(fid);
 
 materialIndicatorField_ = ones(numEles_,1);
+shellThicknessList_ = ones(numEles_,1) .* 0.02;
 
 %% Write
 fid = fopen(oFileName, 'w');
@@ -32,7 +33,7 @@ fprintf(fid, '%.6e %.6e %.6e\n', nodeCoords_');
 
 fprintf(fid, '%s ', 'Elements:');
 fprintf(fid, '%d \n', numEles_);
-fprintf(fid, '%d %d %d %d %d\n', [eNodMat_ materialIndicatorField_]');
+fprintf(fid, '%d %d %d %d %d %16.6e\n', [eNodMat_ materialIndicatorField_ shellThicknessList_]');
 
 fprintf(fid, '%s %s ', 'Node Forces:'); 
 fprintf(fid, '%d\n',0);

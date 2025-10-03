@@ -10,9 +10,7 @@ function AssembleMassMatrix()
 	global detJ_;
 	global materialIndicatorField_;
 	global shellThicknessList_;
-	global align2GlobalFrame_;
-	global shellAreaList_;
-	global Tlist_;
+	global align2GlobalFrameElement_;
 	global M_;
 	if isempty(freeDOFs_), warning('Apply for Boundary Condition First!'); return; end
 	tStart = tic;
@@ -243,12 +241,11 @@ function AssembleMassMatrix()
 			for ii=1:numEles_
 				t = shellThicknessList_(ii);
 				irho = material_(materialIndicatorField_(ii)).density;
-				% wgt = w(:)*shellAreaList_(ii);
                 wgt = w(:).*detJ_(:,ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', numel(wgt1), 1);
 				wgt2 = repmat(wgt, 1, 2); wgt2 = reshape(wgt2', numel(wgt2), 1);
 				MeLocal = (irho*t* Nu'*(wgt1.*Nu) + irho*t^3 / 12 * Nr'*(wgt2.*Nr));
-                T18 = Tlist_(:,:,ii);
+                T18 = align2GlobalFrameElement_(:,:,ii);
 				Me = T18 * MeLocal * T18';			
 				sM(:,ii) = Me(eMm);										
 			end
@@ -257,7 +254,44 @@ function AssembleMassMatrix()
 			tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
 			M_ = tmpM + tmpM' - diag(diag(tmpM));				
 		case 'Shell144'
-			error('Not supported yet!');
+			dimM = 24;
+			rowMat = (1:dimM)'; rowMat = repmat(rowMat, 1, dimM);
+			colMat = (1:dimM); colMat = repmat(colMat, dimM, 1);
+			valMat = (1:dimM^2)'; valMat = reshape(valMat, dimM, dimM);
+			eMi = tril(rowMat); [~, ~, eMi] = find(eMi);
+			eMj = tril(colMat); [~, ~, eMj] = find(eMj);
+			eMm = tril(valMat); [~, ~, eMm] = find(eMm);			
+			w = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
+			gaussPts = eleType_.GaussIntegralPointsNaturalSpace(1:2,:)';
+			N = ShapeFunction(gaussPts);
+			Nu = zeros(12, 24);
+			Nr = zeros(8, 24);
+			for kk = 1:4
+				for jj = 1:4
+					Ni = N(kk, jj);
+					Nu((kk-1)*3+1:kk*3,(jj-1)*6 + (1:3)) = Ni * eye(3);
+					Nr((kk-1)*2+1:kk*2,(jj-1)*6 + (4:5)) = Ni * eye(2);
+				end				
+			end
+			sM = zeros(numel(eMm), numEles_);
+			for ii=1:numEles_
+				t = shellThicknessList_(ii);
+				irho = material_(materialIndicatorField_(ii)).density;
+                wgt = w(:).*detJ_(:,ii);
+				MeGlobal = zeros(24,24);
+				for jGP=1:4
+					jNu = Nu((jGP-1)*3+1:jGP*3,:);
+					jNr = Nr((jGP-1)*2+1:jGP*2,:);
+					jMeLocal = (irho*t*wgt(jGP) * jNu'*jNu + irho*t^3 / 12*wgt(jGP) * jNr'*jNr);
+					T24 = align2GlobalFrameElement_(:,:,jGP,ii);
+					MeGlobal = MeGlobal + T24 * jMeLocal * T24';	
+				end
+				sM(:,ii) = MeGlobal(eMm);										
+			end
+			iM = eDofMat_(:,eMi)';
+			jM = eDofMat_(:,eMj)';
+			tmpM = sparse(iM, jM, sM, numDOFs_, numDOFs_);
+			M_ = tmpM + tmpM' - diag(diag(tmpM));	
 		case 'Truss122'
 			error('Not supported yet!');
 		case 'Truss123'
