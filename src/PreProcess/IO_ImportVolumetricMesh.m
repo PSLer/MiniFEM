@@ -1,4 +1,4 @@
-function IO_ImportSolidMesh(fileName)
+function IO_ImportVolumetricMesh(fileName)
 	global simMesh_;
 	global surfMesh_;
 	global boundingBox_;
@@ -7,16 +7,16 @@ function IO_ImportSolidMesh(fileName)
 	[~,~,dataType] = fileparts(fileName);
 	switch dataType
 		case '.mesh'
-			IO_ImportSolidMesh_Format_mesh(fileName);
+			IO_ImportVolumetricMesh_Format_mesh(fileName);
 		case '.vtk'
-			IO_ImportSolidMesh_Format_vtk(fileName);
+			IO_ImportVolumetricMesh_Format_vtk(fileName);
 		case '.msh'
-			IO_ImportSolidMesh_Format_msh(fileName);
+			IO_ImportVolumetricMesh_Format_msh(fileName);
 	end
 	boundingBox_ = [min(surfMesh_.nodeCoords,[],1); max(surfMesh_.nodeCoords,[],1)];
 end
 
-function IO_ImportSolidMesh_Format_mesh(fileName)
+function IO_ImportVolumetricMesh_Format_mesh(fileName)
 	global simMesh_;
 	global surfMesh_;
 	
@@ -65,7 +65,7 @@ function IO_ImportSolidMesh_Format_mesh(fileName)
 	surfMesh_.state = 1;
 end
 
-function IO_ImportSolidMesh_Format_vtk(fileName)
+function IO_ImportVolumetricMesh_Format_vtk(fileName)
 	global simMesh_;
 	global surfMesh_;
 	
@@ -106,7 +106,7 @@ function IO_ImportSolidMesh_Format_vtk(fileName)
 	surfMesh_.state = 1;	
 end
 
-function IO_ImportSolidMesh_Format_msh(fileName)
+function IO_ImportVolumetricMesh_Format_msh(fileName)
 	global simMesh_;
 	global surfMesh_;
 	

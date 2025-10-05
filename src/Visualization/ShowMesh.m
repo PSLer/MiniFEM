@@ -14,9 +14,9 @@ function hd = ShowMesh()
 		xlabel('X'); ylabel('Y'); zlabel('Z');
 		view(3); 
 		camproj('perspective');
-		lighting('gouraud');
-		material('dull'); %%shiny; dull; metal	
-		camlight('headlight','infinite');
+		% lighting('gouraud');
+		% material('dull'); %%shiny; dull; metal	
+		% camlight('headlight','infinite');
 	elseif strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
 		patchs2show.faces = eNodMat_;
 		patchs2show.vertices = nodeCoords_;	
@@ -44,9 +44,9 @@ function hd = ShowMesh()
 		xlabel('X'); ylabel('Y'); zlabel('Z');		
 		view(3); 
 		camproj('perspective');
-		lighting('gouraud');
-		material('dull'); %%shiny; dull; metal	
-		camlight('headlight','infinite');		
+		% lighting('gouraud');
+		% material('dull'); %%shiny; dull; metal	
+		% camlight('headlight','infinite');		
 	end
 	
 	axis('equal'); axis('tight'); axis('on');

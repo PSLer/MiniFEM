@@ -1,4 +1,4 @@
-classdef ApplyBC_2D < matlab.apps.AppBase
+classdef ApplyBC_Planar < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
@@ -119,7 +119,7 @@ classdef ApplyBC_2D < matlab.apps.AppBase
             Data_GlobalVariables;
             InitializeAppParameters(app);  
 
-            [fileName, dataPath] = uigetfile({'*.msh'}, 'Select a Tet-mesh File to Open');
+            [fileName, dataPath] = uigetfile({'*.msh'}, 'Select a Planar Mesh File to Open');
             if isnumeric(fileName) || isnumeric(dataPath), return; end
             [~,~,fileExtension] = fileparts(fileName);
             if ~(strcmp(fileExtension, '.msh'))
@@ -127,7 +127,7 @@ classdef ApplyBC_2D < matlab.apps.AppBase
                 return;
             end
             inputVoxelfileName = strcat(dataPath,fileName);
-            IO_ImportTriMesh2D(inputVoxelfileName);
+            IO_ImportPlanarMesh(inputVoxelfileName);
             if ~isvalid(axHandle_), axHandle_ = gca; view(axHandle_,3); end
             cla(axHandle_);
             ShowFEMModelMenuSelected(app, event);
@@ -555,7 +555,7 @@ classdef ApplyBC_2D < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = ApplyBC_2D(varargin)
+        function app = ApplyBC_Planar(varargin)
 
             % Create UIFigure and components
             createComponents(app)

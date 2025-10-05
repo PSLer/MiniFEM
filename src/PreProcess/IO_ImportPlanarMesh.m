@@ -1,4 +1,4 @@
-function IO_ImportTriMesh2D(fileName)
+function IO_ImportPlanarMesh(fileName)
 	global simMesh_;
 	global surfMesh_;
 	global boundingBox_;
@@ -7,14 +7,12 @@ function IO_ImportTriMesh2D(fileName)
 	[~,~,dataType] = fileparts(fileName);
 	switch dataType
 		case '.msh'
-			IO_ImportTriMesh2D_Format_msh(fileName);
+			IO_ImportPlanarMesh_Format_msh(fileName);
 	end
 	boundingBox_ = [min(surfMesh_.nodeCoords,[],1); max(surfMesh_.nodeCoords,[],1)];
 end
 
-
-
-function IO_ImportTriMesh2D_Format_msh(fileName)
+function IO_ImportPlanarMesh_Format_msh(fileName)
 	global simMesh_;
 	global surfMesh_;
 	

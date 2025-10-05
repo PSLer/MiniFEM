@@ -1,15 +1,21 @@
-classdef ApplyBC_3D < matlab.apps.AppBase
+classdef ApplyBC_Shell < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure                       matlab.ui.Figure
         FileMenu                       matlab.ui.container.Menu
         ImportMenu                     matlab.ui.container.Menu
-        SolidmeshmshmeshvtkMenu        matlab.ui.container.Menu
+        SurfacemeshobjplystlmeshMenu   matlab.ui.container.Menu
         ExportMenu                     matlab.ui.container.Menu
         FEModelMiniFEMMenu             matlab.ui.container.Menu
         VisualizationMenu              matlab.ui.container.Menu
         ShowFEMModelMenu               matlab.ui.container.Menu
+        ShowNormalsMenu                matlab.ui.container.Menu
+        FlipNormalsButton              matlab.ui.control.Button
+        ThicknessEditField             matlab.ui.control.NumericEditField
+        ThicknessEditFieldLabel        matlab.ui.control.Label
+        CellSizeEditField              matlab.ui.control.NumericEditField
+        CellSizeEditFieldLabel         matlab.ui.control.Label
         DOFsEditField                  matlab.ui.control.NumericEditField
         DOFsEditFieldLabel             matlab.ui.control.Label
         VerticesEditField              matlab.ui.control.NumericEditField
@@ -44,12 +50,21 @@ classdef ApplyBC_3D < matlab.apps.AppBase
         SelectionOptionsDropDownLabel  matlab.ui.control.Label
         TabGroup2                      matlab.ui.container.TabGroup
         FixingTab                      matlab.ui.container.Tab
+        RxFixedCheckBox                matlab.ui.control.CheckBox
+        RyFixedCheckBox                matlab.ui.control.CheckBox
+        RzFixedCheckBox                matlab.ui.control.CheckBox
         XDirFixedCheckBox              matlab.ui.control.CheckBox
         YDirFixedCheckBox              matlab.ui.control.CheckBox
         ClearFixationButton            matlab.ui.control.Button
         ApplyforFixationButton         matlab.ui.control.Button
         ZDirFixedCheckBox              matlab.ui.control.CheckBox
         LoadingTab                     matlab.ui.container.Tab
+        RzNmEditField                  matlab.ui.control.NumericEditField
+        RzNmEditFieldLabel             matlab.ui.control.Label
+        RyNmEditField                  matlab.ui.control.NumericEditField
+        RyNmEditFieldLabel             matlab.ui.control.Label
+        RxNmEditField                  matlab.ui.control.NumericEditField
+        RxNmEditFieldLabel             matlab.ui.control.Label
         FzNEditField                   matlab.ui.control.NumericEditField
         FzNEditFieldLabel              matlab.ui.control.Label
         FyNEditField                   matlab.ui.control.NumericEditField
@@ -125,29 +140,30 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             delete(app)            
         end
 
-        % Menu selected function: SolidmeshmshmeshvtkMenu
-        function ImportSolidmeshmshmeshvtkMenuSelected(app, event)
+        % Menu selected function: SurfacemeshobjplystlmeshMenu
+        function ImportSurfacemeshobjplystlmeshMenuSelected(app, event)
             global simMesh_;            
             global axHandle_;
             %%Reset App
             Data_GlobalVariables;
             InitializeAppParameters(app);  
 
-            [fileName, dataPath] = uigetfile({'*.msh'; '*.mesh'}, 'Select a Tet-mesh File to Open');
+            [fileName, dataPath] = uigetfile({'*.ply'; '*.obj'; '*.stl'; '*.mesh'}, 'Select a Surface Mesh File to Open');
             if isnumeric(fileName) || isnumeric(dataPath), return; end
             [~,~,fileExtension] = fileparts(fileName);
-            if ~(strcmp(fileExtension, '.msh') || strcmp(fileExtension, '.mesh'))
+            if ~(strcmp(fileExtension, '.obj') || strcmp(fileExtension, '.ply') || strcmp(fileExtension, '.stl') || strcmp(fileExtension, '.mesh'))
                 warning('Un-supported Mesh Format!');
                 return;
             end
             inputVoxelfileName = strcat(dataPath,fileName);
-            IO_ImportSolidMesh(inputVoxelfileName);
+            IO_ImportSurfaceMesh(inputVoxelfileName);
             if ~isvalid(axHandle_), axHandle_ = gca; view(axHandle_,3); end
             cla(axHandle_);
             ShowFEMModelMenuSelected(app, event);
             app.ElementsEditField.Value = simMesh_.numElements;
             app.VerticesEditField.Value = simMesh_.numNodes;
             app.DOFsEditField.Value = 3*simMesh_.numNodes;
+            app.CellSizeEditField.Value = simMesh_.refSize;
             SetupSelectionOptions_Public(app);
         end
 
@@ -156,19 +172,24 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             [fileName, dataPath] = uiputfile('*.MiniFEM', 'Select a Path to Write');
             if isnumeric(fileName) || isnumeric(dataPath), return; end
             ofileName = strcat(dataPath,fileName);
-            IO_ExportFEModel_MiniFEM(ofileName);               
+            t = app.ThicknessEditField.Value;
+            if 0==t
+                warning('Please Assign a Thickness for the Shell!');
+                return
+            end
+            IO_ExportFEModelShell_MiniFEM(ofileName, t);               
         end
 
         % Menu selected function: ShowFEMModelMenu
         function ShowFEMModelMenuSelected(app, event)
             global axHandle_;
-            global surfMesh_;
+            global simMesh_;
             global loadingCond_;
             global fixingCond_;
             if ~isvalid(axHandle_), axHandle_ = gca; view(axHandle_,3); end
             [az, el] = view(axHandle_);
             cla(axHandle_); colorbar(axHandle_, 'off');
-            Vis_DrawMesh3D(axHandle_, surfMesh_.nodeCoords, surfMesh_.eNodMat, 1);
+            Vis_DrawMesh3D(axHandle_, simMesh_.nodeCoords, simMesh_.eNodMat, 1);
             Vis_ShowLoadingCondition(axHandle_, loadingCond_);
             Vis_ShowFixingCondition(axHandle_, fixingCond_);
             view(axHandle_, az, el);
@@ -212,7 +233,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
                     cP1 = zeros(1,3); cP2 = cP1;
                     cP1(1) = app.CornerPot1XEditField.Value; cP1(2) = app.CornerPot1YEditField.Value; cP1(3) = app.CornerPot1ZEditField.Value;
                     cP2(1) = app.CornerPot2XEditField.Value; cP2(2) = app.CornerPot2YEditField.Value; cP2(3) = app.CornerPot2ZEditField.Value;            
-                    Interaction_PickBySelectionBox(axHandle_, cP1, cP2);
+                    Interaction_PickBySelectionBoxShell(axHandle_, cP1, cP2);
                 case 'Sphere'
                     sphereRad = abs(app.RadiusEditField.Value);
                     if 0==sphereRad, return; end                    
@@ -220,7 +241,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
                     sphereCtr(1) = app.CenterXEditField.Value;
                     sphereCtr(2) = app.CenterYEditField.Value;
                     sphereCtr(3) = app.CenterZEditField.Value;
-                    Interaction_PickBySelectionShpere(axHandle_, sphereCtr, sphereRad);                    
+                    Interaction_PickBySelectionShpereShell(axHandle_, sphereCtr, sphereRad);                    
             end            
         end
 
@@ -234,7 +255,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
                     cP1 = zeros(1,3); cP2 = cP1;
                     cP1(1) = app.CornerPot1XEditField.Value; cP1(2) = app.CornerPot1YEditField.Value; cP1(3) = app.CornerPot1ZEditField.Value;
                     cP2(1) = app.CornerPot2XEditField.Value; cP2(2) = app.CornerPot2YEditField.Value; cP2(3) = app.CornerPot2ZEditField.Value;            
-                    Interaction_UnPickBySelectionBox(axHandle_, cP1, cP2);   
+                    Interaction_UnPickBySelectionBoxShell(axHandle_, cP1, cP2);   
                 case 'Sphere'
                     sphereRad = abs(app.RadiusEditField.Value);
                     if 0==sphereRad, return; end
@@ -242,7 +263,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
                     sphereCtr(1) = app.CenterXEditField.Value;
                     sphereCtr(2) = app.CenterYEditField.Value;
                     sphereCtr(3) = app.CenterZEditField.Value;
-                    Interaction_UnPickBySelectionShpere(axHandle_, sphereCtr, sphereRad);  
+                    Interaction_UnPickBySelectionShpereShell(axHandle_, sphereCtr, sphereRad);  
             end               
         end
 
@@ -250,14 +271,17 @@ classdef ApplyBC_3D < matlab.apps.AppBase
         function ApplyforFixationButtonPushed(app, event)
             global axHandle_;         
             if ~(app.XDirFixedCheckBox.Value || app.YDirFixedCheckBox.Value || app.ZDirFixedCheckBox.Value), return; end
-            fixingOpt = zeros(1,3);
+            fixingOpt = zeros(1,6);
             if app.XDirFixedCheckBox.Value, fixingOpt(1) = 1; end
             if app.YDirFixedCheckBox.Value, fixingOpt(2) = 1; end
             if app.ZDirFixedCheckBox.Value, fixingOpt(3) = 1; end
-            iFixingArr2Draw = FEA_Apply4Fixations(fixingOpt);
+            if app.RxFixedCheckBox.Value, fixingOpt(4) = 1; end
+            if app.RyFixedCheckBox.Value, fixingOpt(5) = 1; end
+            if app.RzFixedCheckBox.Value, fixingOpt(6) = 1; end
+            iFixingArr2Draw = FEA_Apply4FixationsShell(fixingOpt);
             if isempty(iFixingArr2Draw), return; end
             Interaction_ClearPickedNodes();
-            Vis_ShowFixingCondition(axHandle_, iFixingArr2Draw);            
+            Vis_ShowFixingConditionShell(axHandle_, iFixingArr2Draw);            
         end
 
         % Button pushed function: ClearFixationButton
@@ -269,18 +293,41 @@ classdef ApplyBC_3D < matlab.apps.AppBase
         % Button pushed function: ApplyforLoadsButton
         function ApplyforLoadsButtonPushed(app, event)
             global axHandle_;          
-            if 0==app.FxNEditField.Value && 0==app.FyNEditField.Value && 0==app.FzNEditField.Value, return; end
-            forceVec = [app.FxNEditField.Value app.FyNEditField.Value app.FzNEditField.Value];
-            iLoadingVec2Draw = FEA_Apply4Loads(forceVec);
+            if 0==app.FxNEditField.Value && 0==app.FyNEditField.Value && 0==app.FzNEditField.Value ...
+                    && 0==app.RxNmEditField.Value && 0==app.RyNmEditField.Value && 0==app.RzNmEditField.Value
+                return; 
+            end
+            forceVec = [app.FxNEditField.Value app.FyNEditField.Value app.FzNEditField.Value app.RxNmEditField.Value app.RyNmEditField.Value app.RzNmEditField.Value];
+            iLoadingVec2Draw = FEA_Apply4LoadsShell(forceVec);
             if isempty(iLoadingVec2Draw), return; end
             Interaction_ClearPickedNodes();
-            Vis_ShowLoadingCondition(axHandle_, iLoadingVec2Draw);            
+            Vis_ShowLoadingConditionShell(axHandle_, iLoadingVec2Draw);            
         end
 
         % Button pushed function: ClearLoadsButton
         function ClearLoadsButtonPushed(app, event)
             global loadingCond_; loadingCond_ = [];       
             ShowFEMModelMenuSelected(app, event);            
+        end
+
+        % Menu selected function: ShowNormalsMenu
+        function ShowNormalsMenuSelected(app, event)
+            global axHandle_;
+            global simMesh_;
+            if ~isvalid(axHandle_), axHandle_ = gca; view(axHandle_,3); end
+            [az, el] = view(axHandle_);
+            cla(axHandle_); colorbar(axHandle_, 'off');
+            Vis_DrawMesh3D(axHandle_, simMesh_.nodeCoords, simMesh_.eNodMat, 1);
+            Vis_ShowShellNormals(axHandle_);
+            view(axHandle_, az, el);
+            axis(axHandle_, 'on'); xlabel('X'); ylabel('Y'); zlabel('Z');             
+        end
+
+        % Button pushed function: FlipNormalsButton
+        function FlipNormalsButtonPushed(app, event)
+            global simMesh_;
+            simMesh_.eNodMat = flip(simMesh_.eNodMat,2);
+            ShowNormalsMenuSelected(app, event);
         end
     end
 
@@ -304,10 +351,10 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             app.ImportMenu = uimenu(app.FileMenu);
             app.ImportMenu.Text = 'Import';
 
-            % Create SolidmeshmshmeshvtkMenu
-            app.SolidmeshmshmeshvtkMenu = uimenu(app.ImportMenu);
-            app.SolidmeshmshmeshvtkMenu.MenuSelectedFcn = createCallbackFcn(app, @ImportSolidmeshmshmeshvtkMenuSelected, true);
-            app.SolidmeshmshmeshvtkMenu.Text = 'Solid mesh (*.msh, *.mesh, ".vtk")';
+            % Create SurfacemeshobjplystlmeshMenu
+            app.SurfacemeshobjplystlmeshMenu = uimenu(app.ImportMenu);
+            app.SurfacemeshobjplystlmeshMenu.MenuSelectedFcn = createCallbackFcn(app, @ImportSurfacemeshobjplystlmeshMenuSelected, true);
+            app.SurfacemeshobjplystlmeshMenu.Text = 'Surface mesh ("*.obj", "*.ply", "*.stl", ".mesh")';
 
             % Create ExportMenu
             app.ExportMenu = uimenu(app.FileMenu);
@@ -326,6 +373,11 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             app.ShowFEMModelMenu = uimenu(app.VisualizationMenu);
             app.ShowFEMModelMenu.MenuSelectedFcn = createCallbackFcn(app, @ShowFEMModelMenuSelected, true);
             app.ShowFEMModelMenu.Text = 'Show FEM Model';
+
+            % Create ShowNormalsMenu
+            app.ShowNormalsMenu = uimenu(app.VisualizationMenu);
+            app.ShowNormalsMenu.MenuSelectedFcn = createCallbackFcn(app, @ShowNormalsMenuSelected, true);
+            app.ShowNormalsMenu.Text = 'Show Normals';
 
             % Create ApplyforBoundaryConditionsPanel
             app.ApplyforBoundaryConditionsPanel = uipanel(app.UIFigure);
@@ -391,6 +443,24 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             app.XDirFixedCheckBox.Position = [311 120 82 22];
             app.XDirFixedCheckBox.Value = true;
 
+            % Create RzFixedCheckBox
+            app.RzFixedCheckBox = uicheckbox(app.FixingTab);
+            app.RzFixedCheckBox.Text = 'Rz Fixed';
+            app.RzFixedCheckBox.Position = [209 49 69 22];
+            app.RzFixedCheckBox.Value = true;
+
+            % Create RyFixedCheckBox
+            app.RyFixedCheckBox = uicheckbox(app.FixingTab);
+            app.RyFixedCheckBox.Text = 'Ry Fixed';
+            app.RyFixedCheckBox.Position = [209 83 69 22];
+            app.RyFixedCheckBox.Value = true;
+
+            % Create RxFixedCheckBox
+            app.RxFixedCheckBox = uicheckbox(app.FixingTab);
+            app.RxFixedCheckBox.Text = 'Rx Fixed';
+            app.RxFixedCheckBox.Position = [209 120 69 22];
+            app.RxFixedCheckBox.Value = true;
+
             % Create LoadingTab
             app.LoadingTab = uitab(app.TabGroup2);
             app.LoadingTab.Title = 'Loading';
@@ -437,6 +507,33 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             app.FzNEditField = uieditfield(app.LoadingTab, 'numeric');
             app.FzNEditField.Position = [275 49 113 22];
 
+            % Create RxNmEditFieldLabel
+            app.RxNmEditFieldLabel = uilabel(app.LoadingTab);
+            app.RxNmEditFieldLabel.Position = [41 120 73 22];
+            app.RxNmEditFieldLabel.Text = 'Rx (N*m)';
+
+            % Create RxNmEditField
+            app.RxNmEditField = uieditfield(app.LoadingTab, 'numeric');
+            app.RxNmEditField.Position = [100 120 113 22];
+
+            % Create RyNmEditFieldLabel
+            app.RyNmEditFieldLabel = uilabel(app.LoadingTab);
+            app.RyNmEditFieldLabel.Position = [41 83 58 22];
+            app.RyNmEditFieldLabel.Text = 'Ry (N*m)';
+
+            % Create RyNmEditField
+            app.RyNmEditField = uieditfield(app.LoadingTab, 'numeric');
+            app.RyNmEditField.Position = [101 83 113 22];
+
+            % Create RzNmEditFieldLabel
+            app.RzNmEditFieldLabel = uilabel(app.LoadingTab);
+            app.RzNmEditFieldLabel.Position = [41 49 58 22];
+            app.RzNmEditFieldLabel.Text = 'Rz (N*m)';
+
+            % Create RzNmEditField
+            app.RzNmEditField = uieditfield(app.LoadingTab, 'numeric');
+            app.RzNmEditField.Position = [101 49 113 22];
+
             % Create SelectionOptionsDropDownLabel
             app.SelectionOptionsDropDownLabel = uilabel(app.ApplyforBoundaryConditionsPanel);
             app.SelectionOptionsDropDownLabel.HorizontalAlignment = 'right';
@@ -466,7 +563,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot1XEditField
             app.CornerPot1XEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot1XEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot1XEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot1XEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot1XEditField.Position = [136 70 39 22];
 
@@ -478,7 +575,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot2XEditField
             app.CornerPot2XEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot2XEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot2XEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot2XEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot2XEditField.Position = [343 70 39 22];
 
@@ -490,7 +587,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot1YEditField
             app.CornerPot1YEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot1YEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot1YEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot1YEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot1YEditField.Position = [137 39 39 22];
 
@@ -502,7 +599,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot2YEditField
             app.CornerPot2YEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot2YEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot2YEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot2YEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot2YEditField.Position = [343 39 39 22];
 
@@ -514,7 +611,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot1ZEditField
             app.CornerPot1ZEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot1ZEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot1ZEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot1ZEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot1ZEditField.Position = [137 8 39 22];
 
@@ -526,7 +623,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CornerPot2ZEditField
             app.CornerPot2ZEditField = uieditfield(app.BoxSelectionTab, 'numeric');
-            app.CornerPot2ZEditField.ValueDisplayFormat = '%.1f';
+            app.CornerPot2ZEditField.ValueDisplayFormat = '%.6f';
             app.CornerPot2ZEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CornerPot2ZEditField.Position = [343 8 39 22];
 
@@ -542,7 +639,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CenterXEditField
             app.CenterXEditField = uieditfield(app.SphereSelectionTab, 'numeric');
-            app.CenterXEditField.ValueDisplayFormat = '%.1f';
+            app.CenterXEditField.ValueDisplayFormat = '%.6f';
             app.CenterXEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CenterXEditField.Position = [80 78 100 22];
 
@@ -554,7 +651,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CenterYEditField
             app.CenterYEditField = uieditfield(app.SphereSelectionTab, 'numeric');
-            app.CenterYEditField.ValueDisplayFormat = '%.1f';
+            app.CenterYEditField.ValueDisplayFormat = '%.6f';
             app.CenterYEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CenterYEditField.Position = [80 49 100 22];
 
@@ -566,7 +663,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create CenterZEditField
             app.CenterZEditField = uieditfield(app.SphereSelectionTab, 'numeric');
-            app.CenterZEditField.ValueDisplayFormat = '%.1f';
+            app.CenterZEditField.ValueDisplayFormat = '%.6f';
             app.CenterZEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.CenterZEditField.Position = [81 19 100 22];
 
@@ -578,7 +675,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
 
             % Create RadiusEditField
             app.RadiusEditField = uieditfield(app.SphereSelectionTab, 'numeric');
-            app.RadiusEditField.ValueDisplayFormat = '%.1f';
+            app.RadiusEditField.ValueDisplayFormat = '%.6f';
             app.RadiusEditField.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
             app.RadiusEditField.Position = [282 48 100 22];
             app.RadiusEditField.Value = 10;
@@ -616,6 +713,36 @@ classdef ApplyBC_3D < matlab.apps.AppBase
             app.DOFsEditField.ValueDisplayFormat = '%.0f';
             app.DOFsEditField.Position = [292 467 100 22];
 
+            % Create CellSizeEditFieldLabel
+            app.CellSizeEditFieldLabel = uilabel(app.UIFigure);
+            app.CellSizeEditFieldLabel.HorizontalAlignment = 'right';
+            app.CellSizeEditFieldLabel.Position = [31 549 52 22];
+            app.CellSizeEditFieldLabel.Text = 'Cell Size';
+
+            % Create CellSizeEditField
+            app.CellSizeEditField = uieditfield(app.UIFigure, 'numeric');
+            app.CellSizeEditField.ValueDisplayFormat = '%.6f';
+            app.CellSizeEditField.Position = [98 549 100 22];
+
+            % Create ThicknessEditFieldLabel
+            app.ThicknessEditFieldLabel = uilabel(app.UIFigure);
+            app.ThicknessEditFieldLabel.HorizontalAlignment = 'right';
+            app.ThicknessEditFieldLabel.Position = [25 507 59 22];
+            app.ThicknessEditFieldLabel.Text = 'Thickness';
+
+            % Create ThicknessEditField
+            app.ThicknessEditField = uieditfield(app.UIFigure, 'numeric');
+            app.ThicknessEditField.ValueDisplayFormat = '%.6f';
+            app.ThicknessEditField.Position = [99 507 100 22];
+
+            % Create FlipNormalsButton
+            app.FlipNormalsButton = uibutton(app.UIFigure, 'push');
+            app.FlipNormalsButton.ButtonPushedFcn = createCallbackFcn(app, @FlipNormalsButtonPushed, true);
+            app.FlipNormalsButton.BackgroundColor = [0.9608 0.9608 0.9608];
+            app.FlipNormalsButton.FontWeight = 'bold';
+            app.FlipNormalsButton.Position = [82 467 100 23];
+            app.FlipNormalsButton.Text = 'Flip Normals';
+
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';
         end
@@ -625,7 +752,7 @@ classdef ApplyBC_3D < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = ApplyBC_3D(varargin)
+        function app = ApplyBC_Shell(varargin)
 
             % Create UIFigure and components
             createComponents(app)
