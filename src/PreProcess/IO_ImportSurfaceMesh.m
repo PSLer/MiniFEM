@@ -13,6 +13,7 @@ function IO_ImportSurfaceMesh(fileName)
 		case '.mesh'
 			IO_ImportSurfaceMesh_Format_mesh(fileName);			
 	end
+	RemoveRedundandentVertices();
 	boundingBox_ = [min(simMesh_.nodeCoords,[],1); max(simMesh_.nodeCoords,[],1)];
 end
 
@@ -156,4 +157,19 @@ function IO_ImportSurfaceMesh_Format_mesh(fileName)
 		eleCharacterSizeList(ii) = min(iEleEdgeLengths);
 	end
 	simMesh_.refSize = mean(eleCharacterSizeList);		
+end
+
+function RemoveRedundandentVertices()
+	global simMesh_;
+	
+	validNodes = unique(simMesh_.eNodMat(:));
+	numValidNodes = numel(validNodes);
+	
+	nodeCoordsCompact = simMesh_.nodeCoords(validNodes,:);
+	allNodes = zeros(simMesh_.numNodes,1);
+	allNodes(validNodes) = (1:numValidNodes)';
+	eNodMatCompact = allNodes(simMesh_.eNodMat);
+	
+	simMesh_.nodeCoords = nodeCoordsCompact; simMesh_.numNodes = size(simMesh_.nodeCoords,1);
+	simMesh_.eNodMat = eNodMatCompact; simMesh_.numElements = size(simMesh_.eNodMat,1);
 end
