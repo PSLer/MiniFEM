@@ -272,7 +272,7 @@ function AssembleStiffnessMatrix()
 				wgt = w(:).*detJ_(:,ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', 1, numel(wgt1));
 				wgt2 = repmat(wgt, 1, 2); wgt2 = reshape(wgt2', 1, numel(wgt2));
-				K_mem_local = iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm* t;
+				K_mem_local = iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm;
 				K_ben_local = iMatrixBb' * (iMatrixDb.*wgt1) * iMatrixBb;
 				K_shear_local = iMatrixBs' * (iMatrixDs.*wgt2) * iMatrixBs;
                 alpha = 1.0e-3;
@@ -281,8 +281,8 @@ function AssembleStiffnessMatrix()
                 K_drill_local(6,6) = kdr/3; K_drill_local(12,12) = kdr/3; K_drill_local(18,18) = kdr/3;
 				KeLocal = K_mem_local + K_ben_local + K_shear_local + K_drill_local;
 				T18 = align2GlobalFrameElement_(:,:,ii);
-				Ke = T18 * KeLocal * T18';
-				eKs = Ke(eKk); sK(:,ii) = eKs;
+				KeGlobal = T18 * KeLocal * T18';
+				eKs = KeGlobal(eKk); sK(:,ii) = eKs;
 			end
 			iK = eDofMat_(:,eKi)';
 			jK = eDofMat_(:,eKj)';
@@ -311,7 +311,7 @@ if 0
 				wgt = w(:).*detJ_(:,ii);
 				wgt1 = repmat(wgt, 1, 3); wgt1 = reshape(wgt1', 1, numel(wgt1));
 				wgt2 = repmat(wgt, 1, 2); wgt2 = reshape(wgt2', 1, numel(wgt2));
-				K_mem_local = iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm* t;
+				K_mem_local = iMatrixBm' * (iMatrixDm.*wgt1) * iMatrixBm;
 				K_ben_local = iMatrixBb' * (iMatrixDb.*wgt1) * iMatrixBb;
 				K_shear_local = iMatrixBs' * (iMatrixDs.*wgt2) * iMatrixBs;
                 alpha = 1.0e-3;
@@ -320,8 +320,8 @@ if 0
                 K_drill_local(6,6) = kdr/4; K_drill_local(12,12) = kdr/4; K_drill_local(18,18) = kdr/4; K_drill_local(24,24) = kdr/4;
 				KeLocal = K_mem_local + K_ben_local + K_shear_local + K_drill_local;
 				T24 = align2GlobalFrameElement_(:,:,1,ii);
-				Ke = T24 * KeLocal * T24';
-				eKs = Ke(eKk); sK(:,ii) = eKs;
+				KeGlobal = T24 * KeLocal * T24';
+				eKs = KeGlobal(eKk); sK(:,ii) = eKs;
 			end
 else
 			for ii=1:numEles_
@@ -341,7 +341,7 @@ else
 					jBm = iMatrixBm((jGP-1)*3+1:jGP*3,:); jDm = iMatrixDm((jGP-1)*3+1:jGP*3,(jGP-1)*3+1:jGP*3);
 					jBb = iMatrixBb((jGP-1)*3+1:jGP*3,:); jDb = iMatrixDb((jGP-1)*3+1:jGP*3,(jGP-1)*3+1:jGP*3);
 					jBs = iMatrixBs((jGP-1)*2+1:jGP*2,:); jDs = iMatrixDs((jGP-1)*2+1:jGP*2,(jGP-1)*2+1:jGP*2);
-					jK_mem_local = jBm' * jDm * jBm * t*wgt(jGP);
+					jK_mem_local = jBm' * jDm * jBm * wgt(jGP);
 					jK_ben_local = jBb' * jDb * jBb * wgt(jGP);
 					jK_shear_local = jBs' * jDs * jBs * wgt(jGP);
 					kdr = alpha * E * t * wgt(jGP);

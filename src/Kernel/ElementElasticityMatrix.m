@@ -86,14 +86,14 @@ end
 
 function [HLm, HLb, HLs] = HookeLaw_SHELL(E, nu, t)
 	% Plane stress stiffness matrix
+    %% t: Shell Thickness
 	%% Membrane
-	HLm = E/(1-nu^2)*[
+	HLm = E*t/(1-nu^2)*[
 			1	nu	0
 			nu	1	0
 			0	0	(1 - nu)/2
 	];
-	%% Bending
-	%% t: Shell Thickness
+	%% Bending	
 	HLb = E*t^3/(12*(1-nu^2))*[
 		1	nu	0
 		nu	1	0
