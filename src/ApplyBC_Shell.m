@@ -6,6 +6,7 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
         FileMenu                       matlab.ui.container.Menu
         ImportMenu                     matlab.ui.container.Menu
         SurfacemeshobjplystlmeshMenu   matlab.ui.container.Menu
+        FEMShellMiniFEMMenu            matlab.ui.container.Menu
         ExportMenu                     matlab.ui.container.Menu
         FEModelMiniFEMMenu             matlab.ui.container.Menu
         VisualizationMenu              matlab.ui.container.Menu
@@ -190,8 +191,8 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             [az, el] = view(axHandle_);
             cla(axHandle_); colorbar(axHandle_, 'off');
             Vis_DrawMesh3D(axHandle_, simMesh_.nodeCoords, simMesh_.eNodMat, 1);
-            Vis_ShowLoadingCondition(axHandle_, loadingCond_);
-            Vis_ShowFixingCondition(axHandle_, fixingCond_);
+            Vis_ShowLoadingConditionShell(axHandle_, loadingCond_);
+            Vis_ShowFixingConditionShell(axHandle_, fixingCond_);
             view(axHandle_, az, el);
             axis(axHandle_, 'on'); xlabel('X'); ylabel('Y'); zlabel('Z');              
         end
@@ -355,6 +356,11 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             app.SurfacemeshobjplystlmeshMenu = uimenu(app.ImportMenu);
             app.SurfacemeshobjplystlmeshMenu.MenuSelectedFcn = createCallbackFcn(app, @ImportSurfacemeshobjplystlmeshMenuSelected, true);
             app.SurfacemeshobjplystlmeshMenu.Text = 'Surface mesh ("*.obj", "*.ply", "*.stl", ".mesh")';
+
+            % Create FEMShellMiniFEMMenu
+            app.FEMShellMiniFEMMenu = uimenu(app.ImportMenu);
+            app.FEMShellMiniFEMMenu.MenuSelectedFcn = createCallbackFcn(app, @FEMShellMiniFEMMenuSelected, true);
+            app.FEMShellMiniFEMMenu.Text = 'FEM Shell (".MiniFEM")';
 
             % Create ExportMenu
             app.ExportMenu = uimenu(app.FileMenu);

@@ -425,7 +425,7 @@ end
 			K_ = K_ + K_' - diag(diag(K_));			
 	end
 	K_ = K_(freeDOFs_, freeDOFs_);
-	% disp(['Assemble Stiffness Matrix Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
+	disp(['Assemble Stiffness Matrix Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
 end
 
 function [eKi, eKj, eKk] = GetLowerEleStiffMatIndices()

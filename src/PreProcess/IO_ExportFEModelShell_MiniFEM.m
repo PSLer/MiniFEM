@@ -3,12 +3,14 @@ function IO_ExportFEModelShell_MiniFEM(fileName, t)
 	global loadingCond_;
 	global fixingCond_;
 	
-	[~, nodesLoadedFixed] = setdiff(fixingCond_(:,1), loadingCond_(:,1));
-	fixingCond_ = fixingCond_(nodesLoadedFixed,:);
-	[~,uniqueFixedNodes] = unique(fixingCond_(:,1));
-	fixingCond_ = fixingCond_(uniqueFixedNodes,:);	
-	[~,uniqueLoadedNodes] = unique(loadingCond_(:,1));
-	loadingCond_ = loadingCond_(uniqueLoadedNodes,:);
+	if ~isempty(loadingCond_) && ~isempty(fixingCond_)
+		[~, nodesLoadedFixed] = setdiff(fixingCond_(:,1), loadingCond_(:,1));
+		fixingCond_ = fixingCond_(nodesLoadedFixed,:);
+		[~,uniqueFixedNodes] = unique(fixingCond_(:,1));
+		fixingCond_ = fixingCond_(uniqueFixedNodes,:);	
+		[~,uniqueLoadedNodes] = unique(loadingCond_(:,1));
+		loadingCond_ = loadingCond_(uniqueLoadedNodes,:);
+	end
 	
 	materialIndicatorField_ = ones(simMesh_.numElements,1);
 	shellThicknessList_ = ones(simMesh_.numElements,1) .* t;
@@ -33,7 +35,9 @@ function IO_ExportFEModelShell_MiniFEM(fileName, t)
 			fprintf(fid, '%d %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', loadingCond_');
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
 			fprintf(fid, '%d\n', size(fixingCond_,1));
-			fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');			
+			if ~isempty(fixingCond_)
+				fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');
+			end
 		case 'QUAD'
 			fprintf(fid, '%s %s ', 'Shell Quad');
 			fprintf(fid, '%d\n', 1);
@@ -51,7 +55,9 @@ function IO_ExportFEModelShell_MiniFEM(fileName, t)
 			fprintf(fid, '%d %16.6e %16.6e %16.6e %16.6e %16.6e %16.6e\n', loadingCond_');
 			fprintf(fid, '%s %s ', 'Fixed Nodes:'); 
 			fprintf(fid, '%d\n', size(fixingCond_,1));
-			fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');
+			if ~isempty(fixingCond_)
+				fprintf(fid, '%d %d %d %d %d %d %d\n', fixingCond_');
+			end
 	end
 	fclose(fid);
 end
