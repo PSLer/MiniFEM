@@ -330,6 +330,33 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             simMesh_.eNodMat = flip(simMesh_.eNodMat,2);
             ShowNormalsMenuSelected(app, event);
         end
+
+        % Menu selected function: FEMShellMiniFEMMenu
+        function FEMShellMiniFEMMenuSelected(app, event)
+            global simMesh_;            
+            global axHandle_;
+            %%Reset App
+            Data_GlobalVariables;
+            InitializeAppParameters(app);  
+
+            [fileName, dataPath] = uigetfile('*.MiniFEM', 'Select a Surface Mesh File to Open');
+            if isnumeric(fileName) || isnumeric(dataPath), return; end
+            [~,~,fileExtension] = fileparts(fileName);
+            if ~strcmp(fileExtension, '.MiniFEM')
+                warning('Un-supported Model Format!');
+                return;
+            end
+            inputVoxelfileName = strcat(dataPath,fileName);
+            IO_ImportSurfaceMesh_MiniFEM(inputVoxelfileName);
+            if ~isvalid(axHandle_), axHandle_ = gca; view(axHandle_,3); end
+            cla(axHandle_);
+            ShowFEMModelMenuSelected(app, event);
+            app.ElementsEditField.Value = simMesh_.numElements;
+            app.VerticesEditField.Value = simMesh_.numNodes;
+            app.DOFsEditField.Value = 3*simMesh_.numNodes;
+            app.CellSizeEditField.Value = simMesh_.refSize;
+            SetupSelectionOptions_Public(app);            
+        end
     end
 
     % Component initialization
