@@ -60,6 +60,7 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
         ApplyforFixationButton         matlab.ui.control.Button
         ZDirFixedCheckBox              matlab.ui.control.CheckBox
         LoadingTab                     matlab.ui.container.Tab
+        NormalPressureButton           matlab.ui.control.Button
         RzNmEditField                  matlab.ui.control.NumericEditField
         RzNmEditFieldLabel             matlab.ui.control.Label
         RyNmEditField                  matlab.ui.control.NumericEditField
@@ -357,6 +358,15 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             app.CellSizeEditField.Value = simMesh_.refSize;
             SetupSelectionOptions_Public(app);            
         end
+
+        % Button pushed function: NormalPressureButton
+        function NormalPressureButtonPushed(app, event)
+            global axHandle_;          
+            iLoadingVec2Draw = FEA_Apply4LoadsShell_NormalPressure();
+            if isempty(iLoadingVec2Draw), return; end
+            Interaction_ClearPickedNodes();
+            Vis_ShowLoadingConditionShell(axHandle_, iLoadingVec2Draw);             
+        end
     end
 
     % Component initialization
@@ -367,7 +377,7 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
 
             % Create UIFigure and hide until all components are created
             app.UIFigure = uifigure('Visible', 'off');
-            app.UIFigure.Position = [100 100 407 599];
+            app.UIFigure.Position = [100 100 410 640];
             app.UIFigure.Name = 'MATLAB App';
             app.UIFigure.CloseRequestFcn = createCallbackFcn(app, @UIFigureCloseRequest, true);
 
@@ -417,14 +427,14 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             app.ApplyforBoundaryConditionsPanel.Title = 'Apply for Boundary Conditions';
             app.ApplyforBoundaryConditionsPanel.BackgroundColor = [0.9412 0.9412 0.9412];
             app.ApplyforBoundaryConditionsPanel.FontWeight = 'bold';
-            app.ApplyforBoundaryConditionsPanel.Position = [3 6 405 437];
+            app.ApplyforBoundaryConditionsPanel.Position = [3 4 405 480];
 
             % Create NodeUnSelectionButton
             app.NodeUnSelectionButton = uibutton(app.ApplyforBoundaryConditionsPanel, 'push');
             app.NodeUnSelectionButton.ButtonPushedFcn = createCallbackFcn(app, @NodeUnSelectionButtonPushed, true);
             app.NodeUnSelectionButton.BackgroundColor = [0.9608 0.9608 0.9608];
             app.NodeUnSelectionButton.FontWeight = 'bold';
-            app.NodeUnSelectionButton.Position = [42 201 122 23];
+            app.NodeUnSelectionButton.Position = [42 244 122 23];
             app.NodeUnSelectionButton.Text = 'Node Un-Selection';
 
             % Create NodeSelectionButton
@@ -432,12 +442,12 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             app.NodeSelectionButton.ButtonPushedFcn = createCallbackFcn(app, @NodeSelectionButtonPushed, true);
             app.NodeSelectionButton.BackgroundColor = [0.9608 0.9608 0.9608];
             app.NodeSelectionButton.FontWeight = 'bold';
-            app.NodeSelectionButton.Position = [242 201 122 23];
+            app.NodeSelectionButton.Position = [242 244 122 23];
             app.NodeSelectionButton.Text = 'Node Selection';
 
             % Create TabGroup2
             app.TabGroup2 = uitabgroup(app.ApplyforBoundaryConditionsPanel);
-            app.TabGroup2.Position = [1 9 400 176];
+            app.TabGroup2.Position = [1 11 400 217];
 
             % Create FixingTab
             app.FixingTab = uitab(app.TabGroup2);
@@ -447,51 +457,51 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             % Create ZDirFixedCheckBox
             app.ZDirFixedCheckBox = uicheckbox(app.FixingTab);
             app.ZDirFixedCheckBox.Text = 'Z-Dir Fixed';
-            app.ZDirFixedCheckBox.Position = [311 49 81 22];
+            app.ZDirFixedCheckBox.Position = [311 90 81 22];
             app.ZDirFixedCheckBox.Value = true;
 
             % Create ApplyforFixationButton
             app.ApplyforFixationButton = uibutton(app.FixingTab, 'push');
             app.ApplyforFixationButton.ButtonPushedFcn = createCallbackFcn(app, @ApplyforFixationButtonPushed, true);
             app.ApplyforFixationButton.FontWeight = 'bold';
-            app.ApplyforFixationButton.Position = [227 13 165 26];
+            app.ApplyforFixationButton.Position = [227 54 165 26];
             app.ApplyforFixationButton.Text = 'Apply for Fixation';
 
             % Create ClearFixationButton
             app.ClearFixationButton = uibutton(app.FixingTab, 'push');
             app.ClearFixationButton.ButtonPushedFcn = createCallbackFcn(app, @ClearFixationButtonPushed, true);
             app.ClearFixationButton.FontWeight = 'bold';
-            app.ClearFixationButton.Position = [89 15 100 23];
+            app.ClearFixationButton.Position = [89 56 100 23];
             app.ClearFixationButton.Text = 'Clear Fixation';
 
             % Create YDirFixedCheckBox
             app.YDirFixedCheckBox = uicheckbox(app.FixingTab);
             app.YDirFixedCheckBox.Text = 'Y-Dir Fixed';
-            app.YDirFixedCheckBox.Position = [311 83 81 22];
+            app.YDirFixedCheckBox.Position = [311 124 81 22];
             app.YDirFixedCheckBox.Value = true;
 
             % Create XDirFixedCheckBox
             app.XDirFixedCheckBox = uicheckbox(app.FixingTab);
             app.XDirFixedCheckBox.Text = 'X-Dir Fixed';
-            app.XDirFixedCheckBox.Position = [311 120 82 22];
+            app.XDirFixedCheckBox.Position = [311 161 82 22];
             app.XDirFixedCheckBox.Value = true;
 
             % Create RzFixedCheckBox
             app.RzFixedCheckBox = uicheckbox(app.FixingTab);
             app.RzFixedCheckBox.Text = 'Rz Fixed';
-            app.RzFixedCheckBox.Position = [209 49 69 22];
+            app.RzFixedCheckBox.Position = [209 90 69 22];
             app.RzFixedCheckBox.Value = true;
 
             % Create RyFixedCheckBox
             app.RyFixedCheckBox = uicheckbox(app.FixingTab);
             app.RyFixedCheckBox.Text = 'Ry Fixed';
-            app.RyFixedCheckBox.Position = [209 83 69 22];
+            app.RyFixedCheckBox.Position = [209 124 69 22];
             app.RyFixedCheckBox.Value = true;
 
             % Create RxFixedCheckBox
             app.RxFixedCheckBox = uicheckbox(app.FixingTab);
             app.RxFixedCheckBox.Text = 'Rx Fixed';
-            app.RxFixedCheckBox.Position = [209 120 69 22];
+            app.RxFixedCheckBox.Position = [209 161 69 22];
             app.RxFixedCheckBox.Value = true;
 
             % Create LoadingTab
@@ -501,88 +511,96 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
 
             % Create FxNEditFieldLabel
             app.FxNEditFieldLabel = uilabel(app.LoadingTab);
-            app.FxNEditFieldLabel.Position = [234 120 38 22];
+            app.FxNEditFieldLabel.Position = [234 161 38 22];
             app.FxNEditFieldLabel.Text = 'Fx (N)';
 
             % Create FxNEditField
             app.FxNEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.FxNEditField.Position = [274 120 113 22];
+            app.FxNEditField.Position = [274 161 113 22];
 
             % Create ApplyforLoadsButton
             app.ApplyforLoadsButton = uibutton(app.LoadingTab, 'push');
             app.ApplyforLoadsButton.ButtonPushedFcn = createCallbackFcn(app, @ApplyforLoadsButtonPushed, true);
             app.ApplyforLoadsButton.FontWeight = 'bold';
-            app.ApplyforLoadsButton.Position = [238 13 150 26];
+            app.ApplyforLoadsButton.Position = [238 54 150 26];
             app.ApplyforLoadsButton.Text = 'Apply for Loads';
 
             % Create ClearLoadsButton
             app.ClearLoadsButton = uibutton(app.LoadingTab, 'push');
             app.ClearLoadsButton.ButtonPushedFcn = createCallbackFcn(app, @ClearLoadsButtonPushed, true);
             app.ClearLoadsButton.FontWeight = 'bold';
-            app.ClearLoadsButton.Position = [87 15 100 23];
+            app.ClearLoadsButton.Position = [87 56 100 23];
             app.ClearLoadsButton.Text = 'Clear Loads';
 
             % Create FyNEditFieldLabel
             app.FyNEditFieldLabel = uilabel(app.LoadingTab);
-            app.FyNEditFieldLabel.Position = [235 83 38 22];
+            app.FyNEditFieldLabel.Position = [235 124 38 22];
             app.FyNEditFieldLabel.Text = 'Fy (N)';
 
             % Create FyNEditField
             app.FyNEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.FyNEditField.Position = [275 83 113 22];
+            app.FyNEditField.Position = [275 124 113 22];
 
             % Create FzNEditFieldLabel
             app.FzNEditFieldLabel = uilabel(app.LoadingTab);
-            app.FzNEditFieldLabel.Position = [235 49 38 22];
+            app.FzNEditFieldLabel.Position = [235 90 38 22];
             app.FzNEditFieldLabel.Text = 'Fz (N)';
 
             % Create FzNEditField
             app.FzNEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.FzNEditField.Position = [275 49 113 22];
+            app.FzNEditField.Position = [275 90 113 22];
 
             % Create RxNmEditFieldLabel
             app.RxNmEditFieldLabel = uilabel(app.LoadingTab);
-            app.RxNmEditFieldLabel.Position = [41 120 73 22];
+            app.RxNmEditFieldLabel.Position = [41 161 73 22];
             app.RxNmEditFieldLabel.Text = 'Rx (N*m)';
 
             % Create RxNmEditField
             app.RxNmEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.RxNmEditField.Position = [100 120 113 22];
+            app.RxNmEditField.Position = [100 161 113 22];
 
             % Create RyNmEditFieldLabel
             app.RyNmEditFieldLabel = uilabel(app.LoadingTab);
-            app.RyNmEditFieldLabel.Position = [41 83 58 22];
+            app.RyNmEditFieldLabel.Position = [41 124 58 22];
             app.RyNmEditFieldLabel.Text = 'Ry (N*m)';
 
             % Create RyNmEditField
             app.RyNmEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.RyNmEditField.Position = [101 83 113 22];
+            app.RyNmEditField.Position = [101 124 113 22];
 
             % Create RzNmEditFieldLabel
             app.RzNmEditFieldLabel = uilabel(app.LoadingTab);
-            app.RzNmEditFieldLabel.Position = [41 49 58 22];
+            app.RzNmEditFieldLabel.Position = [41 90 58 22];
             app.RzNmEditFieldLabel.Text = 'Rz (N*m)';
 
             % Create RzNmEditField
             app.RzNmEditField = uieditfield(app.LoadingTab, 'numeric');
-            app.RzNmEditField.Position = [101 49 113 22];
+            app.RzNmEditField.Position = [101 90 113 22];
+
+            % Create NormalPressureButton
+            app.NormalPressureButton = uibutton(app.LoadingTab, 'push');
+            app.NormalPressureButton.ButtonPushedFcn = createCallbackFcn(app, @NormalPressureButtonPushed, true);
+            app.NormalPressureButton.BackgroundColor = [0.902 0.902 0.902];
+            app.NormalPressureButton.FontWeight = 'bold';
+            app.NormalPressureButton.Position = [237 14 150 26];
+            app.NormalPressureButton.Text = 'Normal Pressure';
 
             % Create SelectionOptionsDropDownLabel
             app.SelectionOptionsDropDownLabel = uilabel(app.ApplyforBoundaryConditionsPanel);
             app.SelectionOptionsDropDownLabel.HorizontalAlignment = 'right';
-            app.SelectionOptionsDropDownLabel.Position = [171 385 99 22];
+            app.SelectionOptionsDropDownLabel.Position = [171 428 99 22];
             app.SelectionOptionsDropDownLabel.Text = 'Selection Options';
 
             % Create SelectionOptionsDropDown
             app.SelectionOptionsDropDown = uidropdown(app.ApplyforBoundaryConditionsPanel);
             app.SelectionOptionsDropDown.Items = {'None', 'Box', 'Sphere'};
             app.SelectionOptionsDropDown.ValueChangedFcn = createCallbackFcn(app, @SelectionOptionsDropDownValueChanged, true);
-            app.SelectionOptionsDropDown.Position = [285 385 100 22];
+            app.SelectionOptionsDropDown.Position = [285 428 100 22];
             app.SelectionOptionsDropDown.Value = 'None';
 
             % Create TabGroupSelection
             app.TabGroupSelection = uitabgroup(app.ApplyforBoundaryConditionsPanel);
-            app.TabGroupSelection.Position = [0 235 399 142];
+            app.TabGroupSelection.Position = [1 278 399 142];
 
             % Create BoxSelectionTab
             app.BoxSelectionTab = uitab(app.TabGroupSelection);
@@ -716,64 +734,64 @@ classdef ApplyBC_Shell < matlab.apps.AppBase
             % Create ElementsEditFieldLabel
             app.ElementsEditFieldLabel = uilabel(app.UIFigure);
             app.ElementsEditFieldLabel.HorizontalAlignment = 'right';
-            app.ElementsEditFieldLabel.Position = [214 549 62 22];
+            app.ElementsEditFieldLabel.Position = [214 590 62 22];
             app.ElementsEditFieldLabel.Text = '#Elements';
 
             % Create ElementsEditField
             app.ElementsEditField = uieditfield(app.UIFigure, 'numeric');
             app.ElementsEditField.ValueDisplayFormat = '%.0f';
-            app.ElementsEditField.Position = [291 549 100 22];
+            app.ElementsEditField.Position = [291 590 100 22];
 
             % Create VerticesEditFieldLabel
             app.VerticesEditFieldLabel = uilabel(app.UIFigure);
             app.VerticesEditFieldLabel.HorizontalAlignment = 'right';
-            app.VerticesEditFieldLabel.Position = [223 508 54 22];
+            app.VerticesEditFieldLabel.Position = [223 549 54 22];
             app.VerticesEditFieldLabel.Text = '#Vertices';
 
             % Create VerticesEditField
             app.VerticesEditField = uieditfield(app.UIFigure, 'numeric');
             app.VerticesEditField.ValueDisplayFormat = '%.0f';
-            app.VerticesEditField.Position = [292 508 100 22];
+            app.VerticesEditField.Position = [292 549 100 22];
 
             % Create DOFsEditFieldLabel
             app.DOFsEditFieldLabel = uilabel(app.UIFigure);
             app.DOFsEditFieldLabel.HorizontalAlignment = 'right';
-            app.DOFsEditFieldLabel.Position = [234 467 43 22];
+            app.DOFsEditFieldLabel.Position = [234 508 43 22];
             app.DOFsEditFieldLabel.Text = '#DOFs';
 
             % Create DOFsEditField
             app.DOFsEditField = uieditfield(app.UIFigure, 'numeric');
             app.DOFsEditField.ValueDisplayFormat = '%.0f';
-            app.DOFsEditField.Position = [292 467 100 22];
+            app.DOFsEditField.Position = [292 508 100 22];
 
             % Create CellSizeEditFieldLabel
             app.CellSizeEditFieldLabel = uilabel(app.UIFigure);
             app.CellSizeEditFieldLabel.HorizontalAlignment = 'right';
-            app.CellSizeEditFieldLabel.Position = [31 549 52 22];
+            app.CellSizeEditFieldLabel.Position = [31 590 52 22];
             app.CellSizeEditFieldLabel.Text = 'Cell Size';
 
             % Create CellSizeEditField
             app.CellSizeEditField = uieditfield(app.UIFigure, 'numeric');
             app.CellSizeEditField.ValueDisplayFormat = '%.6f';
-            app.CellSizeEditField.Position = [98 549 100 22];
+            app.CellSizeEditField.Position = [98 590 100 22];
 
             % Create ThicknessEditFieldLabel
             app.ThicknessEditFieldLabel = uilabel(app.UIFigure);
             app.ThicknessEditFieldLabel.HorizontalAlignment = 'right';
-            app.ThicknessEditFieldLabel.Position = [25 507 59 22];
+            app.ThicknessEditFieldLabel.Position = [25 548 59 22];
             app.ThicknessEditFieldLabel.Text = 'Thickness';
 
             % Create ThicknessEditField
             app.ThicknessEditField = uieditfield(app.UIFigure, 'numeric');
             app.ThicknessEditField.ValueDisplayFormat = '%.6f';
-            app.ThicknessEditField.Position = [99 507 100 22];
+            app.ThicknessEditField.Position = [99 548 100 22];
 
             % Create FlipNormalsButton
             app.FlipNormalsButton = uibutton(app.UIFigure, 'push');
             app.FlipNormalsButton.ButtonPushedFcn = createCallbackFcn(app, @FlipNormalsButtonPushed, true);
             app.FlipNormalsButton.BackgroundColor = [0.9608 0.9608 0.9608];
             app.FlipNormalsButton.FontWeight = 'bold';
-            app.FlipNormalsButton.Position = [82 467 100 23];
+            app.FlipNormalsButton.Position = [82 508 100 23];
             app.FlipNormalsButton.Text = 'Flip Normals';
 
             % Show the figure after all components are created
