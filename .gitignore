@@ -16,4 +16,5 @@
 *.obj
 
 /out/
+/dataTmp/
 
