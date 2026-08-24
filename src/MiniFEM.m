@@ -23,11 +23,11 @@ tStart = tic;
 ModelingOpt = 'Mdl_MiniFEM';
 switch ModelingOpt
 	case 'Mdl_MiniFEM' %% Exclusive Data Format
-		dir = 'C:\Users\j-pwa\OneDrive\OneDrive - Danmarks Tekniske Universitet\wSpace\Proj_2026_NewRobustTO\paper\figs\Inverter2D\k0.0005\';
+		dir = 'C:\Users\j-pwa\OneDrive\OneDrive - Danmarks Tekniske Universitet\wSpace\Proj_2026_NewRobustTO\paper\figs\Lbeam2D\k0.0005\';
         MdlName = strcat(dir, 'bf_FEM.MiniFEM');
 		CreateMdl_ExclusiveFormat(MdlName);
-        global outputDOFs_;
-        outputDOFs_ = load(strcat(dir, 'addiInput4CoMeBF.CoMe'));
+        % global outputDOFs_;
+        % outputDOFs_ = load(strcat(dir, 'addiInput4CoMeBF.CoMe'));
     case 'Mdl_TSV' %% This is to re-do simuation of FEM models used for 3D-TSV
 		MdlName = '../data/Demo_2D.TSV';
 		CreateMdl_TSVData(MdlName);		

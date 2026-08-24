@@ -1,64 +1,48 @@
-function Dev_EvalTO_CoMe()
-	global meshType_ material_ eleType_;
+function Dev_EvalTO_CoMi()
+	global meshType_ eleType_;
 	global freeDOFs_;
 	global F_ K_ U_ cartesianStressField_ vonMisesStressField_;
 	global fixingCond_ loadingCond_;
 	global numEles_ numDOFs_;
 	global eDofMat_ nodeCoords_ eNodMat_;
 	global deShapeFuncs_ invJ_ matrixD_ detJ_;
-	global outputDOFs_;
 	
 	if isempty(fixingCond_), error('No Constraint!'); end
 	if isempty(loadingCond_), error('No Loads!'); end
-	ApplyBoundaryCondition_4RobustTOpaper();
-	AssembleStiffnessMatrix_4RobustTOpaper();
-	kin = 1.0; kout = 1.0e-3; %%2D
-	vecI = sparse(numDOFs_,1);
-	outDOFs = outputDOFs_(:,1); nOutDOFs = numel(outDOFs);
-	vecI(outDOFs) = outputDOFs_(:,2);	
-	lambdaSpace = zeros(size(U_));
+	if isempty(F_), ApplyBoundaryCondition(); end
+	if isempty(K_), AssembleStiffnessMatrix(); end
 	
-	inDOFs = find(abs(full(F_))>0);
-    nInDOFs = numel(inDOFs);
-	springK_diag = sparse([inDOFs(:); outDOFs], [inDOFs(:); outDOFs], ...
-		[repmat(kin/nInDOFs,numel(inDOFs),1); repmat(kout/nOutDOFs,nOutDOFs,1)], ...
-		numDOFs_, numDOFs_);	
-	K_ = K_ + springK_diag;	
-	if strcmp(eleType_.eleName, 'Plane133') || strcmp(eleType_.eleName, 'Plane144')
-		U_(freeDOFs_,:) = K_(freeDOFs_,freeDOFs_) \ F_(freeDOFs_,:); 
-		lambdaSpace(freeDOFs_,:) = K_(freeDOFs_,freeDOFs_) \ vecI(freeDOFs_,:); 
-	elseif strcmp(eleType_.eleName, 'Solid144') || strcmp(eleType_.eleName, 'Solid188')
-		error('not ready!');
-		%%...
-	end
-	J = -vecI(:)' * U_(:,1);
-	disp(['Output Displacement: ' sprintf('%10.4e',J)]);
+	tStart = tic;
+	U_ = SolvingStaticLinearSystemEquations();
+	disp(['Compute Static Deformation Costs: ' sprintf('%10.3g',toc(tStart)) 's']);
+	
+	c = U_(freeDOFs_,1)' * (K_*U_(freeDOFs_,1));
+	disp(['Compliance: ' sprintf('%10.4e',c)]);
 	
 	%% sensitivity analysis
 	dE = 3;
 	Ue = U_(eDofMat_);
-	Le = lambdaSpace(eDofMat_);
-	JeList = zeros(numEles_,1);
+	ceList = zeros(numEles_,1);
 	wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
 	for ii=1:numEles_
 		iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
 		iKe = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, detJ_(:,ii));
-		JeList(ii) = Le(ii,:) * iKe * Ue(ii,:)';
+		ceList(ii) = Ue(ii,:) * iKe * Ue(ii,:)';
 	end
 
 	xAll = nodeCoords_(:,1); xAll = xAll(eNodMat_); x1 = xAll(:,1); x2 = xAll(:,2); x3 = xAll(:,3);
 	yAll = nodeCoords_(:,2); yAll = yAll(eNodMat_); y1 = yAll(:,1); y2 = yAll(:,2); y3 = yAll(:,3);
 	AeList = abs(x1.*(y2-y3) + x2.*(y3-y1) + x3.*(y1-y2))/2;
-	A = sum(AeList)/0.3
+	A = sum(AeList)/0.4;
 	AbyAe = A ./ AeList;
-	JeList = dE * AbyAe .* JeList(:);
+	ceList = -dE * AbyAe(:) .* ceList(:);
 	
 	figure
-	hd = patch('Faces', eNodMat_, 'Vertices', nodeCoords_, 'FaceVertexCData', JeList);		
+	hd = patch('Faces', eNodMat_, 'Vertices', nodeCoords_, 'FaceVertexCData', ceList);		
 	set(hd, 'FaceColor', 'flat', 'FaceAlpha', 1, 'EdgeColor', 'None');
 	colormap(jet);
 	h = colorbar; t=get(h,'Limits');	
-	caxis([-max(abs(JeList(:))) max(abs(JeList(:)))]);
+	caxis([-max(abs(ceList(:))) max(abs(ceList(:)))]);
 	h = colorbar; t=get(h,'Limits'); 
 	set(h,'Ticks',linspace(t(1),t(2),3),'AxisLocation','out');	
 	L=cellfun(@(x)sprintf('%.2f',x),num2cell(linspace(t(1),t(2),3)),'Un',0); 
