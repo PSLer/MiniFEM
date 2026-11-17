@@ -19,39 +19,87 @@ function Dev_EvalTO_CoMi()
 	c = U_(freeDOFs_,1)' * (K_*U_(freeDOFs_,1));
 	disp(['Compliance: ' sprintf('%10.4e',c)]);
 	
-	%% sensitivity analysis
-	dE = 3;
-	Ue = U_(eDofMat_);
-	ceList = zeros(numEles_,1);
-	wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
-	for ii=1:numEles_
-		iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
-		iKe = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, detJ_(:,ii));
-		ceList(ii) = Ue(ii,:) * iKe * Ue(ii,:)';
+	taskId = 'EID_Eco'; %% 'SHoSP', 'EID_Eco'
+	switch taskId		
+		case 'EID_Eco'
+			stressRep = 'inNODE'; %% 'inNODE', 'inELEMENT'
+			switch stressRep
+				case 'inNODE'
+					ComputeCartesianStress();
+					vonMisesStressField_ = ComputeVonMisesStress(cartesianStressField_);
+					ShowStressComp('Sigma_vM',0);						
+				case 'inELEMENT'
+					cartesianStressFieldCentroids = zeros(numEles_, 3);
+					Ns = GetElementStressInterpolationMatrix(); OTP = inv(Ns);
+					iMatrixD = matrixD_.arr(1:3,1:3);
+					dN = DeShapeFunction([1/3 1/3]);	
+					for ii=1:numEles_
+						iEleU = U_(eDofMat_(ii,:),1);
+						iEleNodes = nodeCoords_(eNodMat_(ii,:),:);
+						iJac = dN*iEleNodes;
+						dNdPhy = inv(iJac) * dN;
+						iMatB = GetMatB(dNdPhy);
+						iStressCentroids = iMatrixD * (iMatB*iEleU);
+						cartesianStressFieldCentroids(ii,:) = iStressCentroids;
+					end
+					vonMisesStressFieldCentroids = ComputeVonMisesStress(cartesianStressFieldCentroids);
+					
+					figure
+					hd = patch('Faces', eNodMat_, 'Vertices', nodeCoords_, 'FaceVertexCData', vonMisesStressFieldCentroids);		
+					set(hd, 'FaceColor', 'flat', 'FaceAlpha', 1, 'EdgeColor', 'None');
+					colormap(jet);
+					h = colorbar; t=get(h,'Limits');	
+					%caxis([-max(abs(vonMisesStressFieldCentroids(:))) max(abs(vonMisesStressFieldCentroids(:)))]);
+					h = colorbar; t=get(h,'Limits'); 
+					set(h,'Ticks',linspace(t(1),t(2),5),'AxisLocation','out');	
+					L=cellfun(@(x)sprintf('%.2f',x),num2cell(linspace(t(1),t(2),5)),'Un',0); 
+					set(h,'xticklabel',L);	
+					axis equal; axis tight; axis off;
+					set(gca, 'FontName', 'Times New Roman', 'FontSize', 40);				
+			end
+		case 'SHoSP'
+			%% sensitivity analysis
+			dE = 3;
+			Ue = U_(eDofMat_);
+			ceList = zeros(numEles_,1);
+			wgts = eleType_.GaussIntegralPointsNaturalSpace(3,:)';
+			for ii=1:numEles_
+				iMatrixB = ElementStrainMatrix(deShapeFuncs_, invJ_(ii).arr);
+				iKe = ElementStiffMatrix(iMatrixB, matrixD_.arr, wgts, detJ_(:,ii));
+				ceList(ii) = Ue(ii,:) * iKe * Ue(ii,:)';
+			end
+		
+			xAll = nodeCoords_(:,1); xAll = xAll(eNodMat_); x1 = xAll(:,1); x2 = xAll(:,2); x3 = xAll(:,3);
+			yAll = nodeCoords_(:,2); yAll = yAll(eNodMat_); y1 = yAll(:,1); y2 = yAll(:,2); y3 = yAll(:,3);
+			AeList = abs(x1.*(y2-y3) + x2.*(y3-y1) + x3.*(y1-y2))/2;
+			A = sum(AeList)/0.4;
+			AbyAe = A ./ AeList;
+			ceList = -dE * AbyAe(:) .* ceList(:);
+			
+			figure
+			hd = patch('Faces', eNodMat_, 'Vertices', nodeCoords_, 'FaceVertexCData', ceList);		
+			set(hd, 'FaceColor', 'flat', 'FaceAlpha', 1, 'EdgeColor', 'None');
+			colormap(jet);
+			h = colorbar; t=get(h,'Limits');	
+			caxis([-max(abs(ceList(:))) max(abs(ceList(:)))]);
+			h = colorbar; t=get(h,'Limits'); 
+			set(h,'Ticks',linspace(t(1),t(2),3),'AxisLocation','out');	
+			L=cellfun(@(x)sprintf('%.2f',x),num2cell(linspace(t(1),t(2),3)),'Un',0); 
+			set(h,'xticklabel',L);	
+			axis equal; axis tight; axis off;
+			set(gca, 'FontName', 'Times New Roman', 'FontSize', 40);
+			
+			%%Stress Ana.
+			ComputeCartesianStress();
+			vonMisesStressField_ = ComputeVonMisesStress(cartesianStressField_);
+			ShowStressComp('Sigma_vM',0);		
 	end
+end
 
-	xAll = nodeCoords_(:,1); xAll = xAll(eNodMat_); x1 = xAll(:,1); x2 = xAll(:,2); x3 = xAll(:,3);
-	yAll = nodeCoords_(:,2); yAll = yAll(eNodMat_); y1 = yAll(:,1); y2 = yAll(:,2); y3 = yAll(:,3);
-	AeList = abs(x1.*(y2-y3) + x2.*(y3-y1) + x3.*(y1-y2))/2;
-	A = sum(AeList)/0.4;
-	AbyAe = A ./ AeList;
-	ceList = -dE * AbyAe(:) .* ceList(:);
-	
-	figure
-	hd = patch('Faces', eNodMat_, 'Vertices', nodeCoords_, 'FaceVertexCData', ceList);		
-	set(hd, 'FaceColor', 'flat', 'FaceAlpha', 1, 'EdgeColor', 'None');
-	colormap(jet);
-	h = colorbar; t=get(h,'Limits');	
-	caxis([-max(abs(ceList(:))) max(abs(ceList(:)))]);
-	h = colorbar; t=get(h,'Limits'); 
-	set(h,'Ticks',linspace(t(1),t(2),3),'AxisLocation','out');	
-	L=cellfun(@(x)sprintf('%.2f',x),num2cell(linspace(t(1),t(2),3)),'Un',0); 
-	set(h,'xticklabel',L);	
-	axis equal; axis tight; axis off;
-	set(gca, 'FontName', 'Times New Roman', 'FontSize', 40);
-	
-	%%Stress Ana.
-	ComputeCartesianStress();
-	vonMisesStressField_ = ComputeVonMisesStress(cartesianStressField_);
-	ShowStressComp('Sigma_vM',0);
+function matB = GetMatB(dNdPhy)
+	dNds1 = dNdPhy(1,:); dNdt1 = dNdPhy(2,:);
+	B11 = [dNds1(1) 0; 0 dNdt1(1); dNdt1(1) dNds1(1)];
+	B12 = [dNds1(2) 0; 0 dNdt1(2); dNdt1(2) dNds1(2)];
+	B13 = [dNds1(3) 0; 0 dNdt1(3); dNdt1(3) dNds1(3)];
+	matB = [B11 B12 B13];
 end

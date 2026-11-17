@@ -80,7 +80,7 @@ function VisualizeScalarFieldViaColorMap(srcField, varargin)
     t=get(h,'Limits'); 
 	colorbarIntervals = 7;
 	set(h,'Ticks',linspace(t(1),t(2),colorbarIntervals),'AxisLocation','out');	
-	L=cellfun(@(x)sprintf('%.2e',x),num2cell(linspace(t(1),t(2),colorbarIntervals)),'Un',0); 
+	L=cellfun(@(x)sprintf('%.4e',x),num2cell(linspace(t(1),t(2),colorbarIntervals)),'Un',0); 
 	set(h,'xticklabel',L);		
 	axis('equal'); axis('tight'); axis('off');
 	set(gca, 'FontName', 'Times New Roman', 'FontSize', 20);	
